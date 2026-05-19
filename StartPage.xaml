@@ -1,4 +1,4 @@
-﻿<Page x:Class="SharpVectors.Converters.StartPage"
+<Page x:Class="FluentSvgXaml.StartPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Start Page">

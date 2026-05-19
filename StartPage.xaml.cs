@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace SharpVectors.Converters
+namespace FluentSvgXaml
 {
     /// <summary>
     /// Interaction logic for StartPage.xaml

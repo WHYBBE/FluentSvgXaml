@@ -1,4 +1,4 @@
-﻿<Page x:Class="SharpVectors.Converters.DirectoryConverterOutput"
+<Page x:Class="FluentSvgXaml.DirectoryConverterOutput"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Directory Converter Output">

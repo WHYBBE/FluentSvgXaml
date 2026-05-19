@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 
 using Mono.Options;
 
-namespace SharpVectors.Converters
+namespace FluentSvgXaml
 {
     public sealed class ConverterCommandLines
     {
@@ -544,7 +544,7 @@ namespace SharpVectors.Converters
                     writer.WriteLine(arg);
                 }
             }
-            writer.WriteLine("Usage: SharpVectors.exe [options]+");
+            writer.WriteLine("Usage: FluentSvgXaml.exe [options]+");
             writer.WriteLine("Options:");
         }
 

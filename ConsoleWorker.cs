@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
-namespace SharpVectors.Converters
+namespace FluentSvgXaml
 {
     public sealed class ConsoleWorker
     {

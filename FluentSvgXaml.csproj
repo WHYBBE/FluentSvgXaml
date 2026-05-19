@@ -4,13 +4,12 @@
     <TargetFramework>net10.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>SvgXaml</RootNamespace>
-    <AssemblyName>SvgXaml</AssemblyName>
     <ApplicationIcon>Images\SharpVectors.ico</ApplicationIcon>
     <LangVersion>14</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>WPF0001</NoWarn>
   </PropertyGroup>
 

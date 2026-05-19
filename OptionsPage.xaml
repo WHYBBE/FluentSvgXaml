@@ -1,4 +1,4 @@
-﻿<Page x:Class="SharpVectors.Converters.OptionsPage"
+<Page x:Class="FluentSvgXaml.OptionsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Options Page">

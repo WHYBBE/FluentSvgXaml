@@ -1,6 +1,6 @@
-﻿<Window x:Class="SharpVectors.Converters.ConverterWindow"
+<Window x:Class="FluentSvgXaml.ConverterWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:local="clr-namespace:SharpVectors.Converters"
+    xmlns:local="clr-namespace:FluentSvgXaml"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="SVG-WPF Converter" Height="300" Width="300" WindowStartupLocation="CenterScreen">
     <DockPanel LastChildFill="True">

@@ -2,9 +2,9 @@ using System;
 using System.Windows;
 using System.Windows.Threading;
 
-using SharpVectors.Converters;
+using FluentSvgXaml;
 
-namespace SvgXaml;
+namespace FluentSvgXaml;
 
 public partial class App : Application
 {

@@ -1,11 +1,12 @@
-﻿using System;
+using SharpVectors.Converters;
+using System;
 using System.Diagnostics;
 
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
-namespace SharpVectors.Converters
+namespace FluentSvgXaml
 {
     public partial class OptionsPage : Page
     {

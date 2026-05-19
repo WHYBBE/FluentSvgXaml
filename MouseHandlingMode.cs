@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace SharpVectors.Converters
+namespace FluentSvgXaml
 {
     /// <summary>
     /// Defines the current state of the mouse handling logic.

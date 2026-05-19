@@ -811,7 +811,7 @@
         </Paragraph>
         <Paragraph>
             The executable program that handles the conversion is
-            <Bold>SharpVectors.exe</Bold>.
+            <Bold>FluentSvgXaml.exe</Bold>.
             <LineBreak/>
         </Paragraph>
         <Paragraph Foreground="RoyalBlue" FontSize="18" KeepTogether="True">
@@ -873,7 +873,7 @@
                             <LineBreak/>
                             <Run FontWeight="Bold" Foreground="DeepSkyBlue">                                
                             <![CDATA[
-                            >>SharpVectors.exe -s="X:\Test Sources\Test.svg" --output "Y:\Test Outputs\"
+                            >>FluentSvgXaml.exe -s="X:\Test Sources\Test.svg" --output "Y:\Test Outputs\"
                             ]]>
                             </Run>
                             <LineBreak/>
@@ -1276,7 +1276,7 @@
                     <LineBreak/>
                     <Run FontWeight="Bold" Foreground="DeepSkyBlue">
                         <![CDATA[
-                            >>SharpVectors.exe -s "X:\Test Sources\Test.svg" -o "Y:\Test Outputs\" -i:png
+                            >>FluentSvgXaml.exe -s "X:\Test Sources\Test.svg" -o "Y:\Test Outputs\" -i:png
                             ]]>
                     </Run>
                     <LineBreak/>
@@ -1294,7 +1294,7 @@
                     <LineBreak/>
                     <Run FontWeight="Bold" Foreground="DeepSkyBlue">
                         <![CDATA[
-                            >>SharpVectors.exe -s "X:\Sources\Test1.svg" "X:\Sources\Test2.svg" -z- -i=jpeg
+                            >>FluentSvgXaml.exe -s "X:\Sources\Test1.svg" "X:\Sources\Test2.svg" -z- -i=jpeg
                             ]]>
                     </Run>
                     <LineBreak/>
@@ -1312,7 +1312,7 @@
                     <LineBreak/>
                     <Run FontWeight="Bold" Foreground="DeepSkyBlue">
                         <![CDATA[
-                            >>SharpVectors.exe -s "X:\Test Sources\" --recursive+
+                            >>FluentSvgXaml.exe -s "X:\Test Sources\" --recursive+
                             ]]>
                     </Run>
                     <LineBreak/>
@@ -1330,19 +1330,19 @@
                     <LineBreak/>
                     <Run FontWeight="Bold" Foreground="DeepSkyBlue">
                         <![CDATA[
-                            >>SharpVectors.exe -h
+                            >>FluentSvgXaml.exe -h
                             ]]>
                     </Run>
                     <LineBreak/>
                     <Run FontWeight="Bold" Foreground="DeepSkyBlue">
                         <![CDATA[
-                            >>SharpVectors.exe -?
+                            >>FluentSvgXaml.exe -?
                             ]]>
                     </Run>
                     <LineBreak/>
                     <Run FontWeight="Bold" Foreground="DeepSkyBlue">
                         <![CDATA[
-                            >>SharpVectors.exe --help
+                            >>FluentSvgXaml.exe --help
                             ]]>
                     </Run>
                     <LineBreak/>
@@ -1357,7 +1357,7 @@
                     <LineBreak/>
                     <Run FontWeight="Bold" Foreground="DeepSkyBlue">
                         <![CDATA[
-                            >>SharpVectors.exe -h -u=console
+                            >>FluentSvgXaml.exe -h -u=console
                             ]]>
                     </Run>
                     <LineBreak/>
@@ -1367,7 +1367,7 @@
                     <LineBreak/>
                     <Run FontWeight="Bold" Foreground="DeepSkyBlue">
                         <![CDATA[
-                            >>SharpVectors.exe -h -u=windows
+                            >>FluentSvgXaml.exe -h -u=windows
                             ]]>
                     </Run>
                 </Paragraph>

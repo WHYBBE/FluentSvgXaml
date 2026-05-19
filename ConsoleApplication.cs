@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
 
-namespace SharpVectors.Converters
+namespace FluentSvgXaml
 {
     public sealed class ConsoleApplication : IObserver, IObservable
     {

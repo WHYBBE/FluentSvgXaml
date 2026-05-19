@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Diagnostics;
@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Threading;
 
-using SvgXaml;
+using FluentSvgXaml;
 
-namespace SharpVectors.Converters
+namespace FluentSvgXaml
 {
     /// <summary>
     /// Interaction logic for ConverterWindow.xaml

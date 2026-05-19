@@ -1,4 +1,5 @@
-using SvgXaml;
+using SharpVectors.Converters;
+using FluentSvgXaml;
 using System;
 using System.IO;
 using System.IO.Compression;
@@ -18,7 +19,7 @@ using ICSharpCode.AvalonEdit.Highlighting;
 
 using SharpVectors.Renderers.Wpf;
 
-namespace SharpVectors.Converters
+namespace FluentSvgXaml
 {
     /// <summary>
     /// Interaction logic for FileConverterOutput.xaml

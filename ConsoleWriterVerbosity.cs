@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace SharpVectors.Converters
+namespace FluentSvgXaml
 {
     public enum ConsoleWriterVerbosity
     {

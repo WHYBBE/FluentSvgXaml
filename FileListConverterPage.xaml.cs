@@ -1,4 +1,4 @@
-using SvgXaml;
+using FluentSvgXaml;
 using System;
 using System.IO;
 using System.Diagnostics;
@@ -15,7 +15,7 @@ using System.Windows.Threading;
 
 using Microsoft.Win32;
 
-namespace SharpVectors.Converters
+namespace FluentSvgXaml
 {
     /// <summary>
     /// Interaction logic for FileListConverterPage.xaml

@@ -1,8 +1,8 @@
 using System;
 
-using SharpVectors.Converters;
+using FluentSvgXaml;
 
-namespace SvgXaml;
+namespace FluentSvgXaml;
 
 public static class Program
 {

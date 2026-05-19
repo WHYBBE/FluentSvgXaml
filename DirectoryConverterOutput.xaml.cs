@@ -1,4 +1,5 @@
-using SvgXaml;
+using SharpVectors.Converters;
+using FluentSvgXaml;
 using System;
 using System.IO;
 using System.Text;
@@ -15,7 +16,7 @@ using System.Windows.Controls;
 
 using SharpVectors.Renderers.Wpf;
 
-namespace SharpVectors.Converters
+namespace FluentSvgXaml
 {
     /// <summary>
     /// Interaction logic for DirectoryConverterOutput.xaml

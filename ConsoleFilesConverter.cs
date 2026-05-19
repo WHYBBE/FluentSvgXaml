@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Diagnostics;
@@ -8,8 +8,9 @@ using System.Collections.Generic;
 using System.Windows.Media;
 
 using SharpVectors.Renderers.Wpf;
+using SharpVectors.Converters;
 
-namespace SharpVectors.Converters
+namespace FluentSvgXaml
 {
     public sealed class ConsoleFilesConverter : ConsoleConverter
     {

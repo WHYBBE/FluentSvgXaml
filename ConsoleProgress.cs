@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Threading;
 
-namespace SharpVectors.Converters
+namespace FluentSvgXaml
 {
     public sealed class ConsoleProgress : IObserver
     {

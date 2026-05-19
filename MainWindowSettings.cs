@@ -1,4 +1,4 @@
-﻿// The codes by Jake Ginnivan and licensed under MIT.
+// The codes by Jake Ginnivan and licensed under MIT.
 // Web Link: http://jake.ginnivan.net/remembering-wpf-window-positions
 //
 
@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace SharpVectors.Converters
+namespace FluentSvgXaml
 {
     /// <summary>
     /// Persists a Window's Size, Location and WindowState to UserScopeSettings 

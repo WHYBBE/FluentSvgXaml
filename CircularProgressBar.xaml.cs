@@ -1,4 +1,4 @@
-﻿// Yet another Circular ProgressBar control for WPF
+// Yet another Circular ProgressBar control for WPF
 // http://blogs.u2u.be/diederik/post/2010/02/26/Yet-another-Circular-ProgressBar-control-for-WPF.aspx
 // By U2UConsult
 
@@ -9,7 +9,7 @@ using System.Windows.Input;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace SharpVectors.Converters
+namespace FluentSvgXaml
 {
     /// <summary>
     /// Spinning Busy Indicator Control.

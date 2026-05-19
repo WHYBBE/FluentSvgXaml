@@ -1,7 +1,8 @@
-﻿using System;
+using SharpVectors.Converters;
+using System;
 using System.ComponentModel;
 
-namespace SharpVectors.Converters
+namespace FluentSvgXaml
 {
     [Serializable]
     public sealed class ConverterOptions : ICloneable, INotifyPropertyChanged

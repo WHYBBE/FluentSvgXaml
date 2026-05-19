@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 
-namespace SharpVectors.Converters
+namespace FluentSvgXaml
 {
     public partial class HelpPage : Page
     {
