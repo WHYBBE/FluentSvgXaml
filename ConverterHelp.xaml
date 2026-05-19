@@ -41,7 +41,7 @@
                     <TableCell BorderThickness="1" BorderBrush="RoyalBlue">
                         <Paragraph>
                             <InlineUIContainer BaselineAlignment="Center">
-                                <Image Margin="3" Width="16" Height="16" Source="pack://application:,,,/images/smallinformation.png"/>
+                                <TextBlock Text="&#xE946;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="3" VerticalAlignment="Center"/>
                             </InlineUIContainer> <Bold>Note</Bold>
                         </Paragraph>
                     </TableCell>
@@ -62,7 +62,7 @@
                     <TableCell BorderThickness="1" BorderBrush="RoyalBlue">
                         <Paragraph>
                             <InlineUIContainer BaselineAlignment="Center">
-                                <Image Margin="3" Width="16" Height="16" Source="pack://application:,,,/images/smallwarning.png"/>
+                                <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="3" VerticalAlignment="Center"/>
                             </InlineUIContainer> <Bold>Caution</Bold>
                         </Paragraph>
                     </TableCell>
@@ -276,10 +276,11 @@
                             <TableCell BorderBrush="RoyalBlue" BorderThickness="1">
                                 <Paragraph>
                                     <InlineUIContainer BaselineAlignment="Center">
-                                        <Image Width="16"
-                                               Height="16"
-                                               Margin="3"
-                                               Source="pack://application:,,,/images/smallinformation.png" />
+                                        <TextBlock Margin="3"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="14"
+                                                   Text="&#xE946;" />
                                     </InlineUIContainer>
                                     <Bold>Note</Bold>
                                 </Paragraph>
@@ -314,10 +315,11 @@
                             <TableCell BorderBrush="RoyalBlue" BorderThickness="1">
                                 <Paragraph>
                                     <InlineUIContainer BaselineAlignment="Center">
-                                        <Image Width="16"
-                                               Height="16"
-                                               Margin="3"
-                                               Source="pack://application:,,,/images/smallwarning.png" />
+                                        <TextBlock Margin="3"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="14"
+                                                   Text="&#xE7BA;" />
                                     </InlineUIContainer>
                                     <Bold>Caution</Bold>
                                 </Paragraph>
@@ -419,10 +421,11 @@
                     <TableCell BorderBrush="RoyalBlue" BorderThickness="1">
                         <Paragraph>
                             <InlineUIContainer BaselineAlignment="Center">
-                                <Image Width="16"
-                                       Height="16"
-                                       Margin="3"
-                                       Source="pack://application:,,,/images/smallinformation.png" />
+                                <TextBlock Margin="3"
+                                           VerticalAlignment="Center"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="14"
+                                           Text="&#xE946;" />
                             </InlineUIContainer>
                             <Bold>Note</Bold>
                         </Paragraph>
@@ -551,10 +554,11 @@
                     <TableCell BorderBrush="RoyalBlue" BorderThickness="1">
                         <Paragraph>
                             <InlineUIContainer BaselineAlignment="Center">
-                                <Image Width="16"
-                                       Height="16"
-                                       Margin="3"
-                                       Source="pack://application:,,,/images/smallinformation.png" />
+                                <TextBlock Margin="3"
+                                           VerticalAlignment="Center"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="14"
+                                           Text="&#xE946;" />
                             </InlineUIContainer>
                             <Bold>Note</Bold>
                         </Paragraph>
@@ -658,10 +662,11 @@
                             <TableCell BorderBrush="RoyalBlue" BorderThickness="1">
                                 <Paragraph>
                                     <InlineUIContainer BaselineAlignment="Center">
-                                        <Image Width="16"
-                                               Height="16"
-                                               Margin="3"
-                                               Source="pack://application:,,,/images/smallinformation.png" />
+                                        <TextBlock Margin="3"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="14"
+                                                   Text="&#xE946;" />
                                     </InlineUIContainer>
                                     <Bold>Note</Bold>
                                 </Paragraph>
@@ -734,10 +739,11 @@
                             <TableCell BorderBrush="RoyalBlue" BorderThickness="1">
                                 <Paragraph>
                                     <InlineUIContainer BaselineAlignment="Center">
-                                        <Image Width="16"
-                                               Height="16"
-                                               Margin="3"
-                                               Source="pack://application:,,,/images/smallinformation.png" />
+                                        <TextBlock Margin="3"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="14"
+                                                   Text="&#xE946;" />
                                     </InlineUIContainer>
                                     <Bold>Note</Bold>
                                 </Paragraph>
@@ -814,10 +820,11 @@
                                     <TableCell BorderBrush="RoyalBlue" BorderThickness="1">
                                         <Paragraph>
                                             <InlineUIContainer BaselineAlignment="Center">
-                                                <Image Width="16"
-                                                       Height="16"
-                                                       Margin="3"
-                                                       Source="pack://application:,,,/images/smallinformation.png" />
+                                                <TextBlock Margin="3"
+                                                           VerticalAlignment="Center"
+                                                           FontFamily="Segoe MDL2 Assets"
+                                                           FontSize="14"
+                                                           Text="&#xE946;" />
                                             </InlineUIContainer>
                                             <Bold>Note</Bold>
                                         </Paragraph>
@@ -860,10 +867,11 @@
                             <TableCell BorderBrush="RoyalBlue" BorderThickness="1">
                                 <Paragraph>
                                     <InlineUIContainer BaselineAlignment="Center">
-                                        <Image Width="16"
-                                               Height="16"
-                                               Margin="3"
-                                               Source="pack://application:,,,/images/smallinformation.png" />
+                                        <TextBlock Margin="3"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="14"
+                                                   Text="&#xE946;" />
                                     </InlineUIContainer>
                                     <Bold>Note</Bold>
                                 </Paragraph>
@@ -953,10 +961,11 @@
                     <TableCell BorderBrush="RoyalBlue" BorderThickness="1">
                         <Paragraph>
                             <InlineUIContainer BaselineAlignment="Center">
-                                <Image Width="16"
-                                       Height="16"
-                                       Margin="3"
-                                       Source="pack://application:,,,/images/smallinformation.png" />
+                                <TextBlock Margin="3"
+                                           VerticalAlignment="Center"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="14"
+                                           Text="&#xE946;" />
                             </InlineUIContainer>
                             <Bold>Note</Bold>
                         </Paragraph>
@@ -1525,10 +1534,11 @@
                             <TableCell BorderBrush="RoyalBlue" BorderThickness="1">
                                 <Paragraph>
                                     <InlineUIContainer BaselineAlignment="Center">
-                                        <Image Width="16"
-                                               Height="16"
-                                               Margin="3"
-                                               Source="pack://application:,,,/images/smallinformation.png" />
+                                        <TextBlock Margin="3"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="14"
+                                                   Text="&#xE946;" />
                                     </InlineUIContainer>
                                     <Bold>Note</Bold>
                                 </Paragraph>

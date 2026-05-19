@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0-windows</TargetFramework>
@@ -21,17 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Images\SharpVectors.ico" />
     <Resource Include="Images\SharpVectors.png" />
-    <Resource Include="Images\SmallError.png" />
-    <Resource Include="Images\SmallInformation.png" />
-    <Resource Include="Images\SmallQuestion.png" />
-    <Resource Include="Images\SmallSecurity.png" />
-    <Resource Include="Images\SmallSecurityError.png" />
-    <Resource Include="Images\SmallSecurityQuestion.png" />
-    <Resource Include="Images\SmallSecuritySucess.png" />
-    <Resource Include="Images\SmallSecurityWarning.png" />
-    <Resource Include="Images\SmallWarning.png" />
     <Resource Include="Images\MinimalWindow.png" />
     <Resource Include="Images\ConsoleConversion.png" />
   </ItemGroup>

@@ -4,6 +4,19 @@
       Title="Start Page">
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="8">
+            <StackPanel Margin="0,0,0,16" Orientation="Horizontal">
+                <Image Width="48"
+                       Height="48"
+                       Margin="0,0,12,0"
+                       VerticalAlignment="Center"
+                       Source="pack://application:,,,/images/SharpVectors.png" />
+                <TextBlock VerticalAlignment="Center"
+                           FontSize="22"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource AppTextPrimary}"
+                           Text="SVG-WPF Converter" />
+            </StackPanel>
+
             <TextBlock Margin="0,0,0,16"
                        Foreground="{StaticResource AppTextSecondary}"
                        TextWrapping="Wrap">

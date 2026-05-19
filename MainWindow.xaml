@@ -6,7 +6,6 @@
         Width="640"
         Height="640"
         local:MainWindowSettings.Save="True"
-        Icon="/FluentSvgXaml;component/Images/SharpVectors.ico"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>
