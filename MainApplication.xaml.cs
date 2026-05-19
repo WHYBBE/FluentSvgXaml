@@ -33,6 +33,8 @@ namespace SharpVectors.Converters
 
         public void InitializeComponent(bool mainWindow)
         {
+            InitializeComponent();
+
             if (mainWindow)
             {
                 this.StartupUri = new Uri("MainWindow.xaml", UriKind.Relative);
