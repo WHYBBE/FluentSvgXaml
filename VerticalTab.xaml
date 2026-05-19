@@ -13,51 +13,45 @@
                                     <VisualStateGroup Name="CommonStates">
                                         <VisualState Name="MouseOver">
                                             <Storyboard>
-                                                <DoubleAnimation 
-                                                    Storyboard.TargetName="hoverShape" 
-                                                    Storyboard.TargetProperty="Opacity" 
-                                                    To="1" 
-                                                    Duration="0:0:.1"/>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="hoverShape"
+                                                    Storyboard.TargetProperty="Opacity"
+                                                    To="1" Duration="0:0:.1"/>
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState Name="Normal">
                                             <Storyboard>
-                                                <DoubleAnimation 
-                                                    Storyboard.TargetName="hoverShape" 
-                                                    Storyboard.TargetProperty="Opacity" 
-                                                    To="0"
-                                                    Duration="0:0:.1"/>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="hoverShape"
+                                                    Storyboard.TargetProperty="Opacity"
+                                                    To="0" Duration="0:0:.1"/>
                                             </Storyboard>
                                         </VisualState>
                                     </VisualStateGroup>
                                     <VisualStateGroup Name="SelectionStates">
                                         <VisualState Name="Selected">
                                             <Storyboard>
-                                                <DoubleAnimation 
-                                                    Storyboard.TargetName="buttonShape" Storyboard.TargetProperty="Opacity" 
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="buttonShape" Storyboard.TargetProperty="Opacity"
                                                     To="1" Duration="0:0:.3"/>
-                                                <DoubleAnimation 
-                                                    Storyboard.TargetName="buttonBackgroundShape" 
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="buttonBackgroundShape"
                                                     Storyboard.TargetProperty="Opacity" To="1" Duration="0"/>
-                                                <DoubleAnimation 
-                                                    Storyboard.TargetName="hoverShape" Storyboard.TargetProperty="Opacity" 
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="hoverShape" Storyboard.TargetProperty="Opacity"
                                                     To="0" Duration="0:0:.1"/>
-                                                <ColorAnimation 
-                                                    Storyboard.TargetName="buttonText2" 
-                                                    Storyboard.TargetProperty="(Foreground).(SolidColorBrush.Color)" 
-                                                    To="White" Duration="0:0:.1" />
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState Name="Unselected">
                                             <Storyboard>
-                                                <DoubleAnimation 
-                                                    Storyboard.TargetName="buttonShape" 
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="buttonShape"
                                                     Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:.1"/>
-                                                <DoubleAnimation 
-                                                    Storyboard.TargetName="buttonBackgroundShape" 
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="buttonBackgroundShape"
                                                     Storyboard.TargetProperty="Opacity" To="0" Duration="0"/>
-                                                <DoubleAnimation 
-                                                    Storyboard.TargetName="hoverShape" 
+                                                <DoubleAnimation
+                                                    Storyboard.TargetName="hoverShape"
                                                     Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:.1"/>
                                             </Storyboard>
                                         </VisualState>
@@ -65,46 +59,37 @@
                                 </VisualStateManager.VisualStateGroups>
                                 <Border Name="hoverShape"
                                         Height="40"
-                                        Margin="0,0,1,0" 
-                                        SnapsToDevicePixels="True" 
-                                        BorderThickness="0,0,1,0" 
-                                        BorderBrush="LightGray">
-                                    <Border BorderBrush="#FFA1B7EA"
-                                            BorderThickness="0,1" 
-                                            Background="#FFE5EEF9" 
-                                            Height="40" 
+                                        Margin="0,0,1,0"
+                                        SnapsToDevicePixels="True"
+                                        BorderThickness="0,0,1,0"
+                                        BorderBrush="{DynamicResource ControlStrokeColorSecondaryBrush}">
+                                    <Border BorderBrush="{DynamicResource AccentFillColorSecondaryBrush}"
+                                            BorderThickness="0,1"
+                                            Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                            Height="40"
+                                            CornerRadius="{StaticResource ControlCornerRadius}"
                                             SnapsToDevicePixels="True" />
                                 </Border>
-                                <Rectangle Name="buttonBackgroundShape" 
-                                           Stretch="Fill" Opacity="0" 
-                                           Fill="White" Height="40" SnapsToDevicePixels="True" />
-                                <Border 
-                                    Name="buttonShape" 
-                                    Opacity="0" 
-                                    BorderBrush="#FF0343A6" 
-                                    BorderThickness="0,2" 
+                                <Rectangle Name="buttonBackgroundShape"
+                                           Stretch="Fill" Opacity="0"
+                                           Fill="{DynamicResource ControlFillColorDefaultBrush}" Height="40" SnapsToDevicePixels="True" />
+                                <Border
+                                    Name="buttonShape"
+                                    Opacity="0"
+                                    BorderBrush="{DynamicResource AccentFillColorDefaultBrush}"
+                                    BorderThickness="0,3"
                                     Height="40"
+                                    CornerRadius="{StaticResource ControlCornerRadius}"
                                     SnapsToDevicePixels="True">
-                                    <Path 
-                                        Data="M214,108 L346,108 346.125,118.125 337.75,126.125 346.375,134 346.375,143.875 214.25,144.25 z" 
-                                        SnapsToDevicePixels="True" 
-                                        Stretch="Fill"
-                                        Height="40">
-                                        <Path.Fill>
-                                            <RadialGradientBrush GradientOrigin="0.2,0.5" RadiusX="0.8" RadiusY="0.8">
-                                                <GradientStop Color="#FF5FA3F6" Offset="0" />
-                                                <GradientStop Color="#FF0C55B9" Offset="1" />
-                                            </RadialGradientBrush>
-                                        </Path.Fill>
-                                    </Path>
+                                    <Border Background="{DynamicResource AccentFillColorDefaultBrush}"
+                                            CornerRadius="{StaticResource ControlCornerRadius}"/>
                                 </Border>
                                 <ContentPresenter Name="buttonText">
                                     <ContentPresenter.Content>
                                         <TextBlock Name="buttonText2"
-                                            Margin="15,0,20,0" 
-                                            TextBlock.FontFamily="Tahoma" 
-                                            TextBlock.FontSize="12pt" 
-                                            TextBlock.Foreground="Black"
+                                            Margin="12,0,16,0"
+                                            Style="{StaticResource BodyTextBlockStyle}"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                             Text="{TemplateBinding Header}"
                                             VerticalAlignment="Center"/>
                                     </ContentPresenter.Content>
@@ -117,23 +102,23 @@
         </ControlTemplate.Resources>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="120" />
+                <ColumnDefinition Width="140" />
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Border Background="#FFE9ECEF" 
-                    Grid.Column="0" 
-                    BorderBrush="LightGray" 
-                    BorderThickness="1" 
+            <Border Background="{DynamicResource ControlFillColorDisabledBrush}"
+                    Grid.Column="0"
+                    BorderBrush="{DynamicResource ControlStrokeColorSecondaryBrush}"
+                    BorderThickness="1"
+                    CornerRadius="{StaticResource OverlayCornerRadius}"
                     SnapsToDevicePixels="True" />
             <StackPanel IsItemsHost="True"
                         Grid.Column="0"
-                        Margin="0,0,-1,0" 
+                        Margin="0,0,-1,0"
                         SnapsToDevicePixels="True" />
-            <ContentPresenter 
-                Content="{TemplateBinding SelectedContent}" 
-                Grid.Column="1" 
-                Margin="15,0,0,0" />
+            <ContentPresenter
+                Content="{TemplateBinding SelectedContent}"
+                Grid.Column="1"
+                Margin="12,8,0,0" />
         </Grid>
     </ControlTemplate>
 </ResourceDictionary>
-    
