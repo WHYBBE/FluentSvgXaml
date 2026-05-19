@@ -88,14 +88,7 @@ namespace SharpVectors.Converters
             {
                 try
                 {
-                    if (_thread.IsAlive)
-                    {
-                        _thread.Abort();
-                    }
-                    if (_thread.IsAlive)
-                    {
-                        _thread.Join();
-                    }
+                    _thread.Join(TimeSpan.FromSeconds(5));
                 }
                 catch
                 {

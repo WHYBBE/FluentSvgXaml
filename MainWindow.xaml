@@ -4,7 +4,7 @@
     xmlns:local="clr-namespace:SharpVectors.Converters"
     Title="SharpVectors (SVG-WPF Converter)" Height="640" Width="640" 
     local:MainWindowSettings.Save="True"
-    WindowStartupLocation="CenterScreen" Icon="/SharpVectors;component/Images/SharpVectors.ico">
+    WindowStartupLocation="CenterScreen" Icon="/SvgXaml;component/Images/SharpVectors.ico">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

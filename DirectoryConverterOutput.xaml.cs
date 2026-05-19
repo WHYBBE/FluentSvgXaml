@@ -2,18 +2,24 @@
 using System.IO;
 using System.Text;
 using System.Security.AccessControl;
+using System.Security.AccessControl;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Collections.Generic;
 
+using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Controls;
 
 using SharpVectors.Renderers.Wpf;
-using SharpVectors.Converters.Utils;
 
 namespace SharpVectors.Converters
 {
-    public sealed class ConsoleDirectoryConverter : ConsoleConverter
+    /// <summary>
+    /// Interaction logic for DirectoryConverterOutput.xaml
+    /// </summary>
+    public partial class DirectoryConverterOutput : Page, IObservable
     {
         #region Private Fields
 
@@ -33,25 +39,25 @@ namespace SharpVectors.Converters
         /// Only one observer is expected!
         /// </summary>
         private IObserver _observer;
+        private ConverterOptions _options;
 
         private string _sourceDir;
+        private string _outputDir;
         private DirectoryInfo _sourceInfoDir;
         private DirectoryInfo _outputInfoDir;
 
         private FileSvgReader _fileReader;
         private WpfDrawingSettings _wpfSettings;
 
-        private ConsoleWorker _worker;
-
-        private ConsoleWriter _writer;
+        private BackgroundWorker _worker;
 
         #endregion
 
         #region Constructors and Destructor
 
-        public ConsoleDirectoryConverter(string sourceDir)
+        public DirectoryConverterOutput()
         {
-            _sourceDir = sourceDir;
+            InitializeComponent();
 
             _wpfSettings = new WpfDrawingSettings();
             _wpfSettings.CultureInfo = _wpfSettings.NeutralCultureInfo;
@@ -60,13 +66,13 @@ namespace SharpVectors.Converters
             _fileReader.SaveXaml = false;
             _fileReader.SaveZaml = false;
 
-            _worker = new ConsoleWorker();
-            //_worker.WorkerReportsProgress = true;
-            //_worker.WorkerSupportsCancellation = true;
+            _worker = new BackgroundWorker();
+            _worker.WorkerReportsProgress = true;
+            _worker.WorkerSupportsCancellation = true;
 
-            _worker.DoWork += new DoWorkEventHandler(OnWorkerDoWork);
-            _worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(OnWorkerCompleted);
-            _worker.ProgressChanged += new ProgressChangedEventHandler(OnWorkerProgressChanged);
+            _worker.DoWork += OnWorkerDoWork;
+            _worker.RunWorkerCompleted += OnWorkerCompleted;
+            _worker.ProgressChanged += OnWorkerProgressChanged;
 
             _isOverwrite = true;
             _isRecursive = true;
@@ -75,7 +81,17 @@ namespace SharpVectors.Converters
 
         #endregion
 
-        #region Public Propeties
+        #region Public Properties
+
+        public ConverterOptions Options
+        {
+            get {
+                return _options;
+            }
+            set {
+                _options = value;
+            }
+        }
 
         public string SourceDir
         {
@@ -84,6 +100,16 @@ namespace SharpVectors.Converters
             }
             set {
                 _sourceDir = value;
+            }
+        }
+
+        public string OutputDir
+        {
+            get {
+                return _outputDir;
+            }
+            set {
+                _outputDir = value;
             }
         }
 
@@ -216,32 +242,26 @@ namespace SharpVectors.Converters
 
         #region Public Methods
 
-        public override bool Convert(ConsoleWriter writer)
+        public void Convert()
         {
-            if (string.IsNullOrWhiteSpace(_sourceDir) || !Directory.Exists(_sourceDir))
-            {
-                return false;
-            }
+            txtOutput.Clear();
 
-            _writer = writer;
+            btnCancel.IsEnabled = false;
 
             _errorFiles = new List<string>();
 
-            string outputDir = this.OutputDir;
-
             try
             {
-                this.AppendLine(string.Empty);
                 this.AppendLine("Converting files, please wait...");
                 this.AppendLine("Input Directory: " + _sourceDir);
 
                 Debug.Assert(_sourceDir != null && _sourceDir.Length != 0);
-                if (string.IsNullOrWhiteSpace(outputDir))
+                if (string.IsNullOrWhiteSpace(_outputDir))
                 {
-                    outputDir = new string(_sourceDir.ToCharArray());
+                    _outputDir = new string(_sourceDir.ToCharArray());
                 }
                 _sourceInfoDir = new DirectoryInfo(_sourceDir);
-                _outputInfoDir = new DirectoryInfo(outputDir);
+                _outputInfoDir = new DirectoryInfo(_outputDir);
 
                 _worker.RunWorkerAsync();
 
@@ -250,7 +270,7 @@ namespace SharpVectors.Converters
                     _observer.OnStarted(this);
                 }
 
-                return true;
+                btnCancel.IsEnabled = true;
             }
             catch (Exception ex)
             {
@@ -260,14 +280,47 @@ namespace SharpVectors.Converters
                 builder.AppendLine(ex.Message);
 
                 this.AppendText(builder.ToString());
-
-                return false;
             }
         }
 
         #endregion
 
-        #region ConsoleWorker Methods
+        #region Private Event Handlers
+
+        #region Page Methods
+
+        private void OnPageLoaded(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void OnCancelClick(object sender, RoutedEventArgs e)
+        {
+            Cursor startCursor = this.Cursor;
+
+            try
+            {
+                this.Cursor = Cursors.Wait;
+
+                this.Cancel();
+            }
+            catch (Exception ex)
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.AppendFormat("Error: Exception ({0})", ex.GetType());
+                builder.AppendLine();
+                builder.AppendLine(ex.Message);
+
+                this.AppendText(builder.ToString());
+            }
+            finally
+            {
+                this.Cursor = startCursor;
+            }
+        }
+
+        #endregion
+
+        #region BackgroundWorker Methods
 
         private void OnWorkerProgressChanged(object sender, ProgressChangedEventArgs e)
         {
@@ -279,7 +332,7 @@ namespace SharpVectors.Converters
 
         private void OnWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            string outputDir = this.OutputDir;
+            btnCancel.IsEnabled = false;
 
             StringBuilder builder = new StringBuilder();
             if (e.Error != null)
@@ -332,9 +385,9 @@ namespace SharpVectors.Converters
                     builder.AppendLine("Result: " + resultText);
                 }
 
-                if (!string.IsNullOrWhiteSpace(outputDir))
+                if (!string.IsNullOrWhiteSpace(_outputDir))
                 {
-                    builder.AppendLine("Output Directory: " + outputDir);
+                    builder.AppendLine("Output Directory: " + _outputDir);
                 }
                 else if (_outputInfoDir != null)
                 {
@@ -352,19 +405,17 @@ namespace SharpVectors.Converters
 
         private void OnWorkerDoWork(object sender, DoWorkEventArgs e)
         {
-            ConsoleWorker worker = (ConsoleWorker)sender;
+            BackgroundWorker worker = (BackgroundWorker)sender;
 
-            ConverterOptions options = this.Options;
+            _wpfSettings.IncludeRuntime = _options.IncludeRuntime;
+            _wpfSettings.TextAsGeometry = _options.TextAsGeometry;
 
-            _wpfSettings.IncludeRuntime = options.IncludeRuntime;
-            _wpfSettings.TextAsGeometry = options.TextAsGeometry;
+            _fileReader.UseFrameXamlWriter = !_options.UseCustomXamlWriter;
 
-            _fileReader.UseFrameXamlWriter = !options.UseCustomXamlWriter;
-
-            if (options.GeneralWpf)
+            if (_options.GeneralWpf)
             {
-                _fileReader.SaveXaml = options.SaveXaml;
-                _fileReader.SaveZaml = options.SaveZaml;
+                _fileReader.SaveXaml = _options.SaveXaml;
+                _fileReader.SaveZaml = _options.SaveZaml;
             }
             else
             {
@@ -382,6 +433,8 @@ namespace SharpVectors.Converters
 
         #endregion
 
+        #endregion
+
         #region Private Methods
 
         private void AppendText(string text)
@@ -391,7 +444,7 @@ namespace SharpVectors.Converters
                 return;
             }
 
-            _writer.Write(text);
+            txtOutput.AppendText(text);
         }
 
         private void AppendLine(string text)
@@ -401,7 +454,7 @@ namespace SharpVectors.Converters
                 return;
             }
 
-            _writer.WriteLine(text);
+            txtOutput.AppendText(text + Environment.NewLine);
         }
 
         private void ProcessConversion(DoWorkEventArgs e, DirectoryInfo source,
@@ -465,20 +518,11 @@ namespace SharpVectors.Converters
                     break;
                 }
 
-                DirectoryInfo targetInfo = null;
-#if NET40
+                DirectoryInfo targetInfo = target.CreateSubdirectory(sourceInfo.Name);
                 if (_includeSecurity)
                 {
-                    targetInfo = target.CreateSubdirectory(sourceInfo.Name,
-                        sourceInfo.GetAccessControl());
+                    targetInfo.SetAccessControl(sourceInfo.GetAccessControl());
                 }
-                else
-                {
-                    targetInfo = target.CreateSubdirectory(sourceInfo.Name);
-                }
-#elif NETCOREAPP
-                targetInfo = target.CreateSubdirectory(sourceInfo.Name);
-#endif
                 targetInfo.Attributes = fileAttr;
 
                 this.ProcessConversion(e, sourceInfo, targetInfo);
@@ -501,10 +545,8 @@ namespace SharpVectors.Converters
                 return;
             }
 
-            ConverterOptions options = this.Options;
-
-            IEnumerable<string> fileIterator = DirectoryUtils.FindFiles(
-              source, "*.*", SearchOption.TopDirectoryOnly);
+            IEnumerable<string> fileIterator = Directory.EnumerateFiles(
+              source.FullName, "*.*", SearchOption.TopDirectoryOnly);
             foreach (string svgFileName in fileIterator)
             {
                 if (_worker.CancellationPending)
@@ -528,13 +570,11 @@ namespace SharpVectors.Converters
                             }
                         }
 
-#if NET
-                        FileSecurity security = null;
+                        FileSecurity? security = null;
                         if (_includeSecurity)
                         {
-                            security = File.GetAccessControl(svgFileName);
+                            security = new FileInfo(svgFileName).GetAccessControl();
                         }
-#endif
 
                         if (_worker.CancellationPending)
                         {
@@ -554,58 +594,46 @@ namespace SharpVectors.Converters
                             }
                         }
 
-                        if (options.SaveXaml)
+                        if (_options.SaveXaml)
                         {
                             string xamlFile = _fileReader.XamlFile;
                             if (!string.IsNullOrWhiteSpace(xamlFile) &&
                                 File.Exists(xamlFile))
                             {
                                 File.SetAttributes(xamlFile, fileAttr);
-
-#if NET
-                                // if required to set the security or access control
-                                if (_includeSecurity)
+                                if (_includeSecurity && security != null)
                                 {
-                                    File.SetAccessControl(xamlFile, security);
+                                    new FileInfo(xamlFile).SetAccessControl(security);
                                 }
-#endif
                             }
                         }
-                        if (options.SaveZaml)
+                        if (_options.SaveZaml)
                         {
                             string zamlFile = _fileReader.ZamlFile;
                             if (!string.IsNullOrWhiteSpace(zamlFile) &&
                                 File.Exists(zamlFile))
                             {
                                 File.SetAttributes(zamlFile, fileAttr);
-
-#if NET
-                                // if required to set the security or access control
-                                if (_includeSecurity)
+                                if (_includeSecurity && security != null)
                                 {
-                                    File.SetAccessControl(zamlFile, security);
+                                    new FileInfo(zamlFile).SetAccessControl(security);
                                 }
-#endif
                             }
                         }
 
-                        if (drawing != null && options.GenerateImage)
+                        if (drawing != null && _options.GenerateImage)
                         {
                             _fileReader.SaveImage(svgFileName, target,
-                                options.EncoderType);
+                                _options.EncoderType);
                             string imageFile = _fileReader.ImageFile;
                             if (!string.IsNullOrWhiteSpace(imageFile) &&
                                 File.Exists(imageFile))
                             {
                                 File.SetAttributes(imageFile, fileAttr);
-
-#if NET
-                                // if required to set the security or access control
-                                if (_includeSecurity)
+                                if (_includeSecurity && security != null)
                                 {
-                                    File.SetAccessControl(imageFile, security);
+                                    new FileInfo(imageFile).SetAccessControl(security);
                                 }
-#endif
                             }
                         }
 
@@ -647,15 +675,17 @@ namespace SharpVectors.Converters
 
         #region IObservable Members
 
-        public override void Cancel()
+        public void Cancel()
         {
+            btnCancel.IsEnabled = false;
+
             if (_worker != null)
             {
                 if (_worker.IsBusy)
                 {
                     _worker.CancelAsync();
 
-                    // Wait for the ConsoleWorker to finish the download.
+                    // Wait for the BackgroundWorker to finish the download.
                     while (_worker.IsBusy)
                     {
                         // Keep UI messages moving, so the form remains 
@@ -666,7 +696,7 @@ namespace SharpVectors.Converters
             }
         }
 
-        public override void Subscribe(IObserver observer)
+        public void Subscribe(IObserver observer)
         {
             _observer = observer;
         }

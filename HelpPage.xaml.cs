@@ -2,19 +2,13 @@
 using System.IO;
 using System.Reflection;
 using System.ComponentModel;
-
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Markup;
-
 using SharpVectors.Converters.Properties;
 
 namespace SharpVectors.Converters
 {
-    /// <summary>
-    /// Interaction logic for HelpPage.xaml
-    /// </summary>
     public partial class HelpPage : Page
     {
         private bool _isInitializing;
@@ -23,7 +17,6 @@ namespace SharpVectors.Converters
         {
             InitializeComponent();
 
-            // Reset the dimensions...
             this.Width  = Double.NaN;
             this.Height = Double.NaN;
 
@@ -48,13 +41,8 @@ namespace SharpVectors.Converters
 
             try
             {
-                Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(
-                    "SharpVectors.Converters.ConverterHelp.xaml");
-                if (stream == null)
-                {
-                    return;
-                }
-                FlowDocument flowDocument = (FlowDocument)XamlReader.Load(stream);
+                FlowDocument flowDocument = (FlowDocument)Application.LoadComponent(
+                    new Uri("/ConverterHelp.xaml", UriKind.Relative));
                 helpViewer.Document = flowDocument;
             }
             catch (Exception ex)
@@ -76,10 +64,6 @@ namespace SharpVectors.Converters
 
         private void OnHelpPageSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (helpViewer != null && helpViewer.IsInitialized)
-            {
-                //helpViewer.Width = e.NewSize.Width;
-            }
         }
 
         private void OnZoomChanged(object sender, EventArgs e)

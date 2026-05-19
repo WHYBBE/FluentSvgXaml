@@ -34,7 +34,7 @@
                     <TableCell BorderThickness="1" BorderBrush="RoyalBlue">
                         <Paragraph>
                             <InlineUIContainer BaselineAlignment="Center">
-                                <Image Margin="3" Width="16" Height="16" Source="/Images/SmallInformation.png"/>
+                                <Image Margin="3" Width="16" Height="16" Source="pack://application:,,,/images/smallinformation.png"/>
                             </InlineUIContainer> <Bold>Note</Bold>
                         </Paragraph>
                     </TableCell>
@@ -55,7 +55,7 @@
                     <TableCell BorderThickness="1" BorderBrush="RoyalBlue">
                         <Paragraph>
                             <InlineUIContainer BaselineAlignment="Center">
-                                <Image Margin="3" Width="16" Height="16" Source="/Images/SmallWarning.png"/>
+                                <Image Margin="3" Width="16" Height="16" Source="pack://application:,,,/images/smallwarning.png"/>
                             </InlineUIContainer> <Bold>Caution</Bold>
                         </Paragraph>
                     </TableCell>
@@ -232,7 +232,7 @@
                     The minimal window is shown below:
                 </Paragraph>
                 <BlockUIContainer Margin="12">
-                    <Image Width="600" Stretch="Uniform" Source="/Images/MinimalWindow.png"/>
+                    <Image Width="600" Stretch="Uniform" Source="pack://application:,,,/images/minimalwindow.png"/>
                 </BlockUIContainer>
                 <Paragraph>
                     The <Bold>Cancel</Bold> button will be active during the
@@ -250,7 +250,7 @@
                             <TableCell BorderThickness="1" BorderBrush="RoyalBlue">
                                 <Paragraph>
                                     <InlineUIContainer BaselineAlignment="Center">
-                                        <Image Margin="3" Width="16" Height="16" Source="/Images/SmallInformation.png"/>
+                                        <Image Margin="3" Width="16" Height="16" Source="pack://application:,,,/images/smallinformation.png"/>
                                     </InlineUIContainer>
                                     <Bold>Note</Bold>
                                 </Paragraph>
@@ -280,7 +280,7 @@
                             <TableCell BorderThickness="1" BorderBrush="RoyalBlue">
                                 <Paragraph>
                                     <InlineUIContainer BaselineAlignment="Center">
-                                        <Image Margin="3" Width="16" Height="16" Source="/Images/SmallWarning.png"/>
+                                        <Image Margin="3" Width="16" Height="16" Source="pack://application:,,,/images/smallwarning.png"/>
                                     </InlineUIContainer>
                                     <Bold>Caution</Bold>
                                 </Paragraph>
@@ -314,7 +314,7 @@
                     In the command window, the default is console mode.
                 </Paragraph>
                 <BlockUIContainer Margin="12">
-                    <Image Width="600" Stretch="Uniform" Source="/Images/ConsoleConversion.png"/>
+                    <Image Width="600" Stretch="Uniform" Source="pack://application:,,,/images/consoleconversion.png"/>
                 </BlockUIContainer>
             </ListItem>
             <ListItem Name="ScriptMode">
@@ -376,7 +376,7 @@
                     <TableCell BorderThickness="1" BorderBrush="RoyalBlue">
                         <Paragraph>
                             <InlineUIContainer BaselineAlignment="Center">
-                                <Image Margin="3" Width="16" Height="16" Source="/Images/SmallInformation.png"/>
+                                <Image Margin="3" Width="16" Height="16" Source="pack://application:,,,/images/smallinformation.png"/>
                             </InlineUIContainer>
                             <Bold>Note</Bold>
                         </Paragraph>
@@ -501,7 +501,7 @@
                     <TableCell BorderThickness="1" BorderBrush="RoyalBlue">
                         <Paragraph>
                             <InlineUIContainer BaselineAlignment="Center">
-                                <Image Margin="3" Width="16" Height="16" Source="/Images/SmallInformation.png"/>
+                                <Image Margin="3" Width="16" Height="16" Source="pack://application:,,,/images/smallinformation.png"/>
                             </InlineUIContainer>
                             <Bold>Note</Bold>
                         </Paragraph>
@@ -596,7 +596,7 @@
                             <TableCell BorderThickness="1" BorderBrush="RoyalBlue">
                                 <Paragraph>
                                     <InlineUIContainer BaselineAlignment="Center">
-                                        <Image Margin="3" Width="16" Height="16" Source="/Images/SmallInformation.png"/>
+                                        <Image Margin="3" Width="16" Height="16" Source="pack://application:,,,/images/smallinformation.png"/>
                                     </InlineUIContainer>
                                     <Bold>Note</Bold>
                                 </Paragraph>
@@ -663,7 +663,7 @@
                             <TableCell BorderThickness="1" BorderBrush="RoyalBlue">
                                 <Paragraph>
                                     <InlineUIContainer BaselineAlignment="Center">
-                                        <Image Margin="3" Width="16" Height="16" Source="/Images/SmallInformation.png"/>
+                                        <Image Margin="3" Width="16" Height="16" Source="pack://application:,,,/images/smallinformation.png"/>
                                     </InlineUIContainer>
                                     <Bold>Note</Bold>
                                 </Paragraph>
@@ -734,7 +734,7 @@
                                     <TableCell BorderThickness="1" BorderBrush="RoyalBlue">
                                         <Paragraph>
                                             <InlineUIContainer BaselineAlignment="Center">
-                                                <Image Margin="3" Width="16" Height="16" Source="/Images/SmallInformation.png"/>
+                                                <Image Margin="3" Width="16" Height="16" Source="pack://application:,,,/images/smallinformation.png"/>
                                             </InlineUIContainer>
                                             <Bold>Note</Bold>
                                         </Paragraph>
@@ -773,7 +773,7 @@
                             <TableCell BorderThickness="1" BorderBrush="RoyalBlue">
                                 <Paragraph>
                                     <InlineUIContainer BaselineAlignment="Center">
-                                        <Image Margin="3" Width="16" Height="16" Source="/Images/SmallInformation.png"/>
+                                        <Image Margin="3" Width="16" Height="16" Source="pack://application:,,,/images/smallinformation.png"/>
                                     </InlineUIContainer>
                                     <Bold>Note</Bold>
                                 </Paragraph>
@@ -852,7 +852,7 @@
                     <TableCell BorderThickness="1" BorderBrush="RoyalBlue">
                         <Paragraph>
                             <InlineUIContainer BaselineAlignment="Center">
-                                <Image Margin="3" Width="16" Height="16" Source="/Images/SmallInformation.png"/>
+                                <Image Margin="3" Width="16" Height="16" Source="pack://application:,,,/images/smallinformation.png"/>
                             </InlineUIContainer>
                             <Bold>Note</Bold>
                         </Paragraph>
@@ -1377,7 +1377,7 @@
                             <TableCell BorderThickness="1" BorderBrush="RoyalBlue">
                                 <Paragraph>
                                     <InlineUIContainer BaselineAlignment="Center">
-                                        <Image Margin="3" Width="16" Height="16" Source="/Images/SmallInformation.png"/>
+                                        <Image Margin="3" Width="16" Height="16" Source="pack://application:,,,/images/smallinformation.png"/>
                                     </InlineUIContainer>
                                     <Bold>Note</Bold>
                                 </Paragraph>
