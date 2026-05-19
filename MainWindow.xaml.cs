@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Diagnostics;
@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
+
+using SvgXaml;
 
 namespace SharpVectors.Converters
 {
@@ -19,8 +21,13 @@ namespace SharpVectors.Converters
         #region Private Fields
 
         private int _startTabIndex;
+
+        public int StartTabIndex
+        {
+            get => _startTabIndex;
+            set => _startTabIndex = value;
+        }
         private int _operationCount;
-        private bool _displayHelp;
         private ConverterOptions _options;
 
         private OptionsPage _optionsPage;
@@ -45,54 +52,24 @@ namespace SharpVectors.Converters
             _startTabIndex = 0;
 
             _options = new ConverterOptions();
-            MainApplication theApp = (MainApplication)Application.Current;
-            Debug.Assert(theApp != null);
-            if (theApp != null)
+
+            _options.PropertyChanged += OnOptionsPropertyChanged;
+
+            var theApp = Application.Current as App;
+            if (theApp?.CommandLines != null)
             {
-                ConverterCommandLines commandLines = theApp.CommandLines;
-                if (commandLines != null)
+                var commandLines = theApp.CommandLines;
+                if (!commandLines.IsEmpty)
                 {
-                    if (commandLines.IsEmpty)
-                    {
-                        IList<string> sources = commandLines.Arguments;
-                        _displayHelp = commandLines.ShowHelp || 
-                            (sources != null && sources.Count != 0);
-                    }
-                    else
-                    {
-                        _options.Update(commandLines);
-                    }
-                }
-                else
-                {
-                    _displayHelp = true;
+                    _options.Update(commandLines);
                 }
 
-                if (!_displayHelp)
-                {
-                    string sourceFile = commandLines.SourceFile;
-                    if (!string.IsNullOrWhiteSpace(sourceFile) && File.Exists(sourceFile))
-                    {
-                        _startTabIndex = 1;
-                    }
-                    else
-                    {
-                        string sourceDir = commandLines.SourceDir;
-                        if (!string.IsNullOrWhiteSpace(sourceDir) && Directory.Exists(sourceDir))
-                        {
-                            _startTabIndex = 3;
-                        }
-                        else
-                        {
-                            IList<string> sourceFiles = commandLines.SourceFiles;
-                            if (sourceFiles != null && sourceFiles.Count != 0)
-                            {
-                                _startTabIndex = 2;
-                            }
-                        }  
-                    }
-
-                }
+                if (!string.IsNullOrWhiteSpace(commandLines.SourceFile) && File.Exists(commandLines.SourceFile))
+                    _startTabIndex = 1;
+                else if (!string.IsNullOrWhiteSpace(commandLines.SourceDir) && Directory.Exists(commandLines.SourceDir))
+                    _startTabIndex = 3;
+                else if (commandLines.SourceFiles?.Count > 0)
+                    _startTabIndex = 2;
             }
 
             _filesPage = new FileConverterPage();
@@ -129,43 +106,31 @@ namespace SharpVectors.Converters
 
         #endregion
 
-        #region Public Properties
-
-        public bool DisplayHelp
-        {
-            get
-            {
-                return _displayHelp;
-            }
-            set
-            {
-                _displayHelp = value;
-            }
-        }
-
-        #endregion
-
         #region Private Event Handlers
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
-        {               
-            if (_displayHelp)
+        {
+            if (_options != null)
             {
-                TabItem helpItem = (TabItem)tabSteps.Items[5];
-                helpItem.IsSelected = true;
-                _displayHelp = false;
+                var key = _options.VerticalNav ? "VerticalTabControl" : "HorizontalTabControl";
+                tabSteps.Template = (ControlTemplate)FindResource(key);
             }
-            else
-            {
-                TabItem helpItem = (TabItem)tabSteps.Items[_startTabIndex];
-                helpItem.IsSelected = true;
-            }
-
+            TabItem startItem = (TabItem)tabSteps.Items[_startTabIndex];
+            startItem.IsSelected = true;
             tabSteps.Focus();
         }
 
         private void OnWindowUnloaded(object sender, RoutedEventArgs e)
         {
+        }
+
+        private void OnOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "VerticalNav" && _options != null)
+            {
+                var key = _options.VerticalNav ? "VerticalTabControl" : "HorizontalTabControl";
+                tabSteps.Template = (ControlTemplate)FindResource(key);
+            }
         }
 
         private void OnWindowClosing(object sender, CancelEventArgs e)

@@ -362,7 +362,7 @@ namespace SharpVectors.Converters
                     {
                         // Keep UI messages moving, so the form remains 
                         // responsive during the asynchronous operation.
-                        MainApplication.DoEvents();
+
                     }
                 }
             }

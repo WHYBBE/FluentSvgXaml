@@ -12,6 +12,7 @@ namespace SharpVectors.Converters
 
         private bool _beepEnd;
         private bool _showHelp;
+        private bool _showGuiHelp;
 
         private bool _isRecursive;
         private bool _includeRuntime;
@@ -194,6 +195,18 @@ namespace SharpVectors.Converters
             set
             {
                 _showHelp = value;
+            }
+        }
+
+        public bool ShowGuiHelp
+        {
+            get
+            {
+                return _showGuiHelp;
+            }
+            set
+            {
+                _showGuiHelp = value;
             }
         }
 
@@ -504,6 +517,10 @@ namespace SharpVectors.Converters
             options.Add("h|?|help", "Specifies whether to display usage and command-line help.", delegate(string value)
             {
                 _showHelp = !string.IsNullOrWhiteSpace(value);
+            });
+            options.Add("gui-help", "Specifies whether to display help in GUI window.", delegate(string value)
+            {
+                _showGuiHelp = !string.IsNullOrWhiteSpace(value);
             });
             options.Add("b|beep", "Specifies whether to beep on completion (console only).", delegate(string value)
             {

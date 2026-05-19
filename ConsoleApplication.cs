@@ -10,7 +10,7 @@ namespace SharpVectors.Converters
     {
         #region Private Fields
 
-        private bool _isConverting;
+        private volatile bool _isConverting;
         private bool _isConversionError;
 
         private bool _consoleSuccess;
@@ -80,18 +80,12 @@ namespace SharpVectors.Converters
             {
                 if (!_writer.IsQuiet)
                 {
-                    // If not quiet, we will display the progress information
-                    // to the console window, so try creating or attaching to 
-                    // existing one...
                     _consoleSuccess = this.CreateConsole();
                     if (!_consoleSuccess)
                     {
                         return 1;
                     }
 
-                    // Turn off the default system behavior when CTRL+C is pressed. When 
-                    // Console.TreatControlCAsInput is false, CTRL+C is treated as an
-                    // interrupt instead of as input.
                     isControlling = Console.TreatControlCAsInput;
 
                     Console.TreatControlCAsInput = false;
@@ -119,7 +113,7 @@ namespace SharpVectors.Converters
                 _writer.WriteLine("Press Control + C keys to cancel the conversion.");
                 while (_isConverting)
                 {
-                    // just wait...
+                    Thread.Sleep(50);
                 }
 
                 return 0;
@@ -289,21 +283,8 @@ namespace SharpVectors.Converters
         {
             try
             {
-                bool consoleSuccess = false;
-                // If the uppermost window a cmd process...
-                if (_startedInConsole && _process != null)
-                {
-                    consoleSuccess = ConverterWindowsAPI.AttachConsole(_process.Id);
-                    if (!consoleSuccess)
-                    {
-                        consoleSuccess = ConverterWindowsAPI.AllocConsole();
-                        if (consoleSuccess)
-                        {
-                            Console.Title = "SVG-WPF Converter";
-                        }
-                    }
-                }
-                else
+                bool consoleSuccess = ConverterWindowsAPI.AttachConsole(-1);
+                if (!consoleSuccess)
                 {
                     consoleSuccess = ConverterWindowsAPI.AllocConsole();
                     if (consoleSuccess)

@@ -15,6 +15,7 @@ namespace SharpVectors.Converters
         private bool _saveXaml;
         private bool _saveZaml;
         private bool _customXamlWriter;
+        private bool _verticalNav;
 
         private string _errorMessage;
 
@@ -33,6 +34,7 @@ namespace SharpVectors.Converters
             _saveXaml         = true;
             _saveZaml         = false;
             _customXamlWriter = true;
+            _verticalNav      = true;
             _errorMessage     = string.Empty;
             _encoderType      = ImageEncoderType.PngBitmap;
         }
@@ -51,6 +53,7 @@ namespace SharpVectors.Converters
             _saveXaml         = source._saveXaml;
             _saveZaml         = source._saveZaml;
             _customXamlWriter = source._customXamlWriter;
+            _verticalNav      = source._verticalNav;
             _encoderType      = source._encoderType;
             _errorMessage     = source._errorMessage;
         }
@@ -95,182 +98,117 @@ namespace SharpVectors.Converters
 
         public bool TextAsGeometry
         {
-            get
-            {
-                return _textAsGeometry;
-            }
+            get => _textAsGeometry;
             set
             {
                 if (_textAsGeometry != value)
                 {
-                    this.Notify("TextAsGeometry");
-
                     _textAsGeometry = value;
+                    this.Notify("TextAsGeometry");
                 }
             }
         }
 
         public bool IncludeRuntime
         {
-            get
-            {
-                return _includeRuntime;
-            }
+            get => _includeRuntime;
             set
             {
                 if (_includeRuntime != value)
                 {
-                    this.Notify("IncludeRuntime");
-
                     _includeRuntime = value;
+                    this.Notify("IncludeRuntime");
                 }
             }
         }
 
         public bool GenerateImage
         {
-            get
-            {
-                return _generateImage;
-            }
+            get => _generateImage;
             set
             {
                 if (_generateImage != value)
                 {
-                    this.Notify("GenerateImage");
-
                     _generateImage = value;
+                    this.Notify("GenerateImage");
                 }
             }
         }
 
         public bool GeneralWpf
         {
-            get
-            {
-                return _generalWpf;
-            }
+            get => _generalWpf;
             set
             {
                 if (_generalWpf != value)
                 {
-                    this.Notify("GeneralWpf");
-
                     _generalWpf = value;
+                    this.Notify("GeneralWpf");
                 }
             }
         }
 
         public bool SaveXaml
         {
-            get
-            {
-                return _saveXaml;
-            }
+            get => _saveXaml;
             set
             {
                 if (_saveXaml != value)
                 {
-                    this.Notify("SaveXaml");
-
                     _saveXaml = value;
+                    this.Notify("SaveXaml");
                 }
             }
         }
 
         public bool SaveZaml
         {
-            get
-            {
-                return _saveZaml;
-            }
+            get => _saveZaml;
             set
             {
                 if (_saveZaml != value)
                 {
-                    this.Notify("SaveZaml");
-
                     _saveZaml = value;
+                    this.Notify("SaveZaml");
                 }
             }
         }
 
         public bool UseCustomXamlWriter
         {
-            get
-            {
-                return _customXamlWriter;
-            }
+            get => _customXamlWriter;
             set
             {
                 if (_customXamlWriter != value)
                 {
-                    this.Notify("UseCustomXamlWriter");
-
                     _customXamlWriter = value;
+                    this.Notify("UseCustomXamlWriter");
                 }
             }
         }
 
         public ImageEncoderType EncoderType
         {
-            get
-            {
-                return _encoderType;
-            }
+            get => _encoderType;
             set
             {
                 if (_encoderType != value)
                 {
-                    this.Notify("EncoderType");
-
                     _encoderType = value;
-                }                        
+                    this.Notify("EncoderType");
+                }
             }
         }
 
-        #endregion
-
-        #region Public Methods
-
-        public void Update(ConverterCommandLines commands)
+        public bool VerticalNav
         {
-            if (commands == null)
+            get => _verticalNav;
+            set
             {
-                return;
-            }
-
-            _textAsGeometry   = commands.TextAsGeometry;
-            _includeRuntime   = commands.IncludeRuntime;
-            _saveXaml         = commands.SaveXaml;
-            _saveZaml         = commands.SaveZaml;
-            _generateImage    = commands.SaveImage;
-            _generalWpf       = _saveXaml || _saveZaml;
-            _customXamlWriter = commands.UseCustomXamlWriter;
-            if (_generateImage)
-            {
-                switch (commands.Image.ToLower())
+                if (_verticalNav != value)
                 {
-                    case "bmp":
-                        _encoderType = ImageEncoderType.BmpBitmap;
-                        break;
-                    case "png":
-                        _encoderType = ImageEncoderType.PngBitmap;
-                        break;
-                    case "jpeg":
-                    case "jpg":
-                        _encoderType = ImageEncoderType.JpegBitmap;
-                        break;
-                    case "tif":
-                    case "tiff":
-                        _encoderType = ImageEncoderType.TiffBitmap;
-                        break;
-                    case "gif":
-                        _encoderType = ImageEncoderType.GifBitmap;
-                        break;
-                    case "wdp":
-                        _encoderType = ImageEncoderType.WmpBitmap;
-                        break;
+                    _verticalNav = value;
+                    this.Notify("VerticalNav");
                 }
             }
         }
@@ -313,6 +251,37 @@ namespace SharpVectors.Converters
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
+
+        #region Public Methods
+
+        public void Update(ConverterCommandLines commands)
+        {
+            if (commands == null) return;
+
+            _textAsGeometry    = commands.TextAsGeometry;
+            _includeRuntime    = commands.IncludeRuntime;
+            _saveXaml          = commands.SaveXaml;
+            _saveZaml          = commands.SaveZaml;
+            _generateImage     = commands.SaveImage;
+            _generalWpf        = _saveXaml || _saveZaml;
+            _customXamlWriter  = commands.UseCustomXamlWriter;
+            if (_generateImage)
+            {
+                switch (commands.Image.ToLower())
+                {
+                    case "bmp":  _encoderType = ImageEncoderType.BmpBitmap; break;
+                    case "png":  _encoderType = ImageEncoderType.PngBitmap; break;
+                    case "jpeg":
+                    case "jpg":  _encoderType = ImageEncoderType.JpegBitmap; break;
+                    case "tif":
+                    case "tiff": _encoderType = ImageEncoderType.TiffBitmap; break;
+                    case "gif":  _encoderType = ImageEncoderType.GifBitmap; break;
+                    case "wdp":  _encoderType = ImageEncoderType.WmpBitmap; break;
+                }
+            }
+        }
 
         #endregion
     }

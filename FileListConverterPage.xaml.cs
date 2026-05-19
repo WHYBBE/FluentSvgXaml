@@ -1,4 +1,5 @@
-﻿using System;
+using SvgXaml;
+using System;
 using System.IO;
 using System.Diagnostics;
 using System.ComponentModel;
@@ -13,10 +14,6 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 
 using Microsoft.Win32;
-
-//using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
-
-using FolderBrowserDialog = ShellFileDialogs.FolderBrowserDialog;
 
 namespace SharpVectors.Converters
 {
@@ -42,7 +39,7 @@ namespace SharpVectors.Converters
 
         private FileListConverterOutput _converterOutput;
 
-        private ConverterCommandLines _commandLines;
+
 
         private Frame _parentFrame;
 
@@ -126,29 +123,6 @@ namespace SharpVectors.Converters
 
         private void OnPageLoaded(object sender, RoutedEventArgs e)
         {
-            MainApplication theApp = (MainApplication)Application.Current;
-            Debug.Assert(theApp != null);
-            if (theApp != null && _commandLines == null)
-            {
-                _commandLines = theApp.CommandLines;
-                if (_commandLines != null && !_commandLines.IsEmpty)
-                {
-                    IList<string> sourceFiles = _commandLines.SourceFiles;
-                    if (sourceFiles != null && sourceFiles.Count != 0)
-                    {
-                        // this will remove the watermark...
-                        lstSourceFile.Focus();
-
-                        for (int i = 0; i < sourceFiles.Count; i++)
-                        {
-                            _listItems.Add(sourceFiles[i]);
-                        }
-                    }
-                    txtOutputDir.Text = _commandLines.OutputDir;
-                    chkContinueOnError.IsChecked = _commandLines.ContinueOnError;
-                }
-            }
-
             Debug.Assert(_options != null);
 
             if (!_isConversionError)
@@ -277,38 +251,16 @@ namespace SharpVectors.Converters
                 sourceDir = Path.GetDirectoryName(sourceFile);
             }
 
-            IntPtr windowHandle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
-            string selectedDirectory = FolderBrowserDialog.ShowDialog(windowHandle,
-                "Select the output directory for the converted file", sourceDir);
-            if (!string.IsNullOrWhiteSpace(selectedDirectory))
+            var dlg = new OpenFolderDialog
             {
-                // this will remove the watermark...
+                Title = "Select the output directory for the converted file",
+                InitialDirectory = sourceDir
+            };
+            if (dlg.ShowDialog() == true && !string.IsNullOrWhiteSpace(dlg.FolderName))
+            {
                 txtOutputDir.Focus();
-                txtOutputDir.Text = selectedDirectory;
+                txtOutputDir.Text = dlg.FolderName;
             }
-
-            //FolderBrowserDialog dlg = new FolderBrowserDialog();
-            //dlg.ShowNewFolderButton = true;
-            //dlg.Description = "Select the output directory for the converted files.";
-            //string sourceFile = _listItems.LastDirectory;
-            //if (!string.IsNullOrWhiteSpace(sourceFile) &&
-            //    File.Exists(sourceFile))
-            //{
-            //    dlg.SelectedPath = Path.GetDirectoryName(sourceFile);
-            //}
-            //else
-            //{
-            //    dlg.SelectedPath = Environment.CurrentDirectory;
-            //}
-
-            //dlg.RootFolder = Environment.SpecialFolder.MyComputer;
-
-            //if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            //{
-            //    // this will remove the watermark...
-            //    txtOutputDir.Focus();
-            //    txtOutputDir.Text = dlg.SelectedPath;
-            //}
         }
 
         private void OnConvertClick(object sender, RoutedEventArgs e)

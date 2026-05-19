@@ -1,4 +1,5 @@
-﻿using System;
+using SvgXaml;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -778,7 +779,7 @@ namespace SharpVectors.Converters
                     {
                         // Keep UI messages moving, so the form remains 
                         // responsive during the asynchronous operation.
-                        MainApplication.DoEvents();
+                        App.DoEvents();
                     }  
                 }
             }

@@ -6,21 +6,13 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>SvgXaml</RootNamespace>
     <AssemblyName>SvgXaml</AssemblyName>
-    <StartupObject>SharpVectors.Converters.MainStartup</StartupObject>
     <ApplicationIcon>Images\SharpVectors.ico</ApplicationIcon>
     <LangVersion>14</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
     <NoWarn>WPF0001</NoWarn>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Page Remove="MainApplication.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Remove="MainApplication.xaml" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.1.120" />

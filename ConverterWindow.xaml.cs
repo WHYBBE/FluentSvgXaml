@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Threading;
 
+using SvgXaml;
+
 namespace SharpVectors.Converters
 {
     /// <summary>
@@ -59,7 +61,7 @@ namespace SharpVectors.Converters
                 return;
             }
 
-            MainApplication theApp = (MainApplication)Application.Current;
+            var theApp = (App)Application.Current;
             Debug.Assert(theApp != null);
             if (theApp == null)
             {

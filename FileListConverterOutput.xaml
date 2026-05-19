@@ -4,9 +4,9 @@
     Title="Files List Converter Output">
     <DockPanel LastChildFill="True">
         <Button Name="btnCancel" IsEnabled="False" DockPanel.Dock="Bottom"
-                HorizontalAlignment="Center" Padding="12 3 12 3"  
+                HorizontalAlignment="Center" Padding="24,6"
                 Content="Cancel" Click="OnCancelClick"/>
-        <TextBox Name="txtOutput" Margin="0 6 3 6"  IsReadOnly="True" AcceptsReturn="True" 
+        <TextBox Name="txtOutput" Margin="0,8,4,8" IsReadOnly="True" AcceptsReturn="True"
                          HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
     </DockPanel>
 </Page>
