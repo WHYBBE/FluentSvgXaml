@@ -9,8 +9,6 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
 
-using SharpVectors.Converters.Properties;
-
 namespace SharpVectors.Converters
 {
     /// <summary>
@@ -172,15 +170,6 @@ namespace SharpVectors.Converters
 
         private void OnWindowClosing(object sender, CancelEventArgs e)
         {
-            try
-            {
-                Settings.Default.Save();
-            }
-            catch
-            {
-            	
-            }
-
             try
             {
                 if (_operationCount > 0)

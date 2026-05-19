@@ -1,11 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Reflection;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using SharpVectors.Converters.Properties;
 
 namespace SharpVectors.Converters
 {
@@ -34,11 +32,6 @@ namespace SharpVectors.Converters
         {
             _isInitializing = true;
 
-            if (helpViewer != null && helpViewer.IsInitialized)
-            {
-                helpViewer.Zoom = Settings.Default.HelpViewerZoom;
-            }
-
             try
             {
                 FlowDocument flowDocument = (FlowDocument)Application.LoadComponent(
@@ -56,10 +49,6 @@ namespace SharpVectors.Converters
 
         private void OnHelpPageUnloaded(object sender, RoutedEventArgs e)
         {
-            if (helpViewer != null && helpViewer.IsInitialized)
-            {     
-                Settings.Default.HelpViewerZoom = (float)helpViewer.Zoom;
-            }
         }
 
         private void OnHelpPageSizeChanged(object sender, SizeChangedEventArgs e)
@@ -68,15 +57,6 @@ namespace SharpVectors.Converters
 
         private void OnZoomChanged(object sender, EventArgs e)
         {
-            if (_isInitializing)
-            {
-                return;
-            }
-
-            if (helpViewer != null && helpViewer.IsInitialized)
-            {
-                Settings.Default.HelpViewerZoom = (float)helpViewer.Zoom;
-            }
         }
     }
 }
