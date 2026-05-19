@@ -2,11 +2,9 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:SharpVectors.Converters"
-    Title="SvgXaml" Height="640" Width="720"
+    Title="SharpVectors (SVG-WPF Converter)" Height="640" Width="640" 
     local:MainWindowSettings.Save="True"
-    WindowStartupLocation="CenterScreen"
-    ResizeMode="CanResizeWithGrip"
-    Icon="/SvgXaml;component/Images/SharpVectors.ico">
+    WindowStartupLocation="CenterScreen" Icon="/SvgXaml;component/Images/SharpVectors.ico">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,19 +13,16 @@
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True">
-        <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
-                BorderBrush="{DynamicResource ControlStrokeColorSecondaryBrush}"
-                BorderThickness="1"
-                CornerRadius="{StaticResource OverlayCornerRadius}"
-                SnapsToDevicePixels="True" DockPanel.Dock="Bottom" Padding="8,4">
-            <DockPanel>
-                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                    <local:CircularProgressBar x:Name="filesProgressBar" Margin="4,0" Height="20" StartupDelay="0" Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"/>
-                    <local:CircularProgressBar x:Name="filesListProgressBar" Margin="4,0" Height="20" StartupDelay="0" Foreground="{DynamicResource AccentTextFillColorSecondaryBrush}"/>
-                    <local:CircularProgressBar x:Name="dirsProgressBar" Margin="4,0" Height="20" StartupDelay="0" Foreground="{DynamicResource AccentTextFillColorTertiaryBrush}"/>
+        <Border Background="#FFE9ECEF" BorderBrush="LightGray" BorderThickness="1"
+                SnapsToDevicePixels="True" DockPanel.Dock="Bottom" Padding="3">
+            <DockPanel>                
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Left">
+                    <local:CircularProgressBar x:Name="filesProgressBar" Margin="3 0 3 0" Height="24" StartupDelay="0" Foreground="DodgerBlue"/>
+                    <local:CircularProgressBar x:Name="filesListProgressBar" Margin="3 0 3 0" Height="24" StartupDelay="0" Foreground="DarkKhaki"/>
+                    <local:CircularProgressBar x:Name="dirsProgressBar" Margin="3 0 3 0" Height="24" StartupDelay="0" Foreground="SeaGreen"/>
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Style="{DynamicResource AccentButtonStyle}" Content="Close" VerticalAlignment="Center" Padding="16,4" Click="OnClickClosed"/>
+                    <Button Content="Close" VerticalAlignment="Center" Padding="16 3 16 3" Click="OnClickClosed"/>            
                 </StackPanel>
             </DockPanel>
         </Border>

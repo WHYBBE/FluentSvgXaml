@@ -8,10 +8,15 @@ using System.Collections.Specialized;
 
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Interop;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
 using Microsoft.Win32;
+
+//using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
+
+using FolderBrowserDialog = ShellFileDialogs.FolderBrowserDialog;
 
 namespace SharpVectors.Converters
 {
@@ -272,14 +277,12 @@ namespace SharpVectors.Converters
                 sourceDir = Path.GetDirectoryName(sourceFile);
             }
 
-            var dialog = new OpenFolderDialog
-            {
-                Title = "Select the output directory for the converted file",
-                InitialDirectory = sourceDir
-            };
-            string? selectedDirectory = dialog.ShowDialog() == true ? dialog.FolderName : null;
+            IntPtr windowHandle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
+            string selectedDirectory = FolderBrowserDialog.ShowDialog(windowHandle,
+                "Select the output directory for the converted file", sourceDir);
             if (!string.IsNullOrWhiteSpace(selectedDirectory))
             {
+                // this will remove the watermark...
                 txtOutputDir.Focus();
                 txtOutputDir.Text = selectedDirectory;
             }

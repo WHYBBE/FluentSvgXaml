@@ -11,7 +11,16 @@
     <LangVersion>14</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <NoWarn>WPF0001</NoWarn>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Page Remove="MainApplication.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="MainApplication.xaml" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.1.120" />

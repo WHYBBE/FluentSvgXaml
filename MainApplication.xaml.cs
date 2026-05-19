@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 
 using System.Windows;
@@ -6,34 +7,30 @@ using System.Windows.Threading;
 
 namespace SharpVectors.Converters
 {
-    /// <summary>
-    /// Interaction logic for MainApplication.xaml
-    /// </summary>
     public partial class MainApplication : Application
     {
-        private ConverterCommandLines _commandLines;
+        private ConverterCommandLines? _commandLines;
 
         public MainApplication()
         {
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(OnDomainUnhandledException);
-            this.DispatcherUnhandledException          += new System.Windows.Threading.DispatcherUnhandledExceptionEventHandler(OnApplicationUnhandledException);
+            AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
+            this.DispatcherUnhandledException += OnApplicationUnhandledException;
         }
 
-        public ConverterCommandLines CommandLines
+        public ConverterCommandLines? CommandLines
         {
-            get
-            {
-                return _commandLines;
-            }
-            set
-            {
-                _commandLines = value;
-            }
+            get => _commandLines;
+            set => _commandLines = value;
         }
 
         public void InitializeComponent(bool mainWindow)
         {
-            InitializeComponent();
+            var fluentDict = new ResourceDictionary
+            {
+                Source = new Uri("pack://application:,,,/PresentationFramework.Fluent;component/Themes/Fluent.xaml")
+            };
+            this.Resources.MergedDictionaries.Add(fluentDict);
+            this.ThemeMode = ThemeMode.System;
 
             if (mainWindow)
             {
@@ -51,9 +48,9 @@ namespace SharpVectors.Converters
         }
 
         protected override void OnExit(ExitEventArgs e)
-        {             
+        {
             base.OnExit(e);
-        }        
+        }
 
         protected override void OnSessionEnding(SessionEndingCancelEventArgs e)
         {
@@ -62,52 +59,21 @@ namespace SharpVectors.Converters
 
         private void OnApplicationUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            if (e.Exception != null)
-            {
-                try
-                {
-                    //WiringErrorWindow errorDlg = new WiringErrorWindow();
-                    //errorDlg.Owner = this.MainWindow;
-                    //errorDlg.Initialize(e.Exception);
-
-                    //errorDlg.ShowDialog();
-                }
-                catch
-                {
-                }
-            }
-
             e.Handled = true;
         }
 
         private void OnDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            if (e.ExceptionObject == null)
-            {
-                return;
-            }
-
-            try
-            {
-                //WiringErrorWindow errorDlg = new WiringErrorWindow();
-                //errorDlg.Owner = this.MainWindow;
-                //errorDlg.Initialize(e.ExceptionObject);
-
-                //errorDlg.ShowDialog();
-            }
-            catch
-            {
-            }
         }
 
         public static void DoEvents()
         {
             DispatcherFrame frame = new DispatcherFrame(true);
             Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
-            (SendOrPostCallback)delegate(object arg)
+            (SendOrPostCallback)delegate(object? arg)
             {
                 var f = arg as DispatcherFrame;
-                f.Continue = false;
+                f!.Continue = false;
             }, frame);
             Dispatcher.PushFrame(frame);
         }

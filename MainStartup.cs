@@ -12,12 +12,6 @@ namespace SharpVectors.Converters
         [STAThread]
         static int Main(string[] args)
         {
-            // 1. Get a pointer to the foreground window.  The idea here is that                
-            // If the user is starting our application from an existing console                
-            // shell, that shell will be the uppermost window.  We'll get it                
-            // and attach to it.                
-            // Uses this idea from, Jeffrey Knight, since it fits our model instead
-            // of the recommended ATTACH_PARENT_PROCESS (DWORD)-1 parameter
             bool startedInConsole = false;
             IntPtr ptr = ConverterWindowsAPI.GetForegroundWindow();
             int processId = -1;
