@@ -31,17 +31,17 @@ namespace FluentSvgXaml
         /// <summary>
         /// Only one observer is expected!
         /// </summary>
-        private Brush _titleBkDefault;
-        private IObserver _observer;
-        private ConverterOptions _options;
+        private Brush _titleBkDefault = Brushes.Transparent;
+        private IObserver? _observer;
+        private ConverterOptions _options = new();
 
         private FileList _listItems;
 
-        private FileListConverterOutput _converterOutput;
+        private FileListConverterOutput? _converterOutput;
 
 
 
-        private Frame _parentFrame;
+        private Frame? _parentFrame;
 
         #endregion
 
@@ -91,7 +91,7 @@ namespace FluentSvgXaml
             }
         }
 
-        public Frame ParentFrame
+        public Frame? ParentFrame
         {
             get
             {
@@ -140,9 +140,9 @@ namespace FluentSvgXaml
         {
             if (e.Data is DataObject && ((DataObject)e.Data).ContainsFileDropList())
             {
-                foreach (string filePath in ((DataObject)e.Data).GetFileDropList())
+                foreach (string? filePath in ((DataObject)e.Data).GetFileDropList())
                 {
-                    _listItems.Add(filePath);
+                    _listItems.Add(filePath!);
                 }
             }
         }
@@ -179,7 +179,7 @@ namespace FluentSvgXaml
 
                 foreach (string filePath in dlg.FileNames)
                 {
-                    _listItems.Add(filePath);
+                    _listItems.Add(filePath!);
                 }
             }
         }
@@ -224,7 +224,7 @@ namespace FluentSvgXaml
             }
         }
 
-        private void OnSourceUpdated(object sender, EventArgs e)
+        private void OnSourceUpdated(object? sender, EventArgs e)
         {
             if (_listItems != null && _listItems.Count > 0)
             {
@@ -237,7 +237,7 @@ namespace FluentSvgXaml
                 btnRemoveSourceFile.IsEnabled = false;
             }
 
-            txtFileCount.Text = _listItems.Count.ToString();
+            txtFileCount.Text = _listItems!.Count.ToString();
 
             this.UpdateStatus();
         }
@@ -248,7 +248,7 @@ namespace FluentSvgXaml
             string sourceDir = Environment.CurrentDirectory;
             if (!string.IsNullOrWhiteSpace(sourceFile) && File.Exists(sourceFile))
             {
-                sourceDir = Path.GetDirectoryName(sourceFile);
+                sourceDir = Path.GetDirectoryName(sourceFile) ?? string.Empty;
             }
 
             var dlg = new OpenFolderDialog
@@ -296,7 +296,7 @@ namespace FluentSvgXaml
                 new ConvertHandler(_converterOutput.Convert));
         }
 
-        private void OnOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnOptionsPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             _isConversionError = false;
         }
@@ -324,7 +324,7 @@ namespace FluentSvgXaml
                 {
                     try
                     {
-                        string rootDir = Path.GetPathRoot(outputDir);
+                        string? rootDir = Path.GetPathRoot(outputDir);
                         if (!string.IsNullOrWhiteSpace(rootDir))
                         {
                             DriveInfo drive = new DriveInfo(rootDir);
@@ -357,7 +357,7 @@ namespace FluentSvgXaml
                         bool isReadOnlySource = false;
                         try
                         {
-                            string rootDir = Path.GetPathRoot(outputDir);
+                            string? rootDir = Path.GetPathRoot(outputDir);
                             if (!string.IsNullOrWhiteSpace(rootDir))
                             {
                                 DriveInfo drive = new DriveInfo(rootDir);
@@ -509,7 +509,7 @@ namespace FluentSvgXaml
                     if (_listItems.Count != 0)
                     {
                         return Path.GetDirectoryName(
-                            _listItems[_listItems.Count - 1]);
+                            _listItems[_listItems.Count - 1]) ?? string.Empty;
                     }
 
                     return string.Empty;
@@ -525,7 +525,7 @@ namespace FluentSvgXaml
                     {
                         for (int i = 0; i < _listItems.Count; i++)
                         {
-                            string rootDir = Path.GetPathRoot(_listItems[i]);
+                            string? rootDir = Path.GetPathRoot(_listItems[i]);
                             if (!string.IsNullOrWhiteSpace(rootDir))
                             {
                                 DriveInfo drive = new DriveInfo(rootDir);
@@ -568,7 +568,7 @@ namespace FluentSvgXaml
                     listItem.Content = filePath;
                     this.Add(listItem);
 
-                    _listItems.Add(filePath);
+                    _listItems.Add(filePath!);
                 }
             }
 

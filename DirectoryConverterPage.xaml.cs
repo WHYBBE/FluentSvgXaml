@@ -28,15 +28,15 @@ namespace FluentSvgXaml
         /// <summary>
         /// Only one observer is expected!
         /// </summary>
-        private Brush _titleBkDefault;
-        private IObserver _observer;
-        private ConverterOptions _options;
+        private Brush _titleBkDefault = Brushes.Transparent;
+        private IObserver? _observer;
+        private ConverterOptions _options = new();
 
-        private DirectoryConverterOutput _converterOutput;
+        private DirectoryConverterOutput? _converterOutput;
 
 
 
-        private Frame _parentFrame;
+        private Frame? _parentFrame;
 
         #endregion
 
@@ -80,7 +80,7 @@ namespace FluentSvgXaml
             }
         }
 
-        public Frame ParentFrame
+        public Frame? ParentFrame
         {
             get
             {
@@ -201,7 +201,7 @@ namespace FluentSvgXaml
                 new ConvertHandler(_converterOutput.Convert));
         }
 
-        private void OnOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnOptionsPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             _isConversionError = false;
         }
@@ -230,7 +230,7 @@ namespace FluentSvgXaml
                 {
                     try
                     {
-                        string rootDir = Path.GetPathRoot(outputDir);
+                        string? rootDir = Path.GetPathRoot(outputDir);
                         if (!string.IsNullOrWhiteSpace(rootDir))
                         {
                             DriveInfo drive = new DriveInfo(rootDir);
@@ -262,7 +262,7 @@ namespace FluentSvgXaml
                         bool isReadOnlySource = false;
                         try
                         {
-                            string rootDir = Path.GetPathRoot(outputDir);
+                            string? rootDir = Path.GetPathRoot(outputDir);
                             if (!string.IsNullOrWhiteSpace(rootDir))
                             {
                                 DriveInfo drive = new DriveInfo(rootDir);

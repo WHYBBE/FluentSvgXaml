@@ -28,27 +28,27 @@ namespace FluentSvgXaml
     {
         #region Private Fields
 
-        private string _documentFile;
+        private string? _documentFile;
 
-        private FoldingManager _foldingManager;
-        private XmlFoldingStrategy _foldingStrategy;
+        private FoldingManager? _foldingManager;
+        private XmlFoldingStrategy? _foldingStrategy;
 
         /// <summary>
         /// Only one observer is expected!
         /// </summary>
-        private IObserver _observer;
-        private ConverterOptions _options;
+        private IObserver? _observer;
+        private ConverterOptions _options = new();
 
-        private string      _imageFile;
-        private string      _xamlFile;
-        private string      _zamlFile;
-        private BitmapImage _bitmapImage;
+        private string?      _imageFile;
+        private string?      _xamlFile;
+        private string?      _zamlFile;
+        private BitmapImage? _bitmapImage;
 
-        private DrawingGroup _drawing;
+        private DrawingGroup? _drawing;
 
-        private string _sourceFile;
-        private string _outputDir;
-        private DirectoryInfo _outputInfoDir;
+        private string? _sourceFile;
+        private string? _outputDir;
+        private DirectoryInfo? _outputInfoDir;
 
         private FileSvgReader _fileReader;
         private WpfDrawingSettings _wpfSettings;
@@ -134,7 +134,7 @@ namespace FluentSvgXaml
             }
         }
 
-        public string SourceFile
+        public string? SourceFile
         {
             get
             {
@@ -146,7 +146,7 @@ namespace FluentSvgXaml
             }
         }
 
-        public string OutputDir
+        public string? OutputDir
         {
             get
             {
@@ -193,9 +193,9 @@ namespace FluentSvgXaml
                 Debug.Assert(_sourceFile != null && _sourceFile.Length != 0);
                 if (string.IsNullOrWhiteSpace(_outputDir))
                 {
-                    _outputDir = Path.GetDirectoryName(_sourceFile);
+                    _outputDir = Path.GetDirectoryName(_sourceFile) ?? string.Empty;
                 }
-                _outputInfoDir = new DirectoryInfo(_outputDir);
+                _outputInfoDir = new DirectoryInfo(_outputDir!);
 
                 _worker.RunWorkerAsync();
 
@@ -295,11 +295,11 @@ namespace FluentSvgXaml
 
         #region BackgroundWorker Methods
 
-        private void OnWorkerProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void OnWorkerProgressChanged(object? sender, ProgressChangedEventArgs e)
         {
         }
 
-        private void OnWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void OnWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
         {
             if (_drawing != null)
             {
@@ -328,7 +328,7 @@ namespace FluentSvgXaml
             StringBuilder builder = new StringBuilder();
             if (e.Error != null || _drawing == null)
             {
-                Exception ex = e.Error;
+                Exception? ex = e.Error;
 
                 if (ex != null)
                 {
@@ -358,7 +358,7 @@ namespace FluentSvgXaml
             }
             else if (e.Result != null)
             {   
-                string resultText = e.Result.ToString();
+                string? resultText = e.Result.ToString();
                 if (!string.IsNullOrWhiteSpace(resultText))
                 {
                     builder.AppendLine("Result: " + resultText);
@@ -388,9 +388,9 @@ namespace FluentSvgXaml
             this.AppendLine(builder.ToString());
         }
 
-        private void OnWorkerDoWork(object sender, DoWorkEventArgs e)
+        private void OnWorkerDoWork(object? sender, DoWorkEventArgs e)
         {
-            BackgroundWorker worker = (BackgroundWorker)sender;
+            BackgroundWorker worker = (BackgroundWorker)sender!;
 
             _wpfSettings.IncludeRuntime = _options.IncludeRuntime;
             _wpfSettings.TextAsGeometry = _options.TextAsGeometry;

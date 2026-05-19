@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Text;
 using System.Security.AccessControl;
-using System.Security.AccessControl;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Collections.Generic;
@@ -28,23 +27,23 @@ namespace FluentSvgXaml
         private bool _writerErrorOccurred;
         private bool _fallbackOnWriterError;
 
-        private List<string> _errorFiles;
+        private List<string> _errorFiles = [];
 
         /// <summary>
         /// Only one observer is expected!
         /// </summary>
-        private IObserver _observer;
+        private IObserver? _observer;
 
         private string _sourceDir;
-        private DirectoryInfo _sourceInfoDir;
-        private DirectoryInfo _outputInfoDir;
+        private DirectoryInfo? _sourceInfoDir;
+        private DirectoryInfo? _outputInfoDir;
 
         private FileSvgReader _fileReader;
         private WpfDrawingSettings _wpfSettings;
 
         private ConsoleWorker _worker;
 
-        private ConsoleWriter _writer;
+        private ConsoleWriter? _writer;
 
         #endregion
 
@@ -270,15 +269,15 @@ namespace FluentSvgXaml
 
         #region ConsoleWorker Methods
 
-        private void OnWorkerProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void OnWorkerProgressChanged(object? sender, ProgressChangedEventArgs e)
         {
             if (e.UserState != null)
             {
-                this.AppendLine(e.UserState.ToString());
+                this.AppendLine(e.UserState.ToString() ?? string.Empty);
             }
         }
 
-        private void OnWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void OnWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
         {
             string outputDir = this.OutputDir;
 
@@ -315,7 +314,7 @@ namespace FluentSvgXaml
             }
             else if (e.Result != null)
             {
-                string resultText = e.Result.ToString();
+                string? resultText = e.Result.ToString();
                 bool isSuccessful = !string.IsNullOrWhiteSpace(resultText) &&
                     string.Equals(resultText, "Successful", StringComparison.OrdinalIgnoreCase);
 
@@ -351,9 +350,9 @@ namespace FluentSvgXaml
             this.AppendLine(builder.ToString());
         }
 
-        private void OnWorkerDoWork(object sender, DoWorkEventArgs e)
+        private void OnWorkerDoWork(object? sender, DoWorkEventArgs e)
         {
-            ConsoleWorker worker = (ConsoleWorker)sender;
+            ConsoleWorker worker = (ConsoleWorker)sender!;
 
             ConverterOptions options = this.Options;
 
@@ -373,7 +372,7 @@ namespace FluentSvgXaml
                 _fileReader.SaveZaml = false;
             }
 
-            this.ProcessConversion(e, _sourceInfoDir, _outputInfoDir);
+            this.ProcessConversion(e, _sourceInfoDir!, _outputInfoDir!);
 
             if (!e.Cancel)
             {
@@ -392,7 +391,7 @@ namespace FluentSvgXaml
                 return;
             }
 
-            _writer.Write(text);
+            _writer?.Write(text);
         }
 
         private void AppendLine(string text)
@@ -402,7 +401,7 @@ namespace FluentSvgXaml
                 return;
             }
 
-            _writer.WriteLine(text);
+            _writer?.WriteLine(text);
         }
 
         private void ProcessConversion(DoWorkEventArgs e, DirectoryInfo source,
@@ -445,7 +444,7 @@ namespace FluentSvgXaml
 
             for (int i = 0; i < dirCount; i++)
             {
-                DirectoryInfo sourceInfo = arrSourceInfo[i];
+                DirectoryInfo sourceInfo = arrSourceInfo![i]!;
                 FileAttributes fileAttr = sourceInfo.Attributes;
                 if (!_includeHidden)
                 {

@@ -16,15 +16,15 @@ namespace FluentSvgXaml
         private bool _consoleSuccess;
         private bool _startedInConsole;
 
-        private IObserver _observer;
+        private IObserver? _observer;
 
         private Process _process;
 
-        private ConsoleWriter    _writer;
-        private ConsoleProgress  _progressBar;
-        private ConsoleConverter _converterOutput;
+        private ConsoleWriter?    _writer;
+        private ConsoleProgress?  _progressBar;
+        private ConsoleConverter? _converterOutput;
         private ConverterOptions _options;
-        private ConverterCommandLines _commandLines;
+        private ConverterCommandLines? _commandLines;
 
         #endregion
 
@@ -40,7 +40,7 @@ namespace FluentSvgXaml
 
         #region Public Properties
 
-        public ConverterCommandLines CommandLines
+        public ConverterCommandLines? CommandLines
         {
             get
             {
@@ -178,10 +178,10 @@ namespace FluentSvgXaml
 
                 if (_consoleSuccess)
                 {
-                    string usageText = _commandLines.Usage;
+                    string? usageText = _commandLines?.Usage;
                     if (!string.IsNullOrWhiteSpace(usageText))
                     {
-                        _writer.WriteLine(usageText);
+                        _writer?.WriteLine(usageText);
                     }
                 }
 
@@ -219,7 +219,7 @@ namespace FluentSvgXaml
 
         #region Private Methods
 
-        private ConsoleConverter CreateConverter()
+        private ConsoleConverter? CreateConverter()
         {
             Debug.Assert(_commandLines != null);
             if (_commandLines == null)
@@ -227,30 +227,30 @@ namespace FluentSvgXaml
                 return null;
             }
 
-            string outputDir  = _commandLines.OutputDir;
+            string? outputDir  = _commandLines.OutputDir;
 
-            string sourceFile = _commandLines.SourceFile;
+            string? sourceFile = _commandLines.SourceFile;
             if (!string.IsNullOrWhiteSpace(sourceFile) && File.Exists(sourceFile))
             {
                 ConsoleFileConverter fileConverter = 
                     new ConsoleFileConverter(sourceFile);
 
                 fileConverter.Options   = _options;
-                fileConverter.OutputDir = outputDir;
+                fileConverter.OutputDir = outputDir ?? string.Empty;
 
                 fileConverter.Subscribe(this);
 
                 return fileConverter;
             }
 
-            string sourceDir = _commandLines.SourceDir;
+            string? sourceDir = _commandLines.SourceDir;
             if (!string.IsNullOrWhiteSpace(sourceDir) && Directory.Exists(sourceDir))
             {
                 ConsoleDirectoryConverter dirConverter = 
                     new ConsoleDirectoryConverter(sourceDir);
 
                 dirConverter.Options   = _options;
-                dirConverter.OutputDir = outputDir;
+                dirConverter.OutputDir = outputDir ?? string.Empty;
 
                 dirConverter.Recursive       = _commandLines.Recursive;
                 dirConverter.ContinueOnError = _commandLines.ContinueOnError;
@@ -260,14 +260,14 @@ namespace FluentSvgXaml
                 return dirConverter;
             }
 
-            IList<string> sourceFiles = _commandLines.SourceFiles;
+            IList<string>? sourceFiles = _commandLines.SourceFiles;
             if (sourceFiles != null && sourceFiles.Count != 0)
             {
                 ConsoleFilesConverter filesConverter = 
                     new ConsoleFilesConverter(sourceFiles);
 
                 filesConverter.Options = _options;
-                filesConverter.OutputDir = outputDir;
+                filesConverter.OutputDir = outputDir ?? string.Empty;
 
                 filesConverter.ContinueOnError = _commandLines.ContinueOnError;
 
@@ -308,7 +308,7 @@ namespace FluentSvgXaml
                 this.AppendLine(string.Empty);
                 this.AppendLine("Press the Enter key to continue...");
 
-                if (_commandLines.BeepOnEnd)
+                if (_commandLines != null && _commandLines.BeepOnEnd)
                 {
                     if (_isConversionError)
                     {
@@ -336,7 +336,7 @@ namespace FluentSvgXaml
             }
         }
 
-        private void OnConsoleCancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        private void OnConsoleCancelKeyPress(object? sender, ConsoleCancelEventArgs e)
         {
             if (_isConverting)
             {
@@ -419,7 +419,7 @@ namespace FluentSvgXaml
                 return;
             }
 
-            _writer.WriteLine(text);
+            _writer?.WriteLine(text);
         }
 
         private void AppendLine(string text)
@@ -429,7 +429,7 @@ namespace FluentSvgXaml
                 return;
             }
 
-            _writer.WriteLine(text);
+            _writer?.WriteLine(text);
         }
 
         private void AppendLines(string title, string text, bool isError)
@@ -439,7 +439,7 @@ namespace FluentSvgXaml
                 return;
             }
 
-            _writer.WriteLine(text);
+            _writer?.WriteLine(text);
         }
 
         #endregion

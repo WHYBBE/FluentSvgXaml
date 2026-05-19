@@ -9,7 +9,7 @@ namespace FluentSvgXaml
 
         private bool   _isQuiet;
         private volatile bool _isStarted;
-        private Thread _thread;
+        private Thread? _thread;
         private ConsoleWriter _writer;
 
         #endregion

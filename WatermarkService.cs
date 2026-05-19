@@ -20,7 +20,7 @@ namespace FluentSvgXaml
            "Watermark",
            typeof(object),
            typeof(WatermarkService),
-           new FrameworkPropertyMetadata((object)null, new PropertyChangedCallback(OnWatermarkChanged)));
+           new FrameworkPropertyMetadata((object?)null, new PropertyChangedCallback(OnWatermarkChanged)));
 
         #region Private Fields
 
@@ -116,14 +116,14 @@ namespace FluentSvgXaml
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">A <see cref="EventArgs"/> that contains the event data.</param>
-        private static void ItemsSourceChanged(object sender, EventArgs e)
+        private static void ItemsSourceChanged(object? sender, EventArgs e)
         {
-            ItemsControl c = (ItemsControl)sender;
-            if (c.ItemsSource != null)
+            ItemsControl? c = sender as ItemsControl;
+            if (c != null && c.ItemsSource != null)
             {
                 if (ShouldShowWatermark(c))
                 {
-                    ShowWatermark(c);
+                ShowWatermark(c!);
                 }
                 else
                 {
@@ -132,7 +132,7 @@ namespace FluentSvgXaml
             }
             else
             {
-                ShowWatermark(c);
+                ShowWatermark(c!);
             }
         }
 
@@ -143,7 +143,7 @@ namespace FluentSvgXaml
         /// <param name="e">A <see cref="ItemsChangedEventArgs"/> that contains the event data.</param>
         private static void ItemsChanged(object sender, ItemsChangedEventArgs e)
         {
-            ItemsControl control;
+            ItemsControl? control;
             if (itemsControls.TryGetValue(sender, out control))
             {
                 if (ShouldShowWatermark(control))
@@ -211,17 +211,17 @@ namespace FluentSvgXaml
         /// <returns>true if the watermark should be shown; false otherwise</returns>
         private static bool ShouldShowWatermark(Control c)
         {
-            if (c is ComboBox)
+            if (c is ComboBox comboBox)
             {
-                return (c as ComboBox).Text == string.Empty;
+                return comboBox.Text == string.Empty;
             }
             else if (c is TextBoxBase)
             {
-                return (c as TextBox).Text == string.Empty;
+                return ((c as TextBox)?.Text ?? string.Empty) == string.Empty;
             }
-            else if (c is ItemsControl)
+            else if (c is ItemsControl itemsControl)
             {
-                return (c as ItemsControl).Items.Count == 0;
+                return itemsControl.Items.Count == 0;
             }
             else
             {

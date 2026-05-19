@@ -9,8 +9,6 @@ namespace FluentSvgXaml
 {
     public partial class HelpPage : Page
     {
-        private bool _isInitializing;
-
         public HelpPage()
         {
             InitializeComponent();
@@ -30,8 +28,6 @@ namespace FluentSvgXaml
 
         private void OnHelpPageLoaded(object sender, RoutedEventArgs e)
         {
-            _isInitializing = true;
-
             try
             {
                 FlowDocument flowDocument = (FlowDocument)Application.LoadComponent(
@@ -43,8 +39,6 @@ namespace FluentSvgXaml
                 MessageBox.Show(ex.ToString(), "SVG-WPF Converter", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-            _isInitializing = false;
         }
 
         private void OnHelpPageUnloaded(object sender, RoutedEventArgs e)
@@ -55,7 +49,7 @@ namespace FluentSvgXaml
         {
         }
 
-        private void OnZoomChanged(object sender, EventArgs e)
+        private void OnZoomChanged(object? sender, EventArgs e)
         {
         }
     }

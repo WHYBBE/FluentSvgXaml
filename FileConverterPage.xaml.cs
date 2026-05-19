@@ -27,15 +27,15 @@ namespace FluentSvgXaml
         /// <summary>
         /// Only one observer is expected!
         /// </summary>
-        private Brush _titleBkDefault;
-        private IObserver _observer;
-        private ConverterOptions _options;
+        private Brush _titleBkDefault = Brushes.Transparent;
+        private IObserver? _observer;
+        private ConverterOptions _options = new();
 
-        private FileConverterOutput _converterOutput;
+        private FileConverterOutput? _converterOutput;
 
 
 
-        private Frame _parentFrame;
+        private Frame? _parentFrame;
 
         #endregion
 
@@ -78,7 +78,7 @@ namespace FluentSvgXaml
             }
         }
 
-        public Frame ParentFrame
+        public Frame? ParentFrame
         {
             get
             {
@@ -127,7 +127,7 @@ namespace FluentSvgXaml
         {
             if (e.Data is DataObject && ((DataObject)e.Data).ContainsFileDropList())
             {
-                foreach (string filePath in ((DataObject)e.Data).GetFileDropList())
+                foreach (string? filePath in ((DataObject)e.Data).GetFileDropList())
                 {
                     txtSourceFile.Text = filePath; 
                     break;  // only a single file conversion is supported...
@@ -174,7 +174,7 @@ namespace FluentSvgXaml
             string sourceDir  = Environment.CurrentDirectory;
             if (!string.IsNullOrWhiteSpace(sourceFile) && File.Exists(sourceFile))
             {
-                sourceDir = Path.GetDirectoryName(sourceFile);
+                sourceDir = Path.GetDirectoryName(sourceFile) ?? string.Empty;
             }
 
             var dlg = new OpenFolderDialog
@@ -217,7 +217,7 @@ namespace FluentSvgXaml
                 new ConvertHandler(_converterOutput.Convert));
         }
 
-        private void OnOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnOptionsPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             _isConversionError = false;
         }
@@ -246,7 +246,7 @@ namespace FluentSvgXaml
                 {
                     try
                     {
-                        string rootDir = Path.GetPathRoot(outputDir);
+                        string? rootDir = Path.GetPathRoot(outputDir);
                         if (!string.IsNullOrWhiteSpace(rootDir))
                         {
                             DriveInfo drive = new DriveInfo(rootDir);
@@ -287,7 +287,7 @@ namespace FluentSvgXaml
                         bool isReadOnlySource = false;
                         try
                         {
-                            string rootDir = Path.GetPathRoot(outputDir);
+                            string? rootDir = Path.GetPathRoot(outputDir);
                             if (!string.IsNullOrWhiteSpace(rootDir))
                             {
                                 DriveInfo drive = new DriveInfo(rootDir);
@@ -318,7 +318,7 @@ namespace FluentSvgXaml
                 else
                 {
                     // First, we try check for web source file...
-                    Uri webUri;
+                    Uri? webUri;
                     if (Uri.TryCreate(sourceFile, UriKind.Absolute, out webUri)
                         && (string.Equals(webUri.Scheme, Uri.UriSchemeHttp, StringComparison.Ordinal)
                         || string.Equals(webUri.Scheme, Uri.UriSchemeHttps, StringComparison.Ordinal)))

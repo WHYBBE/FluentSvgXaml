@@ -29,9 +29,9 @@ namespace FluentSvgXaml
         private const int SW_SHOWMINIMIZED = 2;
         // ReSharper restore InconsistentNaming
 
-        private Window _window;
+        private Window? _window;
 
-        private WindowApplicationSettings _windowApplicationSettings;
+        private WindowApplicationSettings? _windowApplicationSettings;
 
         public MainWindowSettings(Window window)
         {
@@ -111,16 +111,16 @@ namespace FluentSvgXaml
             _window.SourceInitialized += WindowSourceInitialized;
         }
 
-        private void WindowSourceInitialized(object sender, EventArgs e)
+        private void WindowSourceInitialized(object? sender, EventArgs e)
         {
             LoadWindowState();
         }
 
-        private void WindowClosing(object sender, CancelEventArgs e)
+        private void WindowClosing(object? sender, CancelEventArgs e)
         {
             SaveWindowState();
-            _window.Closing -= WindowClosing;
-            _window.SourceInitialized -= WindowSourceInitialized;
+            _window!.Closing -= WindowClosing!;
+            _window!.SourceInitialized -= WindowSourceInitialized!;
             _window = null;
         }
 
@@ -145,7 +145,7 @@ namespace FluentSvgXaml
         internal class WindowApplicationSettings : ApplicationSettingsBase
         {
             public WindowApplicationSettings(MainWindowSettings windowSettings)
-                : base(windowSettings._window.GetType().FullName)
+                : base(windowSettings._window!.GetType().FullName)
             {
             }
 
@@ -185,7 +185,7 @@ namespace FluentSvgXaml
             _bottom = bottom;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is RECT)
             {
@@ -270,7 +270,7 @@ namespace FluentSvgXaml
             set { _y = value; }
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is POINT)
             {

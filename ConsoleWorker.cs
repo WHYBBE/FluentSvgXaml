@@ -136,7 +136,7 @@ namespace FluentSvgXaml
 
         #region Private Methods
 
-        private void OnDoWork(object sender, DoWorkEventArgs e)
+        private void OnDoWork(object? sender, DoWorkEventArgs e)
         {
             if (e.Cancel)
             {

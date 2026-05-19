@@ -124,7 +124,7 @@ namespace FluentSvgXaml
         {
         }
 
-        private void OnOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnOptionsPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "VerticalNav" && _options != null)
             {
@@ -133,7 +133,7 @@ namespace FluentSvgXaml
             }
         }
 
-        private void OnWindowClosing(object sender, CancelEventArgs e)
+        private void OnWindowClosing(object? sender, CancelEventArgs e)
         {
             try
             {

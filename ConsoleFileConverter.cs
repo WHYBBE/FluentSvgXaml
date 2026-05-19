@@ -15,23 +15,23 @@ namespace FluentSvgXaml
     {
         #region Private Fields
 
-        private string _imageFile;
-        private string _xamlFile;
-        private string _zamlFile;
+        private string? _imageFile;
+        private string? _xamlFile;
+        private string? _zamlFile;
 
-        private IObserver _observer;
+        private IObserver? _observer;
 
-        private DrawingGroup _drawing;
+        private DrawingGroup? _drawing;
 
         private string _sourceFile;
-        private DirectoryInfo _outputInfoDir;
+        private DirectoryInfo? _outputInfoDir;
 
         private FileSvgReader _fileReader;
         private WpfDrawingSettings _wpfSettings;
 
-        private ConsoleWriter _writer;
-
         private ConsoleWorker _worker;
+
+        private ConsoleWriter? _writer;
 
         #endregion
 
@@ -91,10 +91,10 @@ namespace FluentSvgXaml
                 this.AppendLine("Converting file, please wait...");
                 this.AppendLine("Input File: " + _sourceFile);
 
-                string _outputDir = this.OutputDir;
+                string? _outputDir = this.OutputDir;
                 if (string.IsNullOrWhiteSpace(_outputDir))
                 {
-                    _outputDir = Path.GetDirectoryName(_sourceFile);
+                    _outputDir = Path.GetDirectoryName(_sourceFile) ?? string.Empty;
                 }
                 _outputInfoDir = new DirectoryInfo(_outputDir);
 
@@ -128,11 +128,11 @@ namespace FluentSvgXaml
 
         #region ConsoleWorker Methods
 
-        private void OnWorkerProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void OnWorkerProgressChanged(object? sender, ProgressChangedEventArgs e)
         {
         }
 
-        private void OnWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void OnWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
         {
             if (_drawing != null)
             {
@@ -147,7 +147,7 @@ namespace FluentSvgXaml
             StringBuilder builder = new StringBuilder();
             if (e.Error != null || _drawing == null)
             {
-                Exception ex = e.Error;
+                Exception? ex = e.Error;
 
                 if (ex != null)
                 {
@@ -171,7 +171,7 @@ namespace FluentSvgXaml
             }
             else if (e.Result != null)
             {
-                string resultText = e.Result.ToString();
+                string? resultText = e.Result.ToString();
                 if (!string.IsNullOrWhiteSpace(resultText))
                 {
                     builder.AppendLine("Result: " + resultText);
@@ -202,9 +202,9 @@ namespace FluentSvgXaml
             }
         }
 
-        private void OnWorkerDoWork(object sender, DoWorkEventArgs e)
+        private void OnWorkerDoWork(object? sender, DoWorkEventArgs e)
         {
-            ConsoleWorker worker = (ConsoleWorker)sender;
+            ConsoleWorker worker = (ConsoleWorker)sender!;
 
             ConverterOptions options = this.Options;
 
@@ -285,7 +285,7 @@ namespace FluentSvgXaml
                 }
                 else
                 {
-                    string _imageFile = null;
+                    string? _imageFile = null;
                     if (options.GenerateImage)
                     {
                         _fileReader.SaveImage(_sourceFile, _outputInfoDir,
@@ -331,7 +331,7 @@ namespace FluentSvgXaml
                 return;
             }
 
-            _writer.WriteLine(text);
+            _writer?.WriteLine(text);
         }
 
         private void AppendLine(string text)
@@ -341,7 +341,7 @@ namespace FluentSvgXaml
                 return;
             }
 
-            _writer.WriteLine(text);
+            _writer?.WriteLine(text);
         }
 
         #endregion

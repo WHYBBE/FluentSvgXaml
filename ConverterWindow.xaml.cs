@@ -25,7 +25,7 @@ namespace FluentSvgXaml
 
         private ConverterOptions _options;
 
-        private FileListConverterOutput _converterOutput;
+        private FileListConverterOutput? _converterOutput;
 
         #endregion
 
@@ -54,7 +54,7 @@ namespace FluentSvgXaml
 
         #region Private Event Handlers
 
-        private void OnWindowContentRendered(object sender, EventArgs e)
+        private void OnWindowContentRendered(object? sender, EventArgs e)
         {
             if (_options == null || !_options.IsValid)
             {
@@ -67,16 +67,16 @@ namespace FluentSvgXaml
             {
                 return;
             }
-            ConverterCommandLines commandLines = theApp.CommandLines;
+            ConverterCommandLines? commandLines = theApp.CommandLines;
             Debug.Assert(commandLines != null);
             if (commandLines == null || commandLines.IsEmpty)
             {
                 return;
             }
-            IList<string> sourceFiles = commandLines.SourceFiles;
+            IList<string>? sourceFiles = commandLines.SourceFiles;
             if (sourceFiles == null || sourceFiles.Count == 0)
             {
-                string sourceFile = commandLines.SourceFile;
+                string? sourceFile = commandLines.SourceFile;
                 if (string.IsNullOrWhiteSpace(sourceFile) || 
                     !File.Exists(sourceFile))
                 {
@@ -117,7 +117,7 @@ namespace FluentSvgXaml
         {
         }
 
-        private void OnWindowClosing(object sender, CancelEventArgs e)
+        private void OnWindowClosing(object? sender, CancelEventArgs e)
         {
             try
             {

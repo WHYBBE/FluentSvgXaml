@@ -44,7 +44,7 @@ namespace FluentSvgXaml
         /// <summary>
         /// Mouse Cursor.
         /// </summary>
-        private Cursor originalCursor;
+        private Cursor? originalCursor;
 
         /// <summary>
         /// Initializes a new instance of the CircularProgressBar class.
@@ -107,7 +107,7 @@ namespace FluentSvgXaml
         /// </summary>
         /// <param name="sender">Sender of the event.</param>
         /// <param name="e">Event Arguments.</param>
-        private void StartSpinning(object sender, EventArgs e)
+        private void StartSpinning(object? sender, EventArgs e)
         {
             this.animationTimer.Stop();
             this.animationTimer.Tick -= this.StartSpinning;
@@ -136,7 +136,7 @@ namespace FluentSvgXaml
         /// </summary>
         /// <param name="sender">Sender of the Event: the Animation Timer.</param>
         /// <param name="e">Event arguments.</param>
-        private void HandleAnimationTick(object sender, EventArgs e)
+        private void HandleAnimationTick(object? sender, EventArgs e)
         {
             this.SpinnerRotate.Angle = (this.SpinnerRotate.Angle + 36) % 360;
         }

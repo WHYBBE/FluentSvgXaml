@@ -24,15 +24,15 @@ namespace FluentSvgXaml
         private bool _saveZaml;
 
         private ConverterUIOption _ui;
-        private string _image;
+        private string _image = string.Empty;
 
-        private string _usage;
+        private string? _usage;
 
-        private List<string> _sources;
-        private string _sourceFile;
-        private string _sourceDir;
-        private IList<string> _sourceFiles;
-        private string _outputDir;
+        private List<string>? _sources;
+        private string? _sourceFile;
+        private string? _sourceDir;
+        private IList<string>? _sourceFiles;
+        private string? _outputDir;
 
         private string[] _args;
 
@@ -82,7 +82,7 @@ namespace FluentSvgXaml
             }
         }
 
-        public string OutputDir
+        public string? OutputDir
         {
             get
             {
@@ -253,7 +253,7 @@ namespace FluentSvgXaml
             }
         }
 
-        public IList<string> Sources
+        public IList<string>? Sources
         {
             get
             {
@@ -261,7 +261,7 @@ namespace FluentSvgXaml
             }
         }
 
-        public string SourceFile
+        public string? SourceFile
         {
             get
             {
@@ -269,7 +269,7 @@ namespace FluentSvgXaml
             }
         }
 
-        public string SourceDir
+        public string? SourceDir
         {
             get
             {
@@ -277,7 +277,7 @@ namespace FluentSvgXaml
             }
         }
 
-        public IList<string> SourceFiles
+        public IList<string>? SourceFiles
         {
             get
             {
@@ -285,7 +285,7 @@ namespace FluentSvgXaml
             }
         }
 
-        public string Usage
+        public string? Usage
         {
             get
             {
@@ -488,7 +488,7 @@ namespace FluentSvgXaml
             {
                 if (!string.IsNullOrWhiteSpace(value))
                 {
-                    this.Image = value;
+                    this.Image = value!;
                 }
             });
             options.Add("u|ui=", "Specifies the user-interface option: none, console or window.", delegate(string value)

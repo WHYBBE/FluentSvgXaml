@@ -22,21 +22,21 @@ namespace FluentSvgXaml
         private bool _writerErrorOccurred;
         private bool _fallbackOnWriterError;
 
-        private List<string> _errorFiles;
+        private List<string> _errorFiles = [];
 
         /// <summary>
         /// Only one observer is expected!
         /// </summary>
-        private IObserver _observer;
+        private IObserver? _observer;
 
         private IList<string> _sourceFiles;
-        private DirectoryInfo _outputInfoDir;
+        private DirectoryInfo? _outputInfoDir;
 
         private FileSvgReader _fileReader;
         private WpfDrawingSettings _wpfSettings;
 
         private ConsoleWorker _worker;
-        private ConsoleWriter _writer;
+        private ConsoleWriter? _writer;
 
         #endregion
 
@@ -205,15 +205,15 @@ namespace FluentSvgXaml
 
         #region ConsoleWorker Methods
 
-        private void OnWorkerProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void OnWorkerProgressChanged(object? sender, ProgressChangedEventArgs e)
         {
             if (e.UserState != null)
             {
-                this.AppendLine(e.UserState.ToString());
+                this.AppendLine(e.UserState.ToString() ?? string.Empty);
             }
         }
 
-        private void OnWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void OnWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
         {
             StringBuilder builder = new StringBuilder();
             if (e.Error != null)
@@ -248,7 +248,7 @@ namespace FluentSvgXaml
             }
             else if (e.Result != null)
             {
-                string resultText = e.Result.ToString();
+                string? resultText = e.Result.ToString();
                 bool isSuccessful = !string.IsNullOrWhiteSpace(resultText) &&
                     string.Equals(resultText, "Successful", StringComparison.OrdinalIgnoreCase);
 
@@ -281,9 +281,9 @@ namespace FluentSvgXaml
             this.AppendLine(builder.ToString());
         }
 
-        private void OnWorkerDoWork(object sender, DoWorkEventArgs e)
+        private void OnWorkerDoWork(object? sender, DoWorkEventArgs e)
         {
-            ConsoleWorker worker = (ConsoleWorker)sender;
+            ConsoleWorker worker = (ConsoleWorker)sender!;
 
             ConverterOptions options   = this.Options;
 
@@ -303,7 +303,7 @@ namespace FluentSvgXaml
                 _fileReader.SaveZaml = false;
             }
 
-            this.ConvertFiles(e, _outputInfoDir);
+            this.ConvertFiles(e, _outputInfoDir!);
 
             if (!e.Cancel)
             {
@@ -324,7 +324,7 @@ namespace FluentSvgXaml
                 return;
             }
 
-            _writer.Write(text);
+            _writer?.Write(text);
         }
 
         private void AppendLine(string text)
@@ -334,7 +334,7 @@ namespace FluentSvgXaml
                 return;
             }
 
-            _writer.WriteLine(text);
+            _writer?.WriteLine(text);
         }
 
         private void ConvertFiles(DoWorkEventArgs e, DirectoryInfo target)
@@ -379,7 +379,7 @@ namespace FluentSvgXaml
                         if (target == null)
                         {
                             outputDir = new DirectoryInfo(
-                                Path.GetDirectoryName(svgFileName));
+                                Path.GetDirectoryName(svgFileName) ?? string.Empty);
                         }
 
                         DrawingGroup drawing = _fileReader.Read(svgFileName,

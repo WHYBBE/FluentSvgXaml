@@ -6,8 +6,8 @@ namespace FluentSvgXaml
     {
         #region Private Fields
 
-        private string _outputDir;
-        private ConverterOptions _options;
+        private string _outputDir = string.Empty;
+        private ConverterOptions _options = new();
 
         #endregion
 

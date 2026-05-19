@@ -10,7 +10,7 @@ namespace FluentSvgXaml
 {
     public partial class OptionsPage : Page
     {
-        private ConverterOptions _options;
+        private ConverterOptions _options = new();
 
         public OptionsPage()
         {

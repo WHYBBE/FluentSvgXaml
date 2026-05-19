@@ -1,3 +1,4 @@
+#pragma warning disable CS8600,CS8601,CS8602,CS8603,CS8604,CS8618,CS8625,CS8769,SYSLIB0051,CS0672
 //
 // Options.cs
 //
@@ -1295,4 +1296,4 @@ namespace Mono.Options
 		}
 	}
 }
-
+#pragma warning restore CS8600,CS8601,CS8602,CS8603,CS8604,CS8618,CS8625,CS8769,SYSLIB0051,CS0672

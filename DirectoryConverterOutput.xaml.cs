@@ -4,7 +4,6 @@ using System;
 using System.IO;
 using System.Text;
 using System.Security.AccessControl;
-using System.Security.AccessControl;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Collections.Generic;
@@ -35,18 +34,18 @@ namespace FluentSvgXaml
         private bool _writerErrorOccurred;
         private bool _fallbackOnWriterError;
 
-        private List<string> _errorFiles;
+        private List<string> _errorFiles = [];
 
         /// <summary>
         /// Only one observer is expected!
         /// </summary>
-        private IObserver _observer;
-        private ConverterOptions _options;
+        private IObserver? _observer;
+        private ConverterOptions _options = new();
 
-        private string _sourceDir;
-        private string _outputDir;
-        private DirectoryInfo _sourceInfoDir;
-        private DirectoryInfo _outputInfoDir;
+        private string? _sourceDir;
+        private string? _outputDir;
+        private DirectoryInfo? _sourceInfoDir;
+        private DirectoryInfo? _outputInfoDir;
 
         private FileSvgReader _fileReader;
         private WpfDrawingSettings _wpfSettings;
@@ -95,7 +94,7 @@ namespace FluentSvgXaml
             }
         }
 
-        public string SourceDir
+        public string? SourceDir
         {
             get {
                 return _sourceDir;
@@ -105,7 +104,7 @@ namespace FluentSvgXaml
             }
         }
 
-        public string OutputDir
+        public string? OutputDir
         {
             get {
                 return _outputDir;
@@ -260,10 +259,10 @@ namespace FluentSvgXaml
                 Debug.Assert(_sourceDir != null && _sourceDir.Length != 0);
                 if (string.IsNullOrWhiteSpace(_outputDir))
                 {
-                    _outputDir = new string(_sourceDir.ToCharArray());
+                    _outputDir = new string(_sourceDir!.ToCharArray());
                 }
-                _sourceInfoDir = new DirectoryInfo(_sourceDir);
-                _outputInfoDir = new DirectoryInfo(_outputDir);
+                _sourceInfoDir = new DirectoryInfo(_sourceDir!);
+                _outputInfoDir = new DirectoryInfo(_outputDir!);
 
                 _worker.RunWorkerAsync();
 
@@ -324,15 +323,15 @@ namespace FluentSvgXaml
 
         #region BackgroundWorker Methods
 
-        private void OnWorkerProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void OnWorkerProgressChanged(object? sender, ProgressChangedEventArgs e)
         {
             if (e.UserState != null)
             {
-                this.AppendLine(e.UserState.ToString());
+                this.AppendLine(e.UserState.ToString() ?? string.Empty);
             }
         }
 
-        private void OnWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void OnWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
         {
             btnCancel.IsEnabled = false;
 
@@ -369,7 +368,7 @@ namespace FluentSvgXaml
             }
             else if (e.Result != null)
             {
-                string resultText = e.Result.ToString();
+                string? resultText = e.Result.ToString();
                 bool isSuccessful = !string.IsNullOrWhiteSpace(resultText) &&
                     string.Equals(resultText, "Successful", StringComparison.OrdinalIgnoreCase);
 
@@ -405,9 +404,9 @@ namespace FluentSvgXaml
             this.AppendLine(builder.ToString());
         }
 
-        private void OnWorkerDoWork(object sender, DoWorkEventArgs e)
+        private void OnWorkerDoWork(object? sender, DoWorkEventArgs e)
         {
-            BackgroundWorker worker = (BackgroundWorker)sender;
+            BackgroundWorker worker = (BackgroundWorker)sender!;
 
             _wpfSettings.IncludeRuntime = _options.IncludeRuntime;
             _wpfSettings.TextAsGeometry = _options.TextAsGeometry;
@@ -425,7 +424,7 @@ namespace FluentSvgXaml
                 _fileReader.SaveZaml = false;
             }
 
-            this.ProcessConversion(e, _sourceInfoDir, _outputInfoDir);
+            this.ProcessConversion(e, _sourceInfoDir!, _outputInfoDir!);
 
             if (!e.Cancel)
             {
@@ -499,7 +498,7 @@ namespace FluentSvgXaml
 
             for (int i = 0; i < dirCount; i++)
             {
-                DirectoryInfo sourceInfo = arrSourceInfo[i];
+                DirectoryInfo sourceInfo = arrSourceInfo![i]!;
                 FileAttributes fileAttr = sourceInfo.Attributes;
                 if (!_includeHidden)
                 {
