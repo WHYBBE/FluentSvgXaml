@@ -1,75 +1,127 @@
 <Page x:Class="FluentSvgXaml.DirectoryConverterPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:FluentSvgXaml"
-    Title="Directory Converter Page">
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="clr-namespace:FluentSvgXaml"
+      Title="Directory Converter Page">
     <DockPanel LastChildFill="True">
-        <StackPanel DockPanel.Dock="Bottom" Margin="0,8" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Name="btnConvert" Content="Convert" Padding="24,6" Click="OnConvertClick"/>
+        <StackPanel Margin="0,8"
+                    HorizontalAlignment="Center"
+                    DockPanel.Dock="Bottom"
+                    Orientation="Horizontal">
+            <Button Name="btnConvert"
+                    Padding="24,6"
+                    Click="OnConvertClick"
+                    Content="Convert" />
         </StackPanel>
-        <Border DockPanel.Dock="Bottom" CornerRadius="4" Margin="0,0,0,8" Background="{StaticResource AppCardBackground}" BorderBrush="{StaticResource AppCardBorder}" BorderThickness="1">
+        <Border Margin="0,0,0,8"
+                Background="{StaticResource AppCardBackground}"
+                BorderBrush="{StaticResource AppCardBorder}"
+                BorderThickness="1"
+                CornerRadius="4"
+                DockPanel.Dock="Bottom">
             <StackPanel>
                 <Border Style="{StaticResource CardHeader}">
-                    <TextBlock Text="Status" Foreground="{StaticResource AppTextPrimary}" FontSize="13" FontWeight="SemiBold"/>
+                    <TextBlock FontSize="13"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource AppTextPrimary}"
+                               Text="Status" />
                 </Border>
                 <StackPanel Margin="12">
                     <DockPanel>
-                        <TextBlock Name="statusTitle" Text="Not Ready" FontWeight="SemiBold" TextAlignment="Center" Foreground="{StaticResource AppTextPrimary}"/>
-                        <local:CircularProgressBar x:Name="progressBar" DockPanel.Dock="Right" Height="18" StartupDelay="0" Foreground="{StaticResource AppAccent}"/>
+                        <TextBlock Name="statusTitle"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource AppTextPrimary}"
+                                   Text="Not Ready"
+                                   TextAlignment="Center" />
+                        <local:CircularProgressBar x:Name="progressBar"
+                                                   Height="18"
+                                                   DockPanel.Dock="Right"
+                                                   Foreground="{StaticResource AppAccent}"
+                                                   StartupDelay="0" />
                     </DockPanel>
-                    <TextBlock Name="statusText" TextAlignment="Center" TextWrapping="Wrap" Foreground="{StaticResource AppTextSecondary}">
+                    <TextBlock Name="statusText"
+                               Foreground="{StaticResource AppTextSecondary}"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap">
                         Select an input directory of SVG files for conversion.
                     </TextBlock>
                 </StackPanel>
             </StackPanel>
         </Border>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="8">
-                <TextBlock TextWrapping="Wrap" Foreground="{StaticResource AppTextSecondary}" Margin="0,0,0,12">
+                <TextBlock Margin="0,0,0,12"
+                           Foreground="{StaticResource AppTextSecondary}"
+                           TextWrapping="Wrap">
                     This provides the conversion of Scalable Vector Graphics (SVG)
-                    files in a <Bold>local</Bold> directory to images and/or XAML (WPF only).
-                </TextBlock>
+                    files in a<Bold>local</Bold>
+                    directory to images and/or XAML (WPF only).</TextBlock>
 
-                <TextBlock Text="Source Directory" FontWeight="SemiBold" Foreground="{StaticResource AppTextPrimary}" Margin="0,0,0,4"/>
-                <DockPanel LastChildFill="True" Margin="0,0,0,8">
-                    <Button Name="btnSourceDir" DockPanel.Dock="Right" Content="Browse..." Click="OnSourceDirClick" Margin="4,0,0,0"/>
+                <TextBlock Margin="0,0,0,4"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource AppTextPrimary}"
+                           Text="Source Directory" />
+                <DockPanel Margin="0,0,0,8" LastChildFill="True">
+                    <Button Name="btnSourceDir"
+                            Margin="4,0,0,0"
+                            Click="OnSourceDirClick"
+                            Content="Browse..."
+                            DockPanel.Dock="Right" />
                     <AdornerDecorator>
                         <TextBox Name="txtSourceDir" TextChanged="OnDirTextChanged">
                             <local:WatermarkService.Watermark>
-                                <TextBlock Text="Type or browse to select source directory of SVG files"/>
+                                <TextBlock Text="Type or browse to select source directory of SVG files" />
                             </local:WatermarkService.Watermark>
                         </TextBox>
                     </AdornerDecorator>
                 </DockPanel>
 
-                <TextBlock Text="Output Directory" FontWeight="SemiBold" Foreground="{StaticResource AppTextPrimary}" Margin="0,0,0,4"/>
-                <DockPanel LastChildFill="True" Margin="0,0,0,8">
-                    <Button Name="btnOutputDir" DockPanel.Dock="Right" Content="Browse..." Click="OnOutputDirClick" Margin="4,0,0,0"/>
+                <TextBlock Margin="0,0,0,4"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource AppTextPrimary}"
+                           Text="Output Directory" />
+                <DockPanel Margin="0,0,0,8" LastChildFill="True">
+                    <Button Name="btnOutputDir"
+                            Margin="4,0,0,0"
+                            Click="OnOutputDirClick"
+                            Content="Browse..."
+                            DockPanel.Dock="Right" />
                     <AdornerDecorator>
                         <TextBox Name="txtOutputDir" TextChanged="OnDirTextChanged">
                             <local:WatermarkService.Watermark>
-                                <TextBlock Text="Type or browse to select the output directory"/>
+                                <TextBlock Text="Type or browse to select the output directory" />
                             </local:WatermarkService.Watermark>
                         </TextBox>
                     </AdornerDecorator>
                 </DockPanel>
 
-                <TextBlock TextWrapping="Wrap" Foreground="{StaticResource AppTextSecondary}" Margin="0,0,0,8">
-                    <Bold>NOTE:</Bold> If the output directory is not specified, the source directory will be used.
-                    If the source directory is <Bold>read-only</Bold> media, the output directory is required.
-                </TextBlock>
+                <TextBlock Margin="0,0,0,8"
+                           Foreground="{StaticResource AppTextSecondary}"
+                           TextWrapping="Wrap">
+                    <Bold>NOTE:</Bold>
+                    If the output directory is not specified, the source directory will be used.
+                    If the source directory is<Bold>read-only</Bold>
+                    media, the output directory is required.</TextBlock>
 
-                <Border CornerRadius="4" Background="{StaticResource AppCardBackground}" BorderBrush="{StaticResource AppCardBorder}" BorderThickness="1">
+                <Border Background="{StaticResource AppCardBackground}"
+                        BorderBrush="{StaticResource AppCardBorder}"
+                        BorderThickness="1"
+                        CornerRadius="4">
                     <StackPanel>
                         <Border Style="{StaticResource CardHeader}">
-                            <TextBlock Text="Directory Options" Foreground="{StaticResource AppTextPrimary}" FontSize="13" FontWeight="SemiBold"/>
+                            <TextBlock FontSize="13"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource AppTextPrimary}"
+                                       Text="Directory Options" />
                         </Border>
                         <StackPanel Margin="12">
                             <CheckBox Name="chkRecursive" Margin="0,0,0,4">
-                                <TextBlock Text="Recursive"/>
+                                <TextBlock Text="Recursive" />
                             </CheckBox>
                             <CheckBox Name="chkContinueOnError" IsChecked="True">
-                                <TextBlock TextWrapping="Wrap" Foreground="{StaticResource AppTextSecondary}" Text="Continue if an error occurs in the conversion of a file."/>
+                                <TextBlock Foreground="{StaticResource AppTextSecondary}"
+                                           Text="Continue if an error occurs in the conversion of a file."
+                                           TextWrapping="Wrap" />
                             </CheckBox>
                         </StackPanel>
                     </StackPanel>

@@ -1,50 +1,89 @@
 <Page x:Class="FluentSvgXaml.OptionsPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Options Page">
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Options Page">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="8">
-            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource AppTextSecondary}" Margin="0,0,0,12">
+            <TextBlock Margin="0,0,0,12"
+                       Foreground="{StaticResource AppTextSecondary}"
+                       TextWrapping="Wrap">
                 This is the conversion options page. All settings here will affect each conversion process.
             </TextBlock>
 
-            <CheckBox Name="chkTextAsGeometry" IsChecked="True" Click="OnOptionChanged" Margin="0,0,0,2">
-                <TextBlock Text="Convert text as path geometry" FontWeight="SemiBold" Foreground="{StaticResource AppTextPrimary}"/>
+            <CheckBox Name="chkTextAsGeometry"
+                      Margin="0,0,0,2"
+                      Click="OnOptionChanged"
+                      IsChecked="True">
+                <TextBlock FontWeight="SemiBold"
+                           Foreground="{StaticResource AppTextPrimary}"
+                           Text="Convert text as path geometry" />
             </CheckBox>
-            <TextBlock Margin="20,2,0,8" Foreground="{StaticResource AppTextSecondary}" Text="All SVG text elements will be converted to paths."/>
-            <CheckBox Name="chkIncludeRuntime" Click="OnOptionChanged" Margin="0,0,0,2">
-                <TextBlock Text="Include support for SharpVectors Runtime library" FontWeight="SemiBold" Foreground="{StaticResource AppTextPrimary}"/>
+            <TextBlock Margin="20,2,0,8"
+                       Foreground="{StaticResource AppTextSecondary}"
+                       Text="All SVG text elements will be converted to paths." />
+            <CheckBox Name="chkIncludeRuntime"
+                      Margin="0,0,0,2"
+                      Click="OnOptionChanged">
+                <TextBlock FontWeight="SemiBold"
+                           Foreground="{StaticResource AppTextPrimary}"
+                           Text="Include support for SharpVectors Runtime library" />
             </CheckBox>
-            <TextBlock Margin="20,2,0,8" TextWrapping="Wrap" Foreground="{StaticResource AppTextSecondary}">
-                Select this if you want to link to the SharpVectors Runtime library.
-                <LineBreak/>
-                <Bold>NOTE:</Bold> If this option is not selected, then select the option to render
+            <TextBlock Margin="20,2,0,8"
+                       Foreground="{StaticResource AppTextSecondary}"
+                       TextWrapping="Wrap">
+                Select this if you want to link to the SharpVectors Runtime library.<LineBreak />
+                <Bold>NOTE:</Bold>
+                If this option is not selected, then select the option to render
                 text as geometric paths; otherwise, font locations may not be resolved
-                properly on the end-user system.
-            </TextBlock>
+                properly on the end-user system.</TextBlock>
 
-            <CheckBox Name="chkVerticalNav" IsChecked="True" Click="OnOptionChanged" Margin="0,0,0,2">
-                <TextBlock Text="Left-side navigation (uncheck for top navigation)" FontWeight="SemiBold" Foreground="{StaticResource AppTextPrimary}"/>
+            <CheckBox Name="chkVerticalNav"
+                      Margin="0,0,0,2"
+                      Click="OnOptionChanged"
+                      IsChecked="True">
+                <TextBlock FontWeight="SemiBold"
+                           Foreground="{StaticResource AppTextPrimary}"
+                           Text="Left-side navigation (uncheck for top navigation)" />
             </CheckBox>
 
-            <Border Name="grpXaml" CornerRadius="4" Background="{StaticResource AppCardBackground}" BorderBrush="{StaticResource AppCardBorder}" BorderThickness="1" Margin="0,8,0,0">
+            <Border Name="grpXaml"
+                    Margin="0,8,0,0"
+                    Background="{StaticResource AppCardBackground}"
+                    BorderBrush="{StaticResource AppCardBorder}"
+                    BorderThickness="1"
+                    CornerRadius="4">
                 <StackPanel>
                     <Border Style="{StaticResource CardHeader}">
-                        <CheckBox Name="chkXaml" IsChecked="True" Click="OnOptionChanged">
-                            <TextBlock Foreground="{StaticResource AppTextPrimary}" Text="Generate WPF/XAML" FontSize="13" FontWeight="SemiBold"/>
+                        <CheckBox Name="chkXaml"
+                                  Click="OnOptionChanged"
+                                  IsChecked="True">
+                            <TextBlock FontSize="13"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource AppTextPrimary}"
+                                       Text="Generate WPF/XAML" />
                         </CheckBox>
                     </Border>
                     <StackPanel Name="panelXaml" Margin="12">
-                        <CheckBox Name="chkSameXaml" IsChecked="True" Click="OnOptionChanged" Margin="0,0,0,4">
-                            <TextBlock Text="Uncompressed XAML file format (*.xaml)"/>
+                        <CheckBox Name="chkSameXaml"
+                                  Margin="0,0,0,4"
+                                  Click="OnOptionChanged"
+                                  IsChecked="True">
+                            <TextBlock Text="Uncompressed XAML file format (*.xaml)" />
                         </CheckBox>
-                        <CheckBox Name="chkSameZaml" Click="OnOptionChanged" Margin="0,0,0,4">
-                            <TextBlock Text="Compressed XAML file format (*.zaml)"/>
+                        <CheckBox Name="chkSameZaml"
+                                  Margin="0,0,0,4"
+                                  Click="OnOptionChanged">
+                            <TextBlock Text="Compressed XAML file format (*.zaml)" />
                         </CheckBox>
-                        <CheckBox Name="chkXamlWriter" IsChecked="True" Click="OnOptionChanged" Margin="0,0,0,4">
-                            <TextBlock Text="Use customized XAML format writer"/>
+                        <CheckBox Name="chkXamlWriter"
+                                  Margin="0,0,0,4"
+                                  Click="OnOptionChanged"
+                                  IsChecked="True">
+                            <TextBlock Text="Use customized XAML format writer" />
                         </CheckBox>
-                        <TextBlock TextWrapping="Wrap" Margin="20,2,0,0" Foreground="{StaticResource AppTextSecondary}">
+                        <TextBlock Margin="20,2,0,0"
+                                   Foreground="{StaticResource AppTextSecondary}"
+                                   TextWrapping="Wrap">
                             The customized XAML writer is an implementation of XamlWriter
                             optimized for the SVG-WPF conversion. You can unselect this
                             option to use the default .NET framework XamlWriter class.
@@ -53,16 +92,31 @@
                 </StackPanel>
             </Border>
 
-            <Border Name="grpImage" CornerRadius="4" Background="{StaticResource AppCardBackground}" BorderBrush="{StaticResource AppCardBorder}" BorderThickness="1" Margin="0,8,0,0">
+            <Border Name="grpImage"
+                    Margin="0,8,0,0"
+                    Background="{StaticResource AppCardBackground}"
+                    BorderBrush="{StaticResource AppCardBorder}"
+                    BorderThickness="1"
+                    CornerRadius="4">
                 <StackPanel>
                     <Border Style="{StaticResource CardHeader}">
                         <CheckBox Name="chkImage" Click="OnOptionChanged">
-                            <TextBlock Foreground="{StaticResource AppTextPrimary}" Text="Generate Raster Image" FontSize="13" FontWeight="SemiBold"/>
+                            <TextBlock FontSize="13"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource AppTextPrimary}"
+                                       Text="Generate Raster Image" />
                         </CheckBox>
                     </Border>
-                    <StackPanel Name="panelImage" IsEnabled="False" Margin="12">
-                        <TextBlock Foreground="{StaticResource AppTextSecondary}" Text="Select the image format from the list below:"/>
-                        <ComboBox Name="cboImages" Margin="20,4,0,0" IsReadOnly="True" IsEditable="False" SelectedIndex="0" IsEnabled="True">
+                    <StackPanel Name="panelImage"
+                                Margin="12"
+                                IsEnabled="False">
+                        <TextBlock Foreground="{StaticResource AppTextSecondary}" Text="Select the image format from the list below:" />
+                        <ComboBox Name="cboImages"
+                                  Margin="20,4,0,0"
+                                  IsEditable="False"
+                                  IsEnabled="True"
+                                  IsReadOnly="True"
+                                  SelectedIndex="0">
                             <ComboBoxItem>
                                 <TextBlock Padding="3"><Bold>BMP:&#160;</Bold><Run>Windows Bitmap Format (*.bmp)</Run></TextBlock>
                             </ComboBoxItem>

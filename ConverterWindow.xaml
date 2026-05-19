@@ -1,26 +1,47 @@
 <Window x:Class="FluentSvgXaml.ConverterWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:local="clr-namespace:FluentSvgXaml"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="SVG-WPF Converter" Height="300" Width="300" WindowStartupLocation="CenterScreen">
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:FluentSvgXaml"
+        Title="SVG-WPF Converter"
+        Width="300"
+        Height="300"
+        WindowStartupLocation="CenterScreen">
     <DockPanel LastChildFill="True">
-        <Border Background="#FFE9ECEF" BorderBrush="LightGray" BorderThickness="1"
-            SnapsToDevicePixels="True" DockPanel.Dock="Bottom" Padding="3">
-            <DockPanel>            
-                <StackPanel Height="32" DockPanel.Dock="Left" 
-                            Orientation="Horizontal" HorizontalAlignment="Left">
-                    <local:CircularProgressBar x:Name="progressBar" Margin="3 0 3 0" Height="24" StartupDelay="0" Foreground="DarkKhaki"/>
+        <Border Padding="3"
+                Background="#FFE9ECEF"
+                BorderBrush="LightGray"
+                BorderThickness="1"
+                DockPanel.Dock="Bottom"
+                SnapsToDevicePixels="True">
+            <DockPanel>
+                <StackPanel Height="32"
+                            HorizontalAlignment="Left"
+                            DockPanel.Dock="Left"
+                            Orientation="Horizontal">
+                    <local:CircularProgressBar x:Name="progressBar"
+                                               Height="24"
+                                               Margin="3,0,3,0"
+                                               Foreground="DarkKhaki"
+                                               StartupDelay="0" />
                 </StackPanel>
-                <StackPanel Height="32" DockPanel.Dock="Right" 
-                            Orientation="Horizontal" HorizontalAlignment="Right">
+                <StackPanel Height="32"
+                            HorizontalAlignment="Right"
+                            DockPanel.Dock="Right"
+                            Orientation="Horizontal">
                     <!--<Button Name="btnCancel" Padding="12 3 12 3" Margin="3" Content="Cancel" VerticalAlignment="Center"/>
-                    <Button Name="btnClose" Width="{Binding ElementName=btnCancel, Path=ActualWidth}" 
+                    <Button Name="btnClose" Width="{Binding ElementName=btnCancel, Path=ActualWidth}"
                             Padding="12 3 12 3" Margin="3" Content="Close" VerticalAlignment="Center" Click="OnClickClosed"/>-->
-                        <Button Name="btnClose" Padding="12 3 12 3" Margin="3" 
-                            Content="Close" VerticalAlignment="Center" Click="OnClickClosed"/>
+                    <Button Name="btnClose"
+                            Margin="3"
+                            Padding="12,3,12,3"
+                            VerticalAlignment="Center"
+                            Click="OnClickClosed"
+                            Content="Close" />
                 </StackPanel>
             </DockPanel>
         </Border>
-        <Frame Name="frameConverter" NavigationUIVisibility="Hidden" Margin="3"/>
+        <Frame Name="frameConverter"
+               Margin="3"
+               NavigationUIVisibility="Hidden" />
     </DockPanel>
 </Window>
