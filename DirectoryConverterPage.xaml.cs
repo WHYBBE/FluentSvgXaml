@@ -9,9 +9,7 @@ using System.Windows.Interop;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
-//using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
-
-using FolderBrowserDialog = ShellFileDialogs.FolderBrowserDialog;
+using Microsoft.Win32;
 
 namespace SharpVectors.Converters
 {
@@ -155,12 +153,14 @@ namespace SharpVectors.Converters
                 sourceDir = Environment.CurrentDirectory;
             }
 
-            IntPtr windowHandle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
-            string selectedDirectory = FolderBrowserDialog.ShowDialog(windowHandle,
-                "Select the source directory of the SVG files", sourceDir);
+            var dialog = new OpenFolderDialog
+            {
+                Title = "Select the source directory of the SVG files",
+                InitialDirectory = sourceDir
+            };
+            string? selectedDirectory = dialog.ShowDialog() == true ? dialog.FolderName : null;
             if (!string.IsNullOrWhiteSpace(selectedDirectory))
             {
-                // this will remove the watermark...
                 txtSourceDir.Focus();
                 txtSourceDir.Text = selectedDirectory;
             }
@@ -197,12 +197,14 @@ namespace SharpVectors.Converters
                 sourceDir = Environment.CurrentDirectory;
             }
 
-            IntPtr windowHandle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
-            string selectedDirectory = FolderBrowserDialog.ShowDialog(windowHandle,
-                "Select the output directory for the converted file", sourceDir);
+            var dialog = new OpenFolderDialog
+            {
+                Title = "Select the output directory for the converted file",
+                InitialDirectory = sourceDir
+            };
+            string? selectedDirectory = dialog.ShowDialog() == true ? dialog.FolderName : null;
             if (!string.IsNullOrWhiteSpace(selectedDirectory))
             {
-                // this will remove the watermark...
                 txtOutputDir.Focus();
                 txtOutputDir.Text = selectedDirectory;
             }
