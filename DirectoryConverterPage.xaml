@@ -95,13 +95,30 @@
                     </AdornerDecorator>
                 </DockPanel>
 
-                <TextBlock Margin="0,0,0,8"
-                           Foreground="{StaticResource AppTextSecondary}"
-                           TextWrapping="Wrap">
-                    <Bold>NOTE:</Bold>
-                    If the output directory is not specified, the source directory will be used.
-                    If the source directory is<Bold>read-only</Bold>
-                    media, the output directory is required.</TextBlock>
+                <Border Margin="0,0,0,8"
+                        Padding="10,8"
+                        Background="#100078D7"
+                        BorderBrush="{StaticResource AppAccent}"
+                        BorderThickness="1"
+                        CornerRadius="4">
+                    <StackPanel>
+                        <StackPanel Margin="0,0,0,4" Orientation="Horizontal">
+                            <TextBlock Margin="0,0,6,0"
+                                       VerticalAlignment="Center"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="16"
+                                       Foreground="{StaticResource AppAccent}"
+                                       Text="&#xE946;" />
+                            <TextBlock FontWeight="SemiBold"
+                                       Foreground="{StaticResource AppTextPrimary}"
+                                       Text="Note" />
+                        </StackPanel>
+                        <TextBlock Foreground="{StaticResource AppTextSecondary}" TextWrapping="Wrap">
+                            <Run Text="If the output directory is not specified, the source directory will be used." /><LineBreak />
+                            <Run Text="If the source directory is " /><Bold>read-only</Bold><Run Text=" media, the output directory is required." />
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
 
                 <Border Background="{StaticResource AppCardBackground}"
                         BorderBrush="{StaticResource AppCardBorder}"
