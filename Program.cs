@@ -1,8 +1,5 @@
-using System;
-
-using FluentSvgXaml;
-using FluentSvgXaml.Core;
 using FluentSvgXaml.Cli;
+using FluentSvgXaml.Core;
 
 namespace FluentSvgXaml;
 

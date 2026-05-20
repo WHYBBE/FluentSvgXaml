@@ -1,10 +1,7 @@
-using System;
+namespace FluentSvgXaml.Core;
 
-namespace FluentSvgXaml.Core
+public interface IObservable
 {
-    public interface IObservable
-    {
-        void Cancel();
-        void Subscribe(IObserver observer);
-    }
+    void Cancel();
+    void Subscribe(IObserver observer);
 }

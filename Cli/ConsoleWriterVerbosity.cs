@@ -1,12 +1,9 @@
-using System;
+namespace FluentSvgXaml.Cli;
 
-namespace FluentSvgXaml.Cli
+public enum ConsoleWriterVerbosity
 {
-    public enum ConsoleWriterVerbosity
-    {
-        None    = 0,
-        Quiet   = 1,
-        Minimal = 2,
-        Normal  = 3
-    }
+    None = 0,
+    Quiet = 1,
+    Minimal = 2,
+    Normal = 3
 }

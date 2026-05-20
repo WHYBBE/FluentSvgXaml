@@ -1,142 +1,139 @@
-using System;
+namespace FluentSvgXaml.Cli;
 
-namespace FluentSvgXaml.Cli
+public sealed class ConsoleWriter
 {
-    public sealed class ConsoleWriter
+    private bool _isQuiet;
+    private object _synchObject;
+    private ConsoleWriterVerbosity _verbosity;
+
+    public ConsoleWriter()
+        : this(false, ConsoleWriterVerbosity.Normal)
     {
-        private bool _isQuiet;
-        private object _synchObject;
-        private ConsoleWriterVerbosity _verbosity;
+    }
 
-        public ConsoleWriter()
-            : this(false, ConsoleWriterVerbosity.Normal)
-        {   
-        }
+    public ConsoleWriter(bool isQuiet, ConsoleWriterVerbosity verbosity)
+    {
+        _isQuiet = isQuiet;
+        _verbosity = verbosity;
 
-        public ConsoleWriter(bool isQuiet, ConsoleWriterVerbosity verbosity)
+        _synchObject = new object();
+    }
+
+    public bool IsQuiet
+    {
+        get
         {
-            _isQuiet   = isQuiet;
-            _verbosity = verbosity;
-
-            _synchObject = new object();
+            return _isQuiet;
         }
+    }
 
-        public bool IsQuiet
+    public object SynchObject
+    {
+        get
         {
-            get
-            {
-                return _isQuiet;
-            }
+            return _synchObject;
         }
+    }
 
-        public object SynchObject
+    public ConsoleWriterVerbosity Verbosity
+    {
+        get
         {
-            get
-            {
-                return _synchObject;
-            }
+            return _verbosity;
         }
+    }
 
-        public ConsoleWriterVerbosity Verbosity
+    public void WriteLine()
+    {
+        if (_isQuiet)
         {
-            get
-            {
-                return _verbosity;
-            }
+            return;
         }
 
-        public void WriteLine()
+        lock (_synchObject)
         {
-            if (_isQuiet)
-            {
-                return;
-            }
-
-            lock (_synchObject)
-            {
-                Console.WriteLine();
-            }
+            Console.WriteLine();
         }
+    }
 
-        public void Write(string text)
+    public void Write(string text)
+    {
+        if (_isQuiet || text == null)
         {
-            if (_isQuiet || text == null)
-            {
-                return;
-            }
-
-            lock (_synchObject)
-            {
-                Console.Write(text);
-            }
+            return;
         }
 
-        public void WriteProgress(string text)
+        lock (_synchObject)
         {
-            if (_isQuiet || text == null)
-            {
-                return;
-            }
-
-            lock (_synchObject)
-            {
-                //Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.Write(text);
-                Console.Write("\b");
-                //Console.ResetColor();
-            }
+            Console.Write(text);
         }
+    }
 
-        public void WriteLine(string text)
+    public void WriteProgress(string text)
+    {
+        if (_isQuiet || text == null)
         {
-            if (_isQuiet || text == null)
-            {
-                return;
-            }
-
-            lock (_synchObject)
-            {
-                Console.WriteLine(text);
-            }
+            return;
         }
 
-        public void WriteInfoLine(string text)
-        {   
-            if (_isQuiet || string.IsNullOrWhiteSpace(text))
-            {
-                return;
-            }
-
-            lock (_synchObject)
-            {
-                Console.WriteLine("Info: " + text);
-            }
-        }
-
-        public void WriteWarnLine(string text)
+        lock (_synchObject)
         {
-            if (_isQuiet || string.IsNullOrWhiteSpace(text))
-            {
-                return;
-            }
+            //Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write(text);
+            Console.Write("\b");
+            //Console.ResetColor();
+        }
+    }
 
-            lock (_synchObject)
-            {
-                Console.WriteLine("Warn: " + text);
-            }
+    public void WriteLine(string text)
+    {
+        if (_isQuiet || text == null)
+        {
+            return;
         }
 
-        public void WriteErrorLine(string text)
+        lock (_synchObject)
         {
-            if (_isQuiet || string.IsNullOrWhiteSpace(text))
-            {
-                return;
-            }
+            Console.WriteLine(text);
+        }
+    }
 
-            lock (_synchObject)
-            {
-                Console.WriteLine("Error: " + text);
-            }
+    public void WriteInfoLine(string text)
+    {
+        if (_isQuiet || string.IsNullOrWhiteSpace(text))
+        {
+            return;
+        }
+
+        lock (_synchObject)
+        {
+            Console.WriteLine("Info: " + text);
+        }
+    }
+
+    public void WriteWarnLine(string text)
+    {
+        if (_isQuiet || string.IsNullOrWhiteSpace(text))
+        {
+            return;
+        }
+
+        lock (_synchObject)
+        {
+            Console.WriteLine("Warn: " + text);
+        }
+    }
+
+    public void WriteErrorLine(string text)
+    {
+        if (_isQuiet || string.IsNullOrWhiteSpace(text))
+        {
+            return;
+        }
+
+        lock (_synchObject)
+        {
+            Console.WriteLine("Error: " + text);
         }
     }
 }

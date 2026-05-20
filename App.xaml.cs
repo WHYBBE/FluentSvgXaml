@@ -1,9 +1,6 @@
-using System;
+using FluentSvgXaml.Core;
 using System.Windows;
 using System.Windows.Threading;
-
-using FluentSvgXaml;
-using FluentSvgXaml.Core;
 
 namespace FluentSvgXaml;
 

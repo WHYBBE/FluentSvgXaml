@@ -1,173 +1,168 @@
-using System;
+using FluentSvgXaml.Core;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Diagnostics;
-using System.ComponentModel;
-using System.Collections.Generic;
-
 using System.Windows;
 using System.Windows.Threading;
 
-using FluentSvgXaml.Core;
+namespace FluentSvgXaml.Pages;
 
-namespace FluentSvgXaml.Pages
+/// <summary>
+/// Interaction logic for ConverterWindow.xaml
+/// </summary>
+public partial class ConverterWindow : Window, IObserver
 {
-    /// <summary>
-    /// Interaction logic for ConverterWindow.xaml
-    /// </summary>
-    public partial class ConverterWindow : Window, IObserver
+    #region Private Fields
+
+    private delegate void ConvertHandler();
+
+    private bool _isConverting;
+
+    private ConverterOptions _options;
+
+    private FileListConverterOutput? _converterOutput;
+
+    #endregion
+
+    #region Constructors and Destructor
+
+    public ConverterWindow()
     {
-        #region Private Fields
+        InitializeComponent();
 
-        private delegate void ConvertHandler();
+        this.MinWidth = 640;
+        this.MinHeight = 340;
 
-        private bool _isConverting;
+        this.Width = 640;
+        this.Height = 340;
 
-        private ConverterOptions _options;
+        _options = new ConverterOptions();
 
-        private FileListConverterOutput? _converterOutput;
+        this.Loaded += new RoutedEventHandler(OnWindowLoaded);
+        this.Unloaded += new RoutedEventHandler(OnWindowUnloaded);
 
-        #endregion
+        this.Closing += new CancelEventHandler(OnWindowClosing);
+        this.ContentRendered += new EventHandler(OnWindowContentRendered);
+    }
 
-        #region Constructors and Destructor
+    #endregion
 
-        public ConverterWindow()
+    #region Private Event Handlers
+
+    private void OnWindowContentRendered(object? sender, EventArgs e)
+    {
+        if (_options == null || !_options.IsValid)
         {
-            InitializeComponent();
-
-            this.MinWidth  = 640;
-            this.MinHeight = 340;
-
-            this.Width     = 640;
-            this.Height    = 340;
-
-            _options = new ConverterOptions();
-
-            this.Loaded   += new RoutedEventHandler(OnWindowLoaded);
-            this.Unloaded += new RoutedEventHandler(OnWindowUnloaded);
-
-            this.Closing  += new CancelEventHandler(OnWindowClosing);
-            this.ContentRendered += new EventHandler(OnWindowContentRendered);
+            return;
         }
 
-        #endregion
-
-        #region Private Event Handlers
-
-        private void OnWindowContentRendered(object? sender, EventArgs e)
+        var theApp = (App)Application.Current;
+        Debug.Assert(theApp != null);
+        if (theApp == null)
         {
-            if (_options == null || !_options.IsValid)
+            return;
+        }
+        ConverterCommandLines? commandLines = theApp.CommandLines;
+        Debug.Assert(commandLines != null);
+        if (commandLines == null || commandLines.IsEmpty)
+        {
+            return;
+        }
+        IList<string>? sourceFiles = commandLines.SourceFiles;
+        if (sourceFiles == null || sourceFiles.Count == 0)
+        {
+            string? sourceFile = commandLines.SourceFile;
+            if (string.IsNullOrWhiteSpace(sourceFile) ||
+                !File.Exists(sourceFile))
             {
                 return;
             }
+            sourceFiles = new List<string>();
+            sourceFiles.Add(sourceFile);
+        }
 
-            var theApp = (App)Application.Current;
-            Debug.Assert(theApp != null);
-            if (theApp == null)
+        _isConverting = true;
+
+        if (_converterOutput == null)
+        {
+            _converterOutput = new FileListConverterOutput();
+        }
+
+        _options.Update(commandLines);
+
+        _converterOutput.Options = _options;
+        _converterOutput.Subscribe(this);
+
+        _converterOutput.ContinueOnError = commandLines.ContinueOnError;
+        _converterOutput.SourceFiles = sourceFiles;
+        _converterOutput.OutputDir = commandLines.OutputDir;
+
+        frameConverter.Content = _converterOutput;
+
+        //_converterOutput.Convert();
+        this.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+            new ConvertHandler(_converterOutput.Convert));
+    }
+
+    private void OnWindowLoaded(object sender, RoutedEventArgs e)
+    {
+    }
+
+    private void OnWindowUnloaded(object sender, RoutedEventArgs e)
+    {
+    }
+
+    private void OnWindowClosing(object? sender, CancelEventArgs e)
+    {
+        try
+        {
+            if (_isConverting)
             {
-                return;
-            }
-            ConverterCommandLines? commandLines = theApp.CommandLines;
-            Debug.Assert(commandLines != null);
-            if (commandLines == null || commandLines.IsEmpty)
-            {
-                return;
-            }
-            IList<string>? sourceFiles = commandLines.SourceFiles;
-            if (sourceFiles == null || sourceFiles.Count == 0)
-            {
-                string? sourceFile = commandLines.SourceFile;
-                if (string.IsNullOrWhiteSpace(sourceFile) || 
-                    !File.Exists(sourceFile))
+                StringBuilder builder = new StringBuilder();
+                builder.AppendLine("Conversion process is running on the background.");
+                builder.AppendLine("Do you want to stop the conversion process and close this application?");
+                MessageBoxResult boxResult = MessageBox.Show(builder.ToString(), this.Title,
+                    MessageBoxButton.YesNo, MessageBoxImage.Warning,
+                    MessageBoxResult.No);
+
+                if (boxResult == MessageBoxResult.No)
                 {
+                    e.Cancel = false;
                     return;
                 }
-                sourceFiles = new List<string>();
-                sourceFiles.Add(sourceFile);
-            }
 
-            _isConverting = true;
-
-            if (_converterOutput == null)
-            {
-                _converterOutput = new FileListConverterOutput();
-            }
-
-            _options.Update(commandLines);
-
-            _converterOutput.Options = _options;
-            _converterOutput.Subscribe(this);
-
-            _converterOutput.ContinueOnError = commandLines.ContinueOnError;
-            _converterOutput.SourceFiles = sourceFiles;
-            _converterOutput.OutputDir  = commandLines.OutputDir;
-
-            frameConverter.Content = _converterOutput;
-
-            //_converterOutput.Convert();
-            this.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                new ConvertHandler(_converterOutput.Convert));
-        }
-
-        private void OnWindowLoaded(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void OnWindowUnloaded(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void OnWindowClosing(object? sender, CancelEventArgs e)
-        {
-            try
-            {
-                if (_isConverting)
+                if (_converterOutput != null)
                 {
-                    StringBuilder builder = new StringBuilder();
-                    builder.AppendLine("Conversion process is running on the background.");
-                    builder.AppendLine("Do you want to stop the conversion process and close this application?");
-                    MessageBoxResult boxResult = MessageBox.Show(builder.ToString(), this.Title,
-                        MessageBoxButton.YesNo, MessageBoxImage.Warning,
-                        MessageBoxResult.No);
-
-                    if (boxResult == MessageBoxResult.No)
-                    {
-                        e.Cancel = false;
-                        return;
-                    }
-
-                    if (_converterOutput != null)
-                    {
-                        _converterOutput.Cancel();
-                    }
+                    _converterOutput.Cancel();
                 }
             }
-            catch
-            {
-            }
         }
-
-        private void OnClickClosed(object sender, RoutedEventArgs e)
+        catch
         {
-            this.Close();
         }
-
-        #endregion
-
-        #region IObserver Members
-
-        public void OnStarted(IObservable sender)
-        {
-            progressBar.Visibility = Visibility.Visible;
-        }
-
-        public void OnCompleted(IObservable sender, bool isSuccessful)
-        {
-            progressBar.Visibility = Visibility.Hidden;
-
-            _isConverting = false;
-        }
-
-        #endregion
     }
+
+    private void OnClickClosed(object sender, RoutedEventArgs e)
+    {
+        this.Close();
+    }
+
+    #endregion
+
+    #region IObserver Members
+
+    public void OnStarted(IObservable sender)
+    {
+        progressBar.Visibility = Visibility.Visible;
+    }
+
+    public void OnCompleted(IObservable sender, bool isSuccessful)
+    {
+        progressBar.Visibility = Visibility.Hidden;
+
+        _isConverting = false;
+    }
+
+    #endregion
 }

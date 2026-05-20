@@ -1,10 +1,7 @@
-using System;
+namespace FluentSvgXaml.Core;
 
-namespace FluentSvgXaml.Core
+public interface IObserver
 {
-    public interface IObserver
-    {
-        void OnStarted(IObservable sender);
-        void OnCompleted(IObservable sender, bool isSuccessful);
-    }
+    void OnStarted(IObservable sender);
+    void OnCompleted(IObservable sender, bool isSuccessful);
 }
