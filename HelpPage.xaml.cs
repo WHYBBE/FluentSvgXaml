@@ -31,7 +31,7 @@ namespace FluentSvgXaml
             try
             {
                 FlowDocument flowDocument = (FlowDocument)Application.LoadComponent(
-                    new Uri("/ConverterHelp.xaml", UriKind.Relative));
+                    new Uri("/HelpDocument/ConverterHelp.xaml", UriKind.Relative));
                 helpViewer.Document = flowDocument;
             }
             catch (Exception ex)
