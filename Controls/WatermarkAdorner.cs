@@ -39,10 +39,10 @@ internal sealed class WatermarkAdorner : Adorner
             Margin = new Thickness(Control.Margin.Left + Control.Padding.Left, Control.Margin.Top + Control.Padding.Top, 0, 0)
         };
 
-        if (this.Control is ItemsControl && this.Control is not ComboBox)
+        if (Control is ItemsControl && Control is not ComboBox)
         {
-            this.contentPresenter.VerticalAlignment = VerticalAlignment.Center;
-            this.contentPresenter.HorizontalAlignment = HorizontalAlignment.Center;
+            contentPresenter.VerticalAlignment = VerticalAlignment.Center;
+            contentPresenter.HorizontalAlignment = HorizontalAlignment.Center;
         }
 
         // Hide the control adorner when the adorned element is hidden
@@ -51,7 +51,7 @@ internal sealed class WatermarkAdorner : Adorner
             Source = adornedElement,
             Converter = new BooleanToVisibilityConverter()
         };
-        this.SetBinding(VisibilityProperty, binding);
+        SetBinding(VisibilityProperty, binding);
     }
 
     #endregion
@@ -75,7 +75,7 @@ internal sealed class WatermarkAdorner : Adorner
     /// </summary>
     private Control Control
     {
-        get { return (Control)this.AdornedElement; }
+        get { return (Control)AdornedElement; }
     }
 
     #endregion
@@ -89,7 +89,7 @@ internal sealed class WatermarkAdorner : Adorner
     /// <returns>The child <see cref="Visual"/>.</returns>
     protected override Visual GetVisualChild(int index)
     {
-        return this.contentPresenter;
+        return contentPresenter;
     }
 
     /// <summary>
@@ -100,7 +100,7 @@ internal sealed class WatermarkAdorner : Adorner
     protected override Size MeasureOverride(Size constraint)
     {
         // Here's the secret to getting the adorner to cover the whole control
-        this.contentPresenter.Measure(Control.RenderSize);
+        contentPresenter.Measure(Control.RenderSize);
         return Control.RenderSize;
     }
 
@@ -111,7 +111,7 @@ internal sealed class WatermarkAdorner : Adorner
     /// <returns>The actual size used.</returns>
     protected override Size ArrangeOverride(Size finalSize)
     {
-        this.contentPresenter.Arrange(new Rect(finalSize));
+        contentPresenter.Arrange(new Rect(finalSize));
         return finalSize;
     }
 
