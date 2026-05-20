@@ -20,14 +20,12 @@ public sealed class ConsoleFileConverter : ConsoleConverter
     private IObserver? _observer;
 
     private DrawingGroup? _drawing;
-
-    private string _sourceFile;
     private DirectoryInfo? _outputInfoDir;
 
-    private FileSvgReader _fileReader;
-    private WpfDrawingSettings _wpfSettings;
+    private readonly FileSvgReader _fileReader;
+    private readonly WpfDrawingSettings _wpfSettings;
 
-    private ConsoleWorker _worker;
+    private readonly ConsoleWorker _worker;
 
     private ConsoleWriter? _writer;
 
@@ -37,14 +35,16 @@ public sealed class ConsoleFileConverter : ConsoleConverter
 
     public ConsoleFileConverter(string sourceFile)
     {
-        _sourceFile = sourceFile;
+        SourceFile = sourceFile;
 
         _wpfSettings = new WpfDrawingSettings();
         _wpfSettings.CultureInfo = _wpfSettings.NeutralCultureInfo;
 
-        _fileReader = new FileSvgReader(_wpfSettings);
-        _fileReader.SaveXaml = false;
-        _fileReader.SaveZaml = false;
+        _fileReader = new FileSvgReader(_wpfSettings)
+        {
+            SaveXaml = false,
+            SaveZaml = false
+        };
 
         _worker = new ConsoleWorker();
         //_worker.WorkerReportsProgress = true;
@@ -59,13 +59,7 @@ public sealed class ConsoleFileConverter : ConsoleConverter
 
     #region Public Propeties
 
-    public string SourceFile
-    {
-        get
-        {
-            return _sourceFile;
-        }
-    }
+    public string SourceFile { get; }
 
     #endregion
 
@@ -75,8 +69,8 @@ public sealed class ConsoleFileConverter : ConsoleConverter
     {
         Debug.Assert(writer != null);
 
-        Debug.Assert(_sourceFile != null && _sourceFile.Length != 0);
-        if (string.IsNullOrWhiteSpace(_sourceFile) || !File.Exists(_sourceFile))
+        Debug.Assert(SourceFile != null && SourceFile.Length != 0);
+        if (string.IsNullOrWhiteSpace(SourceFile) || !File.Exists(SourceFile))
         {
             return false;
         }
@@ -87,12 +81,12 @@ public sealed class ConsoleFileConverter : ConsoleConverter
         {
             this.AppendLine(string.Empty);
             this.AppendLine("Converting file, please wait...");
-            this.AppendLine("Input File: " + _sourceFile);
+            this.AppendLine("Input File: " + SourceFile);
 
             string? _outputDir = this.OutputDir;
             if (string.IsNullOrWhiteSpace(_outputDir))
             {
-                _outputDir = Path.GetDirectoryName(_sourceFile) ?? string.Empty;
+                _outputDir = Path.GetDirectoryName(SourceFile) ?? string.Empty;
             }
             _outputInfoDir = new DirectoryInfo(_outputDir);
 
@@ -100,16 +94,13 @@ public sealed class ConsoleFileConverter : ConsoleConverter
 
             _worker.RunWorkerAsync();
 
-            if (_observer != null)
-            {
-                _observer.OnStarted(this);
-            }
+            _observer?.OnStarted(this);
 
             return true;
         }
         catch (Exception ex)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendFormat("Error: Exception ({0})", ex.GetType());
             builder.AppendLine();
             builder.AppendLine(ex.Message);
@@ -142,7 +133,7 @@ public sealed class ConsoleFileConverter : ConsoleConverter
 
         bool isSuccessful = false;
 
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         if (e.Error != null || _drawing == null)
         {
             Exception? ex = e.Error;
@@ -193,18 +184,13 @@ public sealed class ConsoleFileConverter : ConsoleConverter
                     StringComparison.OrdinalIgnoreCase);
         }
 
-        this.AppendLine(builder.ToString());
-        if (_observer != null)
-        {
-            _observer.OnCompleted(this, isSuccessful);
-        }
+        AppendLine(builder.ToString());
+        _observer?.OnCompleted(this, isSuccessful);
     }
 
     private void OnWorkerDoWork(object? sender, DoWorkEventArgs e)
     {
-        ConsoleWorker worker = (ConsoleWorker)sender!;
-
-        ConverterOptions options = this.Options;
+        var options = Options;
 
         _wpfSettings.IncludeRuntime = options.IncludeRuntime;
         _wpfSettings.TextAsGeometry = options.TextAsGeometry;
@@ -222,7 +208,7 @@ public sealed class ConsoleFileConverter : ConsoleConverter
             _fileReader.SaveZaml = false;
         }
 
-        _drawing = _fileReader.Read(_sourceFile, _outputInfoDir);
+        _drawing = _fileReader.Read(SourceFile, _outputInfoDir);
 
         if (_drawing == null)
         {
@@ -232,7 +218,7 @@ public sealed class ConsoleFileConverter : ConsoleConverter
 
         if (options.GenerateImage)
         {
-            _fileReader.SaveImage(_sourceFile, _outputInfoDir,
+            _fileReader.SaveImage(SourceFile, _outputInfoDir,
                 options.EncoderType);
 
             _imageFile = _fileReader.ImageFile;
@@ -254,7 +240,7 @@ public sealed class ConsoleFileConverter : ConsoleConverter
 
     private void OnSyncConvert()
     {
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         try
         {
             ConverterOptions options = this.Options;
@@ -275,7 +261,7 @@ public sealed class ConsoleFileConverter : ConsoleConverter
                 _fileReader.SaveZaml = false;
             }
 
-            Drawing drawing = _fileReader.Read(_sourceFile, _outputInfoDir);
+            Drawing drawing = _fileReader.Read(SourceFile, _outputInfoDir);
 
             if (drawing == null)
             {
@@ -286,7 +272,7 @@ public sealed class ConsoleFileConverter : ConsoleConverter
                 string? _imageFile = null;
                 if (options.GenerateImage)
                 {
-                    _fileReader.SaveImage(_sourceFile, _outputInfoDir,
+                    _fileReader.SaveImage(SourceFile, _outputInfoDir,
                         options.EncoderType);
 
                     _imageFile = _fileReader.ImageFile;

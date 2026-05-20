@@ -43,10 +43,10 @@ public partial class DirectoryConverterOutput : Page, IObservable
     private DirectoryInfo? _sourceInfoDir;
     private DirectoryInfo? _outputInfoDir;
 
-    private FileSvgReader _fileReader;
-    private WpfDrawingSettings _wpfSettings;
+    private readonly FileSvgReader _fileReader;
+    private readonly WpfDrawingSettings _wpfSettings;
 
-    private BackgroundWorker _worker;
+    private readonly BackgroundWorker _worker;
 
     #endregion
 
@@ -59,13 +59,17 @@ public partial class DirectoryConverterOutput : Page, IObservable
         _wpfSettings = new WpfDrawingSettings();
         _wpfSettings.CultureInfo = _wpfSettings.NeutralCultureInfo;
 
-        _fileReader = new FileSvgReader(_wpfSettings);
-        _fileReader.SaveXaml = false;
-        _fileReader.SaveZaml = false;
+        _fileReader = new FileSvgReader(_wpfSettings)
+        {
+            SaveXaml = false,
+            SaveZaml = false
+        };
 
-        _worker = new BackgroundWorker();
-        _worker.WorkerReportsProgress = true;
-        _worker.WorkerSupportsCancellation = true;
+        _worker = new BackgroundWorker
+        {
+            WorkerReportsProgress = true,
+            WorkerSupportsCancellation = true
+        };
 
         _worker.DoWork += OnWorkerDoWork;
         _worker.RunWorkerCompleted += OnWorkerCompleted;
@@ -264,12 +268,12 @@ public partial class DirectoryConverterOutput : Page, IObservable
 
         btnCancel.IsEnabled = false;
 
-        _errorFiles = new List<string>();
+        _errorFiles = [];
 
         try
         {
-            this.AppendLine("Converting files, please wait...");
-            this.AppendLine("Input Directory: " + _sourceDir);
+            AppendLine("Converting files, please wait...");
+            AppendLine("Input Directory: " + _sourceDir);
 
             Debug.Assert(_sourceDir != null && _sourceDir.Length != 0);
             if (string.IsNullOrWhiteSpace(_outputDir))
@@ -281,21 +285,18 @@ public partial class DirectoryConverterOutput : Page, IObservable
 
             _worker.RunWorkerAsync();
 
-            if (_observer != null)
-            {
-                _observer.OnStarted(this);
-            }
+            _observer?.OnStarted(this);
 
             btnCancel.IsEnabled = true;
         }
         catch (Exception ex)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendFormat("Error: Exception ({0})", ex.GetType());
             builder.AppendLine();
             builder.AppendLine(ex.Message);
 
-            this.AppendText(builder.ToString());
+            AppendText(builder.ToString());
         }
     }
 
@@ -315,22 +316,22 @@ public partial class DirectoryConverterOutput : Page, IObservable
 
         try
         {
-            this.Cursor = Cursors.Wait;
+            Cursor = Cursors.Wait;
 
-            this.Cancel();
+            Cancel();
         }
         catch (Exception ex)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendFormat("Error: Exception ({0})", ex.GetType());
             builder.AppendLine();
             builder.AppendLine(ex.Message);
 
-            this.AppendText(builder.ToString());
+            AppendText(builder.ToString());
         }
         finally
         {
-            this.Cursor = startCursor;
+            Cursor = startCursor;
         }
     }
 
@@ -342,7 +343,7 @@ public partial class DirectoryConverterOutput : Page, IObservable
     {
         if (e.UserState != null)
         {
-            this.AppendLine(e.UserState.ToString() ?? string.Empty);
+            AppendLine(e.UserState.ToString() ?? string.Empty);
         }
     }
 
@@ -350,7 +351,7 @@ public partial class DirectoryConverterOutput : Page, IObservable
     {
         btnCancel.IsEnabled = false;
 
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         if (e.Error != null)
         {
             Exception ex = e.Error;
@@ -367,19 +368,13 @@ public partial class DirectoryConverterOutput : Page, IObservable
                 builder.AppendFormat("Error: Unknown");
             }
 
-            if (_observer != null)
-            {
-                _observer.OnCompleted(this, false);
-            }
+            _observer?.OnCompleted(this, false);
         }
         else if (e.Cancelled)
         {
             builder.AppendLine("Result: Cancelled");
 
-            if (_observer != null)
-            {
-                _observer.OnCompleted(this, false);
-            }
+            _observer?.OnCompleted(this, false);
         }
         else if (e.Result != null)
         {
@@ -410,19 +405,14 @@ public partial class DirectoryConverterOutput : Page, IObservable
                 builder.AppendLine("Output Directory: " + _outputInfoDir.FullName);
             }
 
-            if (_observer != null)
-            {
-                _observer.OnCompleted(this, isSuccessful);
-            }
+            _observer?.OnCompleted(this, isSuccessful);
         }
 
-        this.AppendLine(builder.ToString());
+        AppendLine(builder.ToString());
     }
 
     private void OnWorkerDoWork(object? sender, DoWorkEventArgs e)
     {
-        BackgroundWorker worker = (BackgroundWorker)sender!;
-
         _wpfSettings.IncludeRuntime = _options.IncludeRuntime;
         _wpfSettings.TextAsGeometry = _options.TextAsGeometry;
 
@@ -439,7 +429,7 @@ public partial class DirectoryConverterOutput : Page, IObservable
             _fileReader.SaveZaml = false;
         }
 
-        this.ProcessConversion(e, _sourceInfoDir!, _outputInfoDir!);
+        ProcessConversion(e, _sourceInfoDir!, _outputInfoDir!);
 
         if (!e.Cancel)
         {
@@ -488,7 +478,7 @@ public partial class DirectoryConverterOutput : Page, IObservable
         }
 
         // Convert the files in the specified directory...
-        this.ConvertFiles(e, source, target);
+        ConvertFiles(e, source, target);
 
         if (e.Cancel)
         {
@@ -507,14 +497,14 @@ public partial class DirectoryConverterOutput : Page, IObservable
         }
 
         // If recursive, process any sub-directory...
-        DirectoryInfo[] arrSourceInfo = source.GetDirectories();
+        var arrSourceInfo = source.GetDirectories();
 
         int dirCount = (arrSourceInfo == null) ? 0 : arrSourceInfo.Length;
 
         for (int i = 0; i < dirCount; i++)
         {
-            DirectoryInfo sourceInfo = arrSourceInfo![i]!;
-            FileAttributes fileAttr = sourceInfo.Attributes;
+            var sourceInfo = arrSourceInfo![i]!;
+            var fileAttr = sourceInfo.Attributes;
             if (!_includeHidden)
             {
                 if ((fileAttr & FileAttributes.Hidden) == FileAttributes.Hidden)
@@ -534,14 +524,14 @@ public partial class DirectoryConverterOutput : Page, IObservable
                 break;
             }
 
-            DirectoryInfo targetInfo = target.CreateSubdirectory(sourceInfo.Name);
+            var targetInfo = target.CreateSubdirectory(sourceInfo.Name);
             if (_includeSecurity)
             {
                 targetInfo.SetAccessControl(sourceInfo.GetAccessControl());
             }
             targetInfo.Attributes = fileAttr;
 
-            this.ProcessConversion(e, sourceInfo, targetInfo);
+            ProcessConversion(e, sourceInfo, targetInfo);
         }
     }
 
@@ -669,7 +659,7 @@ public partial class DirectoryConverterOutput : Page, IObservable
 
                     if (_continueOnError)
                     {
-                        StringBuilder builder = new StringBuilder();
+                        var builder = new StringBuilder();
                         builder.AppendLine("Error converting: " + svgFileName);
                         builder.AppendFormat("Error: Exception ({0})", ex.GetType());
                         builder.AppendLine();

@@ -26,13 +26,7 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
     /// </summary>
     private Brush _titleBkDefault = Brushes.Transparent;
     private IObserver? _observer;
-    private ConverterOptions _options = new();
-
     private DirectoryConverterOutput? _converterOutput;
-
-
-
-    private Frame? _parentFrame;
 
     #endregion
 
@@ -43,8 +37,8 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
         InitializeComponent();
 
         // Reset the dimensions...
-        this.Width = Double.NaN;
-        this.Height = Double.NaN;
+        Width = double.NaN;
+        Height = double.NaN;
 
         if (_titleBkDefault == null &&
             (statusTitle != null && statusTitle.IsInitialized))
@@ -52,7 +46,7 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
             _titleBkDefault = statusTitle.Background;
         }
 
-        this.Loaded += new RoutedEventHandler(OnPageLoaded);
+        Loaded += new RoutedEventHandler(OnPageLoaded);
     }
 
     #endregion
@@ -61,32 +55,15 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
 
     public ConverterOptions Options
     {
-        get
-        {
-            return _options;
-        }
+        get;
         set
         {
-            _options = value;
+            field = value;
+            field?.PropertyChanged += new PropertyChangedEventHandler(OnOptionsPropertyChanged);
+        }
+    } = new();
 
-            if (_options != null)
-            {
-                _options.PropertyChanged += new PropertyChangedEventHandler(OnOptionsPropertyChanged);
-            }
-        }
-    }
-
-    public Frame? ParentFrame
-    {
-        get
-        {
-            return _parentFrame;
-        }
-        set
-        {
-            _parentFrame = value;
-        }
-    }
+    public Frame? ParentFrame { get; set; }
 
     #endregion
 
@@ -96,10 +73,7 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
     {
         base.OnInitialized(e);
 
-        if (_titleBkDefault == null)
-        {
-            _titleBkDefault = statusTitle.Background;
-        }
+        _titleBkDefault ??= statusTitle.Background;
     }
 
     #endregion
@@ -108,17 +82,17 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
 
     private void OnPageLoaded(object sender, RoutedEventArgs e)
     {
-        Debug.Assert(_options != null);
+        Debug.Assert(Options != null);
 
         if (!_isConversionError)
         {
-            this.UpdateStatus();
+            UpdateStatus();
         }
     }
 
     private void OnDirTextChanged(object sender, TextChangedEventArgs e)
     {
-        this.UpdateStatus();
+        UpdateStatus();
     }
 
     private void OnSourceDirClick(object sender, RoutedEventArgs e)
@@ -163,8 +137,8 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
 
     private void OnConvertClick(object sender, RoutedEventArgs e)
     {
-        Debug.Assert(_parentFrame != null);
-        if (_parentFrame == null)
+        Debug.Assert(ParentFrame != null);
+        if (ParentFrame == null)
         {
             return;
         }
@@ -172,11 +146,8 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
         _isConversionError = false;
         btnConvert.IsEnabled = false;
 
-        if (_converterOutput == null)
-        {
-            _converterOutput = new DirectoryConverterOutput();
-        }
-        _converterOutput.Options = _options;
+        _converterOutput ??= new DirectoryConverterOutput();
+        _converterOutput.Options = Options;
         if (chkRecursive.IsChecked != null)
         {
             _converterOutput.Recursive = chkRecursive.IsChecked.Value;
@@ -190,10 +161,10 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
         _converterOutput.SourceDir = txtSourceDir.Text;
         _converterOutput.OutputDir = txtOutputDir.Text;
 
-        _parentFrame.Content = _converterOutput;
+        ParentFrame.Content = _converterOutput;
 
         //_converterOutput.Convert();
-        this.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+        Dispatcher.BeginInvoke(DispatcherPriority.Normal,
             new ConvertHandler(_converterOutput.Convert));
     }
 
@@ -210,14 +181,14 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
     {
         if (_isConverting)
         {
-            this.UpdateStatus("Converting",
+            UpdateStatus("Converting",
                 "The conversion process is currently running, please wait...", false);
             return;
         }
 
         bool isValid = false;
 
-        if (_options.IsValid)
+        if (Options.IsValid)
         {
             string sourceDir = txtSourceDir.Text.Trim();
             string outputDir = txtOutputDir.Text.Trim();
@@ -229,7 +200,7 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
                     string? rootDir = Path.GetPathRoot(outputDir);
                     if (!string.IsNullOrWhiteSpace(rootDir))
                     {
-                        DriveInfo drive = new DriveInfo(rootDir);
+                        var drive = new DriveInfo(rootDir);
                         if (!drive.IsReady || drive.DriveType == DriveType.CDRom
                             || drive.DriveType == DriveType.Unknown)
                         {
@@ -243,14 +214,14 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
             }
             if (string.IsNullOrWhiteSpace(sourceDir))
             {
-                this.UpdateStatus("Conversion: Not Ready",
+                UpdateStatus("Conversion: Not Ready",
                     "Select an input directory of SVG files for conversion.", false);
             }
             else if (Directory.Exists(sourceDir))
             {
                 if (isReadOnlyOutputDir)
                 {
-                    this.UpdateStatus("Error: Output Directory",
+                    UpdateStatus("Error: Output Directory",
                         "The output directory is either invalid or read-only. Please select a different output directory.", true);
                 }
                 else
@@ -258,10 +229,10 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
                     bool isReadOnlySource = false;
                     try
                     {
-                        string? rootDir = Path.GetPathRoot(outputDir);
+                        var rootDir = Path.GetPathRoot(outputDir);
                         if (!string.IsNullOrWhiteSpace(rootDir))
                         {
-                            DriveInfo drive = new DriveInfo(rootDir);
+                            var drive = new DriveInfo(rootDir);
                             if (!drive.IsReady || drive.DriveType == DriveType.CDRom
                                 || drive.DriveType == DriveType.Unknown)
                             {
@@ -274,12 +245,12 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
                     }
                     if (isReadOnlySource && string.IsNullOrWhiteSpace(outputDir))
                     {
-                        this.UpdateStatus("Required: Output Directory",
+                        UpdateStatus("Required: Output Directory",
                             "For the read-only source directory, an output directory is required and must be specified.", true);
                     }
                     else
                     {
-                        this.UpdateStatus("Conversion: Ready",
+                        UpdateStatus("Conversion: Ready",
                             "Click the Convert button to convert the SVG files in the source directory.", false);
 
                         isValid = true;
@@ -288,14 +259,14 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
             }
             else
             {
-                this.UpdateStatus("Error: Source Directory",
+                UpdateStatus("Error: Source Directory",
                     "The specified source directory is either invalid or does not exists.",
                     true);
             }
         }
         else
         {
-            this.UpdateStatus("Error: Options", _options.Message, true);
+            UpdateStatus("Error: Options", Options.Message, true);
         }
 
         btnConvert.IsEnabled = isValid;
@@ -321,10 +292,7 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
 
     public void Cancel()
     {
-        if (_converterOutput != null)
-        {
-            _converterOutput.Cancel();
-        }
+        _converterOutput?.Cancel();
     }
 
     public void Subscribe(IObserver observer)
@@ -342,12 +310,9 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
 
         progressBar.Visibility = Visibility.Visible;
 
-        this.UpdateStatus();
+        UpdateStatus();
 
-        if (_observer != null)
-        {
-            _observer.OnStarted(this);
-        }
+        _observer?.OnStarted(this);
     }
 
     public void OnCompleted(IObservable sender, bool isSuccessful)
@@ -356,23 +321,20 @@ public partial class DirectoryConverterPage : Page, IObservable, IObserver
 
         progressBar.Visibility = Visibility.Hidden;
 
-        this.UpdateStatus();
+        UpdateStatus();
 
-        if (_observer != null)
-        {
-            _observer.OnCompleted(this, isSuccessful);
-        }
+        _observer?.OnCompleted(this, isSuccessful);
 
-        _isConversionError = isSuccessful ? false : true;
+        _isConversionError = !isSuccessful;
 
         if (isSuccessful)
         {
-            this.UpdateStatus("Conversion: Successful",
+            UpdateStatus("Conversion: Successful",
                 "The conversion of the specified directory is completed successfully.", false);
         }
         else
         {
-            this.UpdateStatus("Conversion: Failed",
+            UpdateStatus("Conversion: Failed",
                 "The conversion of the specified directory failed, see the output for further information.", true);
         }
     }

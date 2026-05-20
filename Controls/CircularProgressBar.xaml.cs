@@ -147,15 +147,15 @@ public partial class CircularProgressBar
     /// <param name="e">Event arguments.</param>
     private void HandleLoaded(object sender, RoutedEventArgs e)
     {
-        this.SetPosition(C0, 0.0);
-        this.SetPosition(C1, 1.0);
-        this.SetPosition(C2, 2.0);
-        this.SetPosition(C3, 3.0);
-        this.SetPosition(C4, 4.0);
-        this.SetPosition(C5, 5.0);
-        this.SetPosition(C6, 6.0);
-        this.SetPosition(C7, 7.0);
-        this.SetPosition(C8, 8.0);
+        SetPosition(C0, 0.0);
+        SetPosition(C1, 1.0);
+        SetPosition(C2, 2.0);
+        SetPosition(C3, 3.0);
+        SetPosition(C4, 4.0);
+        SetPosition(C5, 5.0);
+        SetPosition(C6, 6.0);
+        SetPosition(C7, 7.0);
+        SetPosition(C8, 8.0);
     }
 
     /// <summary>
@@ -163,7 +163,7 @@ public partial class CircularProgressBar
     /// </summary>
     /// <param name="ellipse">The circle.</param>
     /// <param name="sequence">Sequence number of the circle.</param>
-    private void SetPosition(Ellipse ellipse, double sequence)
+    static void SetPosition(Ellipse ellipse, double sequence)
     {
         ellipse.SetValue(
             Canvas.LeftProperty,

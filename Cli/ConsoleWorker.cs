@@ -7,11 +7,10 @@ public sealed class ConsoleWorker
     #region Private Fields
 
     private int _count;
-    private int _maxCount;
-    private bool _cancelationPending;
-    private object _countProtector;
+    private readonly int _maxCount;
+    private readonly Lock _countProtector;
 
-    private DoWorkEventHandler _eventHandler;
+    private readonly DoWorkEventHandler _eventHandler;
 
     #endregion
 
@@ -24,7 +23,7 @@ public sealed class ConsoleWorker
 
     public ConsoleWorker(int maximumCount)
     {
-        _countProtector = new Object();
+        _countProtector = new Lock();
 
         _maxCount = maximumCount;
         _eventHandler = new DoWorkEventHandler(this.OnDoWork);
@@ -58,13 +57,7 @@ public sealed class ConsoleWorker
         }
     }
 
-    public bool CancellationPending
-    {
-        get
-        {
-            return _cancelationPending;
-        }
-    }
+    public bool CancellationPending { get; private set; }
 
     #endregion
 
@@ -72,18 +65,18 @@ public sealed class ConsoleWorker
 
     public bool RunWorkerAsync(bool abortIfBusy)
     {
-        return this.RunWorkerAsync(abortIfBusy, null);
+        return RunWorkerAsync(abortIfBusy, null);
     }
 
     public bool RunWorkerAsync(object? argument)
     {
-        if (this.IsBusy)
+        if (IsBusy)
         {
             return false;
         }
         _count++;
 
-        DoWorkEventArgs args = new DoWorkEventArgs(argument);
+        var args = new DoWorkEventArgs(argument);
         Task.Run(() => RunWorker(args));
 
         return true;
@@ -91,13 +84,13 @@ public sealed class ConsoleWorker
 
     public bool RunWorkerAsync()
     {
-        if (this.IsBusy)
+        if (IsBusy)
         {
             return false;
         }
         _count++;
 
-        DoWorkEventArgs args = new DoWorkEventArgs(null);
+        var args = new DoWorkEventArgs(null);
         Task.Run(() => RunWorker(args));
 
         return true;
@@ -105,13 +98,13 @@ public sealed class ConsoleWorker
 
     public bool RunWorkerAsync(bool abortIfBusy, object? argument)
     {
-        if (abortIfBusy && this.IsBusy)
+        if (abortIfBusy && IsBusy)
         {
             return false;
         }
         _count++;
 
-        DoWorkEventArgs args = new DoWorkEventArgs(argument);
+        var args = new DoWorkEventArgs(argument);
         Task.Run(() => RunWorker(args));
 
         return true;
@@ -119,7 +112,7 @@ public sealed class ConsoleWorker
 
     public void CancelAsync()
     {
-        _cancelationPending = true;
+        CancellationPending = true;
     }
 
     public void ReportProgress(int percentProgress)
@@ -142,18 +135,12 @@ public sealed class ConsoleWorker
         {
             return;
         }
-        if (this.DoWork != null)
-        {
-            this.DoWork(this, e);
-        }
+        DoWork?.Invoke(this, e);
     }
 
     private void OnProgressChanged(ProgressChangedEventArgs e)
     {
-        if (this.ProgressChanged != null)
-        {
-            this.ProgressChanged(this, e);
-        }
+        ProgressChanged?.Invoke(this, e);
     }
 
     private void RunWorker(DoWorkEventArgs args)
@@ -168,7 +155,7 @@ public sealed class ConsoleWorker
             error = ex;
         }
 
-        this.RunWorkerCompleted?.Invoke(this,
+        RunWorkerCompleted?.Invoke(this,
             new RunWorkerCompletedEventArgs(args.Result, error, args.Cancel));
 
         lock (_countProtector)

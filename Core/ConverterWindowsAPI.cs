@@ -2,36 +2,41 @@ using System.Runtime.InteropServices;
 
 namespace FluentSvgXaml.Core;
 
-/// <summary>
-/// 
-/// </summary>
-public static class ConverterWindowsAPI
+public static partial class ConverterWindowsAPI
 {
-    [DllImport("kernel32.dll", SetLastError = true)]
-    public static extern bool AllocConsole();
-    [DllImport("kernel32.dll", SetLastError = true)]
-    public static extern bool FreeConsole();
-    [DllImport("kernel32", SetLastError = true)]
-    public static extern bool AttachConsole(int dwProcessId);
+    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool AllocConsole();
 
-    [DllImport("kernel32.dll")]
-    public static extern IntPtr GetConsoleWindow();
+    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool FreeConsole();
+
+    [LibraryImport("kernel32", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool AttachConsole(int dwProcessId);
+
+#pragma warning disable CA1401 // P/Invokes 应该是不可见的
+    [LibraryImport("kernel32.dll")]
+    public static partial IntPtr GetConsoleWindow();
 
     /// <summary>
     /// The GetForegroundWindow function returns a handle to the foreground window.
     /// </summary>
-    [DllImport("user32.dll")]
-    public static extern IntPtr GetForegroundWindow();
+    [LibraryImport("user32.dll")]
+    public static partial IntPtr GetForegroundWindow();
 
-    [DllImport("kernel32.dll")]
-    public static extern uint GetCurrentThreadId();
+    [LibraryImport("kernel32.dll")]
+    public static partial uint GetCurrentThreadId();
 
-    [DllImport("user32.dll", SetLastError = true)]
-    public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
+    [LibraryImport("user32.dll", SetLastError = true)]
+    public static partial uint GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
-    [DllImport("user32.dll")]
-    public static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool AttachThreadInput(uint idAttach, uint idAttachTo, [MarshalAs(UnmanagedType.Bool)] bool fAttach);
 
-    [DllImport("kernel32.dll")]
-    public static extern void ExitProcess(uint uExitCode);
+    [LibraryImport("kernel32.dll")]
+    public static partial void ExitProcess(uint uExitCode);
+#pragma warning restore CA1401 // P/Invokes 应该是不可见的
 }

@@ -33,23 +33,18 @@ public partial class FileConverterOutput : Page, IObservable
     /// Only one observer is expected!
     /// </summary>
     private IObserver? _observer;
-    private ConverterOptions _options = new();
-
     private string? _imageFile;
     private string? _xamlFile;
     private string? _zamlFile;
     private BitmapImage? _bitmapImage;
 
     private DrawingGroup? _drawing;
-
-    private string? _sourceFile;
-    private string? _outputDir;
     private DirectoryInfo? _outputInfoDir;
 
-    private FileSvgReader _fileReader;
-    private WpfDrawingSettings _wpfSettings;
+    private readonly FileSvgReader _fileReader;
+    private readonly WpfDrawingSettings _wpfSettings;
 
-    private BackgroundWorker _worker;
+    private readonly BackgroundWorker _worker;
 
     /// <summary>
     /// Specifies the current state of the mouse handling logic.
@@ -99,15 +94,19 @@ public partial class FileConverterOutput : Page, IObservable
         _wpfSettings = new WpfDrawingSettings();
         _wpfSettings.CultureInfo = _wpfSettings.NeutralCultureInfo;
 
-        _fileReader = new FileSvgReader(_wpfSettings);
-        _fileReader.SaveXaml = false;
-        _fileReader.SaveZaml = false;
+        _fileReader = new FileSvgReader(_wpfSettings)
+        {
+            SaveXaml = false,
+            SaveZaml = false
+        };
 
         mouseHandlingMode = MouseHandlingMode.None;
 
-        _worker = new BackgroundWorker();
-        _worker.WorkerReportsProgress = true;
-        _worker.WorkerSupportsCancellation = true;
+        _worker = new BackgroundWorker
+        {
+            WorkerReportsProgress = true,
+            WorkerSupportsCancellation = true
+        };
 
         _worker.DoWork += new DoWorkEventHandler(OnWorkerDoWork);
         _worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(OnWorkerCompleted);
@@ -118,41 +117,11 @@ public partial class FileConverterOutput : Page, IObservable
 
     #region Public Properties
 
-    public ConverterOptions Options
-    {
-        get
-        {
-            return _options;
-        }
-        set
-        {
-            _options = value;
-        }
-    }
+    public ConverterOptions Options { get; set; } = new();
 
-    public string? SourceFile
-    {
-        get
-        {
-            return _sourceFile;
-        }
-        set
-        {
-            _sourceFile = value;
-        }
-    }
+    public string? SourceFile { get; set; }
 
-    public string? OutputDir
-    {
-        get
-        {
-            return _outputDir;
-        }
-        set
-        {
-            _outputDir = value;
-        }
-    }
+    public string? OutputDir { get; set; }
 
     #endregion
 
@@ -168,46 +137,40 @@ public partial class FileConverterOutput : Page, IObservable
         _bitmapImage = null;
         _drawing = null;
 
-        if (svgViewer != null)
-        {
-            svgViewer.UnloadDiagrams();
-        }
-        this.UnloadDocument();
+        svgViewer?.UnloadDiagrams();
+        UnloadDocument();
 
         tabControl.SelectedIndex = 0;
-        TabItem xamlItem = (TabItem)tabControl.Items[2];
-        xamlItem.Visibility = _options.GeneralWpf ?
+        var xamlItem = (TabItem)tabControl.Items[2];
+        xamlItem.Visibility = Options.GeneralWpf ?
             Visibility.Visible : Visibility.Collapsed;
-        TabItem imageItem = (TabItem)tabControl.Items[3];
-        imageItem.Visibility = _options.GenerateImage ?
+        var imageItem = (TabItem)tabControl.Items[3];
+        imageItem.Visibility = Options.GenerateImage ?
             Visibility.Visible : Visibility.Collapsed;
 
         try
         {
-            this.AppendLine("Converting: " + _sourceFile);
+            AppendLine("Converting: " + SourceFile);
 
-            Debug.Assert(_sourceFile != null && _sourceFile.Length != 0);
-            if (string.IsNullOrWhiteSpace(_outputDir))
+            Debug.Assert(SourceFile != null && SourceFile.Length != 0);
+            if (string.IsNullOrWhiteSpace(OutputDir))
             {
-                _outputDir = Path.GetDirectoryName(_sourceFile) ?? string.Empty;
+                OutputDir = Path.GetDirectoryName(SourceFile) ?? string.Empty;
             }
-            _outputInfoDir = new DirectoryInfo(_outputDir!);
+            _outputInfoDir = new DirectoryInfo(OutputDir!);
 
             _worker.RunWorkerAsync();
 
-            if (_observer != null)
-            {
-                _observer.OnStarted(this);
-            }
+            _observer?.OnStarted(this);
         }
         catch (Exception ex)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendFormat("Error: Exception ({0})", ex.GetType());
             builder.AppendLine();
             builder.AppendLine(ex.Message);
 
-            this.AppendText(builder.ToString());
+            AppendText(builder.ToString());
         }
     }
 
@@ -221,18 +184,12 @@ public partial class FileConverterOutput : Page, IObservable
     {
         //zoomSlider.Value = 100;
 
-        if (zoomPanControl != null)
-        {
-            zoomPanControl.IsMouseWheelScrollingEnabled = true;
-        }
+        zoomPanControl?.IsMouseWheelScrollingEnabled = true;
     }
 
     private void OnTabSelectionChanged(object sender,
         SelectionChangedEventArgs e)
     {
-        object source = e.Source;
-        object orisource = e.OriginalSource;
-
         switch (tabControl.SelectedIndex)
         {
             case 0:
@@ -321,7 +278,7 @@ public partial class FileConverterOutput : Page, IObservable
             //}
         }
 
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         if (e.Error != null || _drawing == null)
         {
             Exception? ex = e.Error;
@@ -338,19 +295,13 @@ public partial class FileConverterOutput : Page, IObservable
                 builder.AppendFormat("Error: Unknown");
             }
 
-            if (_observer != null)
-            {
-                _observer.OnCompleted(this, false);
-            }
+            _observer?.OnCompleted(this, false);
         }
         else if (e.Cancelled)
         {
             builder.AppendLine("Result: Cancelled");
 
-            if (_observer != null)
-            {
-                _observer.OnCompleted(this, false);
-            }
+            _observer?.OnCompleted(this, false);
         }
         else if (e.Result != null)
         {
@@ -374,29 +325,24 @@ public partial class FileConverterOutput : Page, IObservable
                 builder.AppendLine(_imageFile);
             }
 
-            if (_observer != null)
-            {
-                _observer.OnCompleted(this, string.Equals(resultText, "Successful",
+            _observer?.OnCompleted(this, string.Equals(resultText, "Successful",
                     StringComparison.OrdinalIgnoreCase));
-            }
         }
 
-        this.AppendLine(builder.ToString());
+        AppendLine(builder.ToString());
     }
 
     private void OnWorkerDoWork(object? sender, DoWorkEventArgs e)
     {
-        BackgroundWorker worker = (BackgroundWorker)sender!;
+        _wpfSettings.IncludeRuntime = Options.IncludeRuntime;
+        _wpfSettings.TextAsGeometry = Options.TextAsGeometry;
 
-        _wpfSettings.IncludeRuntime = _options.IncludeRuntime;
-        _wpfSettings.TextAsGeometry = _options.TextAsGeometry;
+        _fileReader.UseFrameXamlWriter = !Options.UseCustomXamlWriter;
 
-        _fileReader.UseFrameXamlWriter = !_options.UseCustomXamlWriter;
-
-        if (_options.GeneralWpf)
+        if (Options.GeneralWpf)
         {
-            _fileReader.SaveXaml = _options.SaveXaml;
-            _fileReader.SaveZaml = _options.SaveZaml;
+            _fileReader.SaveXaml = Options.SaveXaml;
+            _fileReader.SaveZaml = Options.SaveZaml;
         }
         else
         {
@@ -404,7 +350,7 @@ public partial class FileConverterOutput : Page, IObservable
             _fileReader.SaveZaml = false;
         }
 
-        _drawing = _fileReader.Read(_sourceFile, _outputInfoDir);
+        _drawing = _fileReader.Read(SourceFile, _outputInfoDir);
 
         if (_drawing == null)
         {
@@ -412,10 +358,10 @@ public partial class FileConverterOutput : Page, IObservable
             return;
         }
 
-        if (_options.GenerateImage)
+        if (Options.GenerateImage)
         {
-            _fileReader.SaveImage(_sourceFile, _outputInfoDir,
-                _options.EncoderType);
+            _fileReader.SaveImage(SourceFile, _outputInfoDir,
+                Options.EncoderType);
 
             _imageFile = _fileReader.ImageFile;
         }
@@ -677,41 +623,36 @@ public partial class FileConverterOutput : Page, IObservable
         string fileExt = Path.GetExtension(documentFileName);
         if (string.Equals(fileExt, ".zaml", StringComparison.OrdinalIgnoreCase))
         {
-            using (FileStream fileStream = File.OpenRead(documentFileName))
+            using var fileStream = File.OpenRead(documentFileName);
+            using var zipStream = new GZipStream(fileStream, CompressionMode.Decompress);
+            // Text Editor does not work with this stream, so we read the data to memory stream...
+            var memoryStream = new MemoryStream();
+            // Use this method is used to read all bytes from a stream.
+            int totalCount = 0;
+            int bufferSize = 512;
+            byte[] buffer = new byte[bufferSize];
+            while (true)
             {
-                using (GZipStream zipStream =
-                    new GZipStream(fileStream, CompressionMode.Decompress))
+                int bytesRead = zipStream.Read(buffer, 0, bufferSize);
+                if (bytesRead == 0)
                 {
-                    // Text Editor does not work with this stream, so we read the data to memory stream...
-                    MemoryStream memoryStream = new MemoryStream();
-                    // Use this method is used to read all bytes from a stream.
-                    int totalCount = 0;
-                    int bufferSize = 512;
-                    byte[] buffer = new byte[bufferSize];
-                    while (true)
-                    {
-                        int bytesRead = zipStream.Read(buffer, 0, bufferSize);
-                        if (bytesRead == 0)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            memoryStream.Write(buffer, 0, bytesRead);
-                        }
-                        totalCount += bytesRead;
-                    }
-
-                    if (totalCount > 0)
-                    {
-                        memoryStream.Position = 0;
-                    }
-
-                    textEditor.Load(memoryStream);
-
-                    memoryStream.Close();
+                    break;
                 }
+                else
+                {
+                    memoryStream.Write(buffer, 0, bytesRead);
+                }
+                totalCount += bytesRead;
             }
+
+            if (totalCount > 0)
+            {
+                memoryStream.Position = 0;
+            }
+
+            textEditor.Load(memoryStream);
+
+            memoryStream.Close();
         }
         else
         {
@@ -731,10 +672,7 @@ public partial class FileConverterOutput : Page, IObservable
 
     private void UnloadDocument()
     {
-        if (textEditor != null)
-        {
-            textEditor.Document.Text = string.Empty;
-        }
+        textEditor?.Document.Text = string.Empty;
 
         _documentFile = null;
     }

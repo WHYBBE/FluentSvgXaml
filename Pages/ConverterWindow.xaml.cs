@@ -19,7 +19,7 @@ public partial class ConverterWindow : Window, IObserver
 
     private bool _isConverting;
 
-    private ConverterOptions _options;
+    private readonly ConverterOptions _options;
 
     private FileListConverterOutput? _converterOutput;
 
@@ -78,16 +78,12 @@ public partial class ConverterWindow : Window, IObserver
             {
                 return;
             }
-            sourceFiles = new List<string>();
-            sourceFiles.Add(sourceFile);
+            sourceFiles = [sourceFile];
         }
 
         _isConverting = true;
 
-        if (_converterOutput == null)
-        {
-            _converterOutput = new FileListConverterOutput();
-        }
+        _converterOutput ??= new FileListConverterOutput();
 
         _options.Update(commandLines);
 
@@ -101,7 +97,7 @@ public partial class ConverterWindow : Window, IObserver
         frameConverter.Content = _converterOutput;
 
         //_converterOutput.Convert();
-        this.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+        Dispatcher.BeginInvoke(DispatcherPriority.Normal,
             new ConvertHandler(_converterOutput.Convert));
     }
 
@@ -119,7 +115,7 @@ public partial class ConverterWindow : Window, IObserver
         {
             if (_isConverting)
             {
-                StringBuilder builder = new StringBuilder();
+                var builder = new StringBuilder();
                 builder.AppendLine("Conversion process is running on the background.");
                 builder.AppendLine("Do you want to stop the conversion process and close this application?");
                 MessageBoxResult boxResult = MessageBox.Show(builder.ToString(), this.Title,
@@ -132,10 +128,7 @@ public partial class ConverterWindow : Window, IObserver
                     return;
                 }
 
-                if (_converterOutput != null)
-                {
-                    _converterOutput.Cancel();
-                }
+                _converterOutput?.Cancel();
             }
         }
         catch
@@ -145,7 +138,7 @@ public partial class ConverterWindow : Window, IObserver
 
     private void OnClickClosed(object sender, RoutedEventArgs e)
     {
-        this.Close();
+        Close();
     }
 
     #endregion

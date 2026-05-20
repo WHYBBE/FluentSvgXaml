@@ -24,12 +24,12 @@ public partial class MainWindow : Window, IObserver
         set => _startTabIndex = value;
     }
     private int _operationCount;
-    private ConverterOptions _options;
+    private readonly ConverterOptions _options;
 
-    private OptionsPage _optionsPage;
-    private FileConverterPage _filesPage;
-    private FileListConverterPage _filesListPage;
-    private DirectoryConverterPage _directoriesPage;
+    private readonly OptionsPage _optionsPage;
+    private readonly FileConverterPage _filesPage;
+    private readonly FileListConverterPage _filesListPage;
+    private readonly DirectoryConverterPage _directoriesPage;
 
     #endregion
 
@@ -68,36 +68,44 @@ public partial class MainWindow : Window, IObserver
                 _startTabIndex = 2;
         }
 
-        _filesPage = new FileConverterPage();
-        _filesPage.Options = _options;
-        _filesPage.ParentFrame = filesFrame;
+        _filesPage = new FileConverterPage
+        {
+            Options = _options,
+            ParentFrame = filesFrame
+        };
         _filesPage.Subscribe(this);
 
         filesFrame.Content = _filesPage;
 
-        _filesListPage = new FileListConverterPage();
-        _filesListPage.Options = _options;
-        _filesListPage.ParentFrame = filesListFrame;
+        _filesListPage = new FileListConverterPage
+        {
+            Options = _options,
+            ParentFrame = filesListFrame
+        };
         _filesListPage.Subscribe(this);
 
         filesListFrame.Content = _filesListPage;
 
-        _directoriesPage = new DirectoryConverterPage();
-        _directoriesPage.Options = _options;
-        _directoriesPage.ParentFrame = directoriesFrame;
+        _directoriesPage = new DirectoryConverterPage
+        {
+            Options = _options,
+            ParentFrame = directoriesFrame
+        };
         _directoriesPage.Subscribe(this);
 
         directoriesFrame.Content = _directoriesPage;
 
-        _optionsPage = new OptionsPage();
-        _optionsPage.Options = _options;
+        _optionsPage = new OptionsPage
+        {
+            Options = _options
+        };
 
         optionsFrame.Content = _optionsPage;
 
-        this.Loaded += OnWindowLoaded;
-        this.Unloaded += OnWindowUnloaded;
+        Loaded += OnWindowLoaded;
+        Unloaded += OnWindowUnloaded;
 
-        this.Closing += OnWindowClosing;
+        Closing += OnWindowClosing;
     }
 
     #endregion
@@ -111,7 +119,7 @@ public partial class MainWindow : Window, IObserver
             var key = _options.VerticalNav ? "VerticalTabControl" : "HorizontalTabControl";
             tabSteps.Template = (ControlTemplate)FindResource(key);
         }
-        TabItem startItem = (TabItem)tabSteps.Items[_startTabIndex];
+        var startItem = (TabItem)tabSteps.Items[_startTabIndex];
         startItem.IsSelected = true;
         tabSteps.Focus();
     }
@@ -135,10 +143,10 @@ public partial class MainWindow : Window, IObserver
         {
             if (_operationCount > 0)
             {
-                StringBuilder builder = new StringBuilder();
+                var builder = new StringBuilder();
                 builder.AppendLine("Conversion process is running on the background.");
                 builder.AppendLine("Do you want to stop the conversion process and close this application?");
-                MessageBoxResult boxResult = MessageBox.Show(builder.ToString(), this.Title,
+                var boxResult = MessageBox.Show(builder.ToString(), this.Title,
                     MessageBoxButton.YesNo, MessageBoxImage.Warning,
                     MessageBoxResult.No);
 
@@ -148,18 +156,9 @@ public partial class MainWindow : Window, IObserver
                     return;
                 }
 
-                if (_filesPage != null)
-                {
-                    _filesPage.Cancel();
-                }
-                if (_filesListPage != null)
-                {
-                    _filesListPage.Cancel();
-                }
-                if (_directoriesPage != null)
-                {
-                    _directoriesPage.Cancel();
-                }
+                _filesPage?.Cancel();
+                _filesListPage?.Cancel();
+                _directoriesPage?.Cancel();
             }
         }
         catch
@@ -169,7 +168,7 @@ public partial class MainWindow : Window, IObserver
 
     private void OnClickClosed(object sender, RoutedEventArgs e)
     {
-        this.Close();
+        Close();
     }
 
     #endregion

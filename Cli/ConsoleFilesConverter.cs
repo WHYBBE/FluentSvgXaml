@@ -29,10 +29,10 @@ public sealed class ConsoleFilesConverter : ConsoleConverter
     private IList<string> _sourceFiles;
     private DirectoryInfo? _outputInfoDir;
 
-    private FileSvgReader _fileReader;
-    private WpfDrawingSettings _wpfSettings;
+    private readonly FileSvgReader _fileReader;
+    private readonly WpfDrawingSettings _wpfSettings;
 
-    private ConsoleWorker _worker;
+    private readonly ConsoleWorker _worker;
     private ConsoleWriter? _writer;
 
     #endregion
@@ -46,9 +46,11 @@ public sealed class ConsoleFilesConverter : ConsoleConverter
         _wpfSettings = new WpfDrawingSettings();
         _wpfSettings.CultureInfo = _wpfSettings.NeutralCultureInfo;
 
-        _fileReader = new FileSvgReader(_wpfSettings);
-        _fileReader.SaveXaml = false;
-        _fileReader.SaveZaml = false;
+        _fileReader = new FileSvgReader(_wpfSettings)
+        {
+            SaveXaml = false,
+            SaveZaml = false
+        };
 
         _worker = new ConsoleWorker();
         //_worker.WorkerReportsProgress = true;
@@ -145,7 +147,7 @@ public sealed class ConsoleFilesConverter : ConsoleConverter
 
         _writer = writer;
 
-        _errorFiles = new List<string>();
+        _errorFiles = [];
 
         try
         {
@@ -176,16 +178,13 @@ public sealed class ConsoleFilesConverter : ConsoleConverter
 
             _worker.RunWorkerAsync();
 
-            if (_observer != null)
-            {
-                _observer.OnStarted(this);
-            }
+            _observer?.OnStarted(this);
 
             return true;
         }
         catch (Exception ex)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendFormat("Error: Exception ({0})", ex.GetType());
             builder.AppendLine();
             builder.AppendLine(ex.Message);
@@ -212,7 +211,7 @@ public sealed class ConsoleFilesConverter : ConsoleConverter
 
     private void OnWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
     {
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         if (e.Error != null)
         {
             Exception ex = e.Error;
@@ -229,19 +228,13 @@ public sealed class ConsoleFilesConverter : ConsoleConverter
                 builder.AppendFormat("Error: Unknown");
             }
 
-            if (_observer != null)
-            {
-                _observer.OnCompleted(this, false);
-            }
+            _observer?.OnCompleted(this, false);
         }
         else if (e.Cancelled)
         {
             builder.AppendLine("Result: Cancelled");
 
-            if (_observer != null)
-            {
-                _observer.OnCompleted(this, false);
-            }
+            _observer?.OnCompleted(this, false);
         }
         else if (e.Result != null)
         {
@@ -269,10 +262,7 @@ public sealed class ConsoleFilesConverter : ConsoleConverter
                 builder.AppendLine("Output Directory: " + outputDir);
             }
 
-            if (_observer != null)
-            {
-                _observer.OnCompleted(this, isSuccessful);
-            }
+            _observer?.OnCompleted(this, isSuccessful);
         }
 
         this.AppendLine(builder.ToString());
@@ -280,9 +270,7 @@ public sealed class ConsoleFilesConverter : ConsoleConverter
 
     private void OnWorkerDoWork(object? sender, DoWorkEventArgs e)
     {
-        ConsoleWorker worker = (ConsoleWorker)sender!;
-
-        ConverterOptions options = this.Options;
+        var options = Options;
 
         _wpfSettings.IncludeRuntime = options.IncludeRuntime;
         _wpfSettings.TextAsGeometry = options.TextAsGeometry;
@@ -413,7 +401,7 @@ public sealed class ConsoleFilesConverter : ConsoleConverter
 
                     if (_continueOnError)
                     {
-                        StringBuilder builder = new StringBuilder();
+                        var builder = new StringBuilder();
                         builder.AppendLine("Error converting: " + svgFileName);
                         builder.AppendFormat("Error: Exception ({0})", ex.GetType());
                         builder.AppendLine();

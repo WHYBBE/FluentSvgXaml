@@ -4,7 +4,7 @@ using System.IO;
 
 namespace FluentSvgXaml.Cli;
 
-public sealed class ConsoleApplication : IObserver, IObservable
+public sealed class ConsoleApplication(Process process) : IObserver, IObservable
 {
     #region Private Fields
 
@@ -16,23 +16,16 @@ public sealed class ConsoleApplication : IObserver, IObservable
 
     private IObserver? _observer;
 
-    private Process _process;
+    private readonly Process _process = process;
 
     private ConsoleWriter? _writer;
     private ConsoleProgress? _progressBar;
     private ConsoleConverter? _converterOutput;
-    private ConverterOptions _options;
+    private readonly ConverterOptions _options = new();
     private ConverterCommandLines? _commandLines;
 
     #endregion
-
     #region Constructors and Destructor
-
-    public ConsoleApplication(Process process)
-    {
-        _process = process;
-        _options = new ConverterOptions();
-    }
 
     #endregion
 
@@ -78,7 +71,7 @@ public sealed class ConsoleApplication : IObserver, IObservable
         {
             if (!_writer.IsQuiet)
             {
-                _consoleSuccess = this.CreateConsole();
+                _consoleSuccess = CreateConsole();
                 if (!_consoleSuccess)
                 {
                     return 1;
@@ -167,7 +160,7 @@ public sealed class ConsoleApplication : IObserver, IObservable
                 // If not quiet, we will display the progress information
                 // to the console window, so try creating or attaching to 
                 // existing one...
-                _consoleSuccess = this.CreateConsole();
+                _consoleSuccess = CreateConsole();
                 if (!_consoleSuccess)
                 {
                     return 1;
@@ -230,11 +223,11 @@ public sealed class ConsoleApplication : IObserver, IObservable
         string? sourceFile = _commandLines.SourceFile;
         if (!string.IsNullOrWhiteSpace(sourceFile) && File.Exists(sourceFile))
         {
-            ConsoleFileConverter fileConverter =
-                new ConsoleFileConverter(sourceFile);
-
-            fileConverter.Options = _options;
-            fileConverter.OutputDir = outputDir ?? string.Empty;
+            var fileConverter = new ConsoleFileConverter(sourceFile)
+            {
+                Options = _options,
+                OutputDir = outputDir ?? string.Empty
+            };
 
             fileConverter.Subscribe(this);
 
@@ -244,14 +237,13 @@ public sealed class ConsoleApplication : IObserver, IObservable
         string? sourceDir = _commandLines.SourceDir;
         if (!string.IsNullOrWhiteSpace(sourceDir) && Directory.Exists(sourceDir))
         {
-            ConsoleDirectoryConverter dirConverter =
-                new ConsoleDirectoryConverter(sourceDir);
-
-            dirConverter.Options = _options;
-            dirConverter.OutputDir = outputDir ?? string.Empty;
-
-            dirConverter.Recursive = _commandLines.Recursive;
-            dirConverter.ContinueOnError = _commandLines.ContinueOnError;
+            var dirConverter = new ConsoleDirectoryConverter(sourceDir)
+            {
+                Options = _options,
+                OutputDir = outputDir ?? string.Empty,
+                Recursive = _commandLines.Recursive,
+                ContinueOnError = _commandLines.ContinueOnError
+            };
 
             dirConverter.Subscribe(this);
 
@@ -261,13 +253,12 @@ public sealed class ConsoleApplication : IObserver, IObservable
         IList<string>? sourceFiles = _commandLines.SourceFiles;
         if (sourceFiles != null && sourceFiles.Count != 0)
         {
-            ConsoleFilesConverter filesConverter =
-                new ConsoleFilesConverter(sourceFiles);
-
-            filesConverter.Options = _options;
-            filesConverter.OutputDir = outputDir ?? string.Empty;
-
-            filesConverter.ContinueOnError = _commandLines.ContinueOnError;
+            var filesConverter = new ConsoleFilesConverter(sourceFiles)
+            {
+                Options = _options,
+                OutputDir = outputDir ?? string.Empty,
+                ContinueOnError = _commandLines.ContinueOnError
+            };
 
             filesConverter.Subscribe(this);
 
@@ -277,7 +268,7 @@ public sealed class ConsoleApplication : IObserver, IObservable
         return null;
     }
 
-    private bool CreateConsole()
+    static bool CreateConsole()
     {
         try
         {
@@ -350,10 +341,7 @@ public sealed class ConsoleApplication : IObserver, IObservable
 
     public void Cancel()
     {
-        if (_converterOutput != null)
-        {
-            _converterOutput.Cancel();
-        }
+        _converterOutput?.Cancel();
     }
 
     public void Subscribe(IObserver observer)
@@ -369,10 +357,7 @@ public sealed class ConsoleApplication : IObserver, IObservable
     {
         _isConverting = true;
 
-        if (_observer != null)
-        {
-            _observer.OnStarted(this);
-        }
+        _observer?.OnStarted(this);
     }
 
     public void OnCompleted(IObservable sender, bool isSuccessful)
@@ -395,7 +380,7 @@ public sealed class ConsoleApplication : IObserver, IObservable
                 "The conversion failed, see the output for further information.", true);
         }
 
-        _isConversionError = isSuccessful ? false : true;
+        _isConversionError = !isSuccessful;
 
         _isConverting = false;
     }

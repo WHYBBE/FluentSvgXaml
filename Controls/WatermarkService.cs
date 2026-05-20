@@ -25,7 +25,7 @@ public static class WatermarkService
     /// <summary>
     /// Dictionary of ItemsControls
     /// </summary>
-    private static readonly Dictionary<object, ItemsControl> itemsControls = new Dictionary<object, ItemsControl>();
+    private static readonly Dictionary<object, ItemsControl> itemsControls = [];
 
     #endregion
 
@@ -65,7 +65,7 @@ public static class WatermarkService
             control.LostKeyboardFocus += Control_Loaded;
         }
 
-        if (d is ItemsControl && !(d is ComboBox))
+        if (d is ItemsControl and not ComboBox)
         {
             ItemsControl i = (ItemsControl)d;
 
@@ -141,8 +141,7 @@ public static class WatermarkService
     /// <param name="e">A <see cref="ItemsChangedEventArgs"/> that contains the event data.</param>
     private static void ItemsChanged(object sender, ItemsChangedEventArgs e)
     {
-        ItemsControl? control;
-        if (itemsControls.TryGetValue(sender, out control))
+        if (itemsControls.TryGetValue(sender, out ItemsControl? control))
         {
             if (ShouldShowWatermark(control))
             {
@@ -193,13 +192,10 @@ public static class WatermarkService
     /// <param name="control">Control to show the watermark on</param>
     private static void ShowWatermark(Control control)
     {
-        AdornerLayer layer = AdornerLayer.GetAdornerLayer(control);
+        var layer = AdornerLayer.GetAdornerLayer(control);
 
         // layer could be null if control is no longer in the visual tree
-        if (layer != null)
-        {
-            layer.Add(new WatermarkAdorner(control, GetWatermark(control)));
-        }
+        layer?.Add(new WatermarkAdorner(control, GetWatermark(control)));
     }
 
     /// <summary>

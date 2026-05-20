@@ -2,24 +2,17 @@ using FluentSvgXaml.Core;
 
 namespace FluentSvgXaml.Cli;
 
-public sealed class ConsoleProgress : IObserver
+public sealed class ConsoleProgress(bool isQuiet, ConsoleWriter writer) : IObserver
 {
     #region Private Fields
 
-    private bool _isQuiet;
+    private readonly bool _isQuiet = isQuiet;
     private volatile bool _isStarted;
     private Thread? _thread;
-    private ConsoleWriter _writer;
+    private readonly ConsoleWriter _writer = writer;
 
     #endregion
-
     #region Constructors and Destructor
-
-    public ConsoleProgress(bool isQuiet, ConsoleWriter writer)
-    {
-        _isQuiet = isQuiet;
-        _writer = writer;
-    }
 
     #endregion
 
@@ -32,7 +25,7 @@ public sealed class ConsoleProgress : IObserver
     private void ThreadProc()
     {
         int counter = 0;
-        string[] frame = new string[]
+        var frame = new string[]
         {
             "|", "/", "-", "\\", "|", "/", "-", "\\"
         };
@@ -70,8 +63,10 @@ public sealed class ConsoleProgress : IObserver
             return;
         }
 
-        _thread = new Thread(ThreadProc);
-        _thread.IsBackground = true;
+        _thread = new Thread(ThreadProc)
+        {
+            IsBackground = true
+        };
         _thread.Start();
     }
 

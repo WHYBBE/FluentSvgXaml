@@ -28,10 +28,7 @@ public partial class OptionsPage : Page
 
     private void OnOptionsPageLoaded(object sender, RoutedEventArgs e)
     {
-        if (_options == null)
-        {
-            _options = new ConverterOptions();
-        }
+        _options ??= new ConverterOptions();
 
         chkTextAsGeometry.IsChecked = _options.TextAsGeometry;
         chkIncludeRuntime.IsChecked = _options.IncludeRuntime;

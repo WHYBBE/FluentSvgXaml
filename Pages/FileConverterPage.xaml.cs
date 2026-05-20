@@ -26,13 +26,7 @@ public partial class FileConverterPage : Page, IObservable, IObserver
     /// </summary>
     private Brush _titleBkDefault = Brushes.Transparent;
     private IObserver? _observer;
-    private ConverterOptions _options = new();
-
     private FileConverterOutput? _converterOutput;
-
-
-
-    private Frame? _parentFrame;
 
     #endregion
 
@@ -61,31 +55,15 @@ public partial class FileConverterPage : Page, IObservable, IObserver
 
     public ConverterOptions Options
     {
-        get
-        {
-            return _options;
-        }
+        get;
         set
         {
-            _options = value;
-            if (_options != null)
-            {
-                _options.PropertyChanged += OnOptionsPropertyChanged;
-            }
+            field = value;
+            field?.PropertyChanged += OnOptionsPropertyChanged;
         }
-    }
+    } = new();
 
-    public Frame? ParentFrame
-    {
-        get
-        {
-            return _parentFrame;
-        }
-        set
-        {
-            _parentFrame = value;
-        }
-    }
+    public Frame? ParentFrame { get; set; }
 
     #endregion
 
@@ -95,10 +73,7 @@ public partial class FileConverterPage : Page, IObservable, IObserver
     {
         base.OnInitialized(e);
 
-        if (_titleBkDefault == null)
-        {
-            _titleBkDefault = statusTitle.Background;
-        }
+        _titleBkDefault ??= statusTitle.Background;
     }
 
     #endregion
@@ -107,24 +82,24 @@ public partial class FileConverterPage : Page, IObservable, IObserver
 
     private void OnPageLoaded(object sender, RoutedEventArgs e)
     {
-        Debug.Assert(_options != null);
+        Debug.Assert(Options != null);
 
         if (!_isConversionError)
         {
-            this.UpdateStatus();
+            UpdateStatus();
         }
     }
 
     private void OnSourceOutputTextChanged(object sender, TextChangedEventArgs e)
     {
-        this.UpdateStatus();
+        UpdateStatus();
     }
 
     private void OnSourceFileDrop(object sender, DragEventArgs e)
     {
-        if (e.Data is DataObject && ((DataObject)e.Data).ContainsFileDropList())
+        if (e.Data is DataObject item && item.ContainsFileDropList())
         {
-            foreach (string? filePath in ((DataObject)e.Data).GetFileDropList())
+            foreach (string? filePath in item.GetFileDropList())
             {
                 txtSourceFile.Text = filePath;
                 break;  // only a single file conversion is supported...
@@ -150,9 +125,12 @@ public partial class FileConverterPage : Page, IObservable, IObserver
 
     private void OnSourceFileClick(object sender, RoutedEventArgs e)
     {
-        OpenFileDialog dlg = new OpenFileDialog();
-        dlg.Multiselect = false;
-        dlg.Filter = "SVG Files|*.svg;*.svgz"; ;
+        var dlg = new OpenFileDialog
+        {
+            Multiselect = false,
+            Filter = "SVG Files|*.svg;*.svgz"
+        };
+        ;
         dlg.FilterIndex = 1;
 
         bool? isSelected = dlg.ShowDialog();
@@ -188,8 +166,8 @@ public partial class FileConverterPage : Page, IObservable, IObserver
 
     private void OnConvertClick(object sender, RoutedEventArgs e)
     {
-        Debug.Assert(_parentFrame != null);
-        if (_parentFrame == null)
+        Debug.Assert(ParentFrame != null);
+        if (ParentFrame == null)
         {
             return;
         }
@@ -197,17 +175,14 @@ public partial class FileConverterPage : Page, IObservable, IObserver
         _isConversionError = false;
         btnConvert.IsEnabled = false;
 
-        if (_converterOutput == null)
-        {
-            _converterOutput = new FileConverterOutput();
-        }
-        _converterOutput.Options = _options;
+        _converterOutput ??= new FileConverterOutput();
+        _converterOutput.Options = Options;
         _converterOutput.Subscribe(this);
 
         _converterOutput.SourceFile = txtSourceFile.Text;
         _converterOutput.OutputDir = txtOutputDir.Text;
 
-        _parentFrame.Content = _converterOutput;
+        ParentFrame.Content = _converterOutput;
 
         //_converterOutput.Convert();
         this.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
@@ -234,7 +209,7 @@ public partial class FileConverterPage : Page, IObservable, IObserver
 
         bool isValid = false;
 
-        if (_options.IsValid)
+        if (Options.IsValid)
         {
             string sourceFile = txtSourceFile.Text.Trim();
             string outputDir = txtOutputDir.Text.Trim();
@@ -246,7 +221,7 @@ public partial class FileConverterPage : Page, IObservable, IObserver
                     string? rootDir = Path.GetPathRoot(outputDir);
                     if (!string.IsNullOrWhiteSpace(rootDir))
                     {
-                        DriveInfo drive = new DriveInfo(rootDir);
+                        var drive = new DriveInfo(rootDir);
                         if (!drive.IsReady || drive.DriveType == DriveType.CDRom
                             || drive.DriveType == DriveType.Unknown)
                         {
@@ -284,10 +259,10 @@ public partial class FileConverterPage : Page, IObservable, IObserver
                     bool isReadOnlySource = false;
                     try
                     {
-                        string? rootDir = Path.GetPathRoot(outputDir);
+                        var rootDir = Path.GetPathRoot(outputDir);
                         if (!string.IsNullOrWhiteSpace(rootDir))
                         {
-                            DriveInfo drive = new DriveInfo(rootDir);
+                            var drive = new DriveInfo(rootDir);
                             if (!drive.IsReady || drive.DriveType == DriveType.CDRom
                                 || drive.DriveType == DriveType.Unknown)
                             {
@@ -315,8 +290,7 @@ public partial class FileConverterPage : Page, IObservable, IObserver
             else
             {
                 // First, we try check for web source file...
-                Uri? webUri;
-                if (Uri.TryCreate(sourceFile, UriKind.Absolute, out webUri)
+                if (Uri.TryCreate(sourceFile, UriKind.Absolute, out Uri? webUri)
                     && (string.Equals(webUri.Scheme, Uri.UriSchemeHttp, StringComparison.Ordinal)
                     || string.Equals(webUri.Scheme, Uri.UriSchemeHttps, StringComparison.Ordinal)))
                 {
@@ -348,7 +322,7 @@ public partial class FileConverterPage : Page, IObservable, IObserver
         }
         else
         {
-            this.UpdateStatus("Error: Options", _options.Message, true);
+            this.UpdateStatus("Error: Options", Options.Message, true);
         }
 
         btnConvert.IsEnabled = isValid;
@@ -374,10 +348,7 @@ public partial class FileConverterPage : Page, IObservable, IObserver
 
     public void Cancel()
     {
-        if (_converterOutput != null)
-        {
-            _converterOutput.Cancel();
-        }
+        _converterOutput?.Cancel();
     }
 
     public void Subscribe(IObserver observer)
@@ -395,12 +366,9 @@ public partial class FileConverterPage : Page, IObservable, IObserver
 
         progressBar.Visibility = Visibility.Visible;
 
-        this.UpdateStatus();
+        UpdateStatus();
 
-        if (_observer != null)
-        {
-            _observer.OnStarted(this);
-        }
+        _observer?.OnStarted(this);
     }
 
     public void OnCompleted(IObservable sender, bool isSuccessful)
@@ -409,23 +377,20 @@ public partial class FileConverterPage : Page, IObservable, IObserver
 
         progressBar.Visibility = Visibility.Hidden;
 
-        this.UpdateStatus();
+        UpdateStatus();
 
-        if (_observer != null)
-        {
-            _observer.OnCompleted(this, isSuccessful);
-        }
+        _observer?.OnCompleted(this, isSuccessful);
 
-        _isConversionError = isSuccessful ? false : true;
+        _isConversionError = !isSuccessful;
 
         if (isSuccessful)
         {
-            this.UpdateStatus("Conversion: Successful",
+            UpdateStatus("Conversion: Successful",
                 "The conversion of the specified file is completed successfully.", false);
         }
         else
         {
-            this.UpdateStatus("Conversion: Failed",
+            UpdateStatus("Conversion: Failed",
                 "The conversion of the specified file failed, see the output for further information.", true);
         }
     }

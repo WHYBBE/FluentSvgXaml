@@ -41,10 +41,7 @@ public sealed class ConverterOptions : ICloneable, INotifyPropertyChanged
 
     public ConverterOptions(ConverterOptions source)
     {
-        if (source == null)
-        {
-            throw new ArgumentNullException("source");
-        }
+        ArgumentNullException.ThrowIfNull(source);
 
         _textAsGeometry = source._textAsGeometry;
         _includeRuntime = source._includeRuntime;
@@ -104,7 +101,7 @@ public sealed class ConverterOptions : ICloneable, INotifyPropertyChanged
             if (_textAsGeometry != value)
             {
                 _textAsGeometry = value;
-                this.Notify("TextAsGeometry");
+                Notify(nameof(TextAsGeometry));
             }
         }
     }
@@ -117,7 +114,7 @@ public sealed class ConverterOptions : ICloneable, INotifyPropertyChanged
             if (_includeRuntime != value)
             {
                 _includeRuntime = value;
-                this.Notify("IncludeRuntime");
+                Notify(nameof(IncludeRuntime));
             }
         }
     }
@@ -130,7 +127,7 @@ public sealed class ConverterOptions : ICloneable, INotifyPropertyChanged
             if (_generateImage != value)
             {
                 _generateImage = value;
-                this.Notify("GenerateImage");
+                Notify(nameof(GenerateImage));
             }
         }
     }
@@ -143,7 +140,7 @@ public sealed class ConverterOptions : ICloneable, INotifyPropertyChanged
             if (_generalWpf != value)
             {
                 _generalWpf = value;
-                this.Notify("GeneralWpf");
+                Notify(nameof(GeneralWpf));
             }
         }
     }
@@ -156,7 +153,7 @@ public sealed class ConverterOptions : ICloneable, INotifyPropertyChanged
             if (_saveXaml != value)
             {
                 _saveXaml = value;
-                this.Notify("SaveXaml");
+                Notify(nameof(SaveXaml));
             }
         }
     }
@@ -169,7 +166,7 @@ public sealed class ConverterOptions : ICloneable, INotifyPropertyChanged
             if (_saveZaml != value)
             {
                 _saveZaml = value;
-                this.Notify("SaveZaml");
+                Notify(nameof(SaveZaml));
             }
         }
     }
@@ -182,7 +179,7 @@ public sealed class ConverterOptions : ICloneable, INotifyPropertyChanged
             if (_customXamlWriter != value)
             {
                 _customXamlWriter = value;
-                this.Notify("UseCustomXamlWriter");
+                Notify(nameof(UseCustomXamlWriter));
             }
         }
     }
@@ -195,7 +192,7 @@ public sealed class ConverterOptions : ICloneable, INotifyPropertyChanged
             if (_encoderType != value)
             {
                 _encoderType = value;
-                this.Notify("EncoderType");
+                Notify(nameof(EncoderType));
             }
         }
     }
@@ -208,7 +205,7 @@ public sealed class ConverterOptions : ICloneable, INotifyPropertyChanged
             if (_verticalNav != value)
             {
                 _verticalNav = value;
-                this.Notify("VerticalNav");
+                Notify(nameof(VerticalNav));
             }
         }
     }
@@ -219,11 +216,7 @@ public sealed class ConverterOptions : ICloneable, INotifyPropertyChanged
 
     private void Notify(string propertyName)
     {
-        PropertyChangedEventHandler? handler = this.PropertyChanged;
-        if (handler != null)
-        {
-            handler(this, new PropertyChangedEventArgs(propertyName));
-        }
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     #endregion
@@ -232,7 +225,7 @@ public sealed class ConverterOptions : ICloneable, INotifyPropertyChanged
 
     public ConverterOptions Clone()
     {
-        ConverterOptions options = new ConverterOptions(this);
+        var options = new ConverterOptions(this);
         if (_errorMessage != null)
         {
             options._errorMessage = new string(_errorMessage.ToCharArray());

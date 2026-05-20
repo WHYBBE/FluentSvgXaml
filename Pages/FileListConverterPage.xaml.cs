@@ -30,11 +30,9 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
     private IObserver? _observer;
     private ConverterOptions _options = new();
 
-    private FileList _listItems;
+    private readonly FileList _listItems;
 
     private FileListConverterOutput? _converterOutput;
-
-
 
     private Frame? _parentFrame;
 
@@ -58,7 +56,7 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
             _titleBkDefault = statusTitle.Background;
         }
 
-        _listItems = new FileList();
+        _listItems = [];
 
         lstSourceFile.ItemsSource = _listItems;
 
@@ -79,10 +77,7 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
         {
             _options = value;
 
-            if (_options != null)
-            {
-                _options.PropertyChanged += new PropertyChangedEventHandler(OnOptionsPropertyChanged);
-            }
+            _options?.PropertyChanged += new PropertyChangedEventHandler(OnOptionsPropertyChanged);
         }
     }
 
@@ -106,10 +101,7 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
     {
         base.OnInitialized(e);
 
-        if (_titleBkDefault == null)
-        {
-            _titleBkDefault = statusTitle.Background;
-        }
+        _titleBkDefault ??= statusTitle.Background;
     }
 
     #endregion
@@ -133,9 +125,9 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
 
     private void OnSourceFileDrop(object sender, DragEventArgs e)
     {
-        if (e.Data is DataObject && ((DataObject)e.Data).ContainsFileDropList())
+        if (e.Data is DataObject item && item.ContainsFileDropList())
         {
-            foreach (string? filePath in ((DataObject)e.Data).GetFileDropList())
+            foreach (string? filePath in item.GetFileDropList())
             {
                 _listItems.Add(filePath!);
             }
@@ -160,9 +152,12 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
 
     private void OnSourceAddClick(object sender, RoutedEventArgs e)
     {
-        OpenFileDialog dlg = new OpenFileDialog();
-        dlg.Multiselect = true;
-        dlg.Filter = "SVG Files|*.svg;*.svgz"; ;
+        var dlg = new OpenFileDialog
+        {
+            Multiselect = true,
+            Filter = "SVG Files|*.svg;*.svgz"
+        };
+        ;
         dlg.FilterIndex = 1;
 
         bool? isSelected = dlg.ShowDialog();
@@ -270,10 +265,7 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
         _isConversionError = false;
         btnConvert.IsEnabled = false;
 
-        if (_converterOutput == null)
-        {
-            _converterOutput = new FileListConverterOutput();
-        }
+        _converterOutput ??= new FileListConverterOutput();
         _converterOutput.Options = _options;
         _converterOutput.Subscribe(this);
 
@@ -322,7 +314,7 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
                     string? rootDir = Path.GetPathRoot(outputDir);
                     if (!string.IsNullOrWhiteSpace(rootDir))
                     {
-                        DriveInfo drive = new DriveInfo(rootDir);
+                        var drive = new DriveInfo(rootDir);
                         if (!drive.IsReady || drive.DriveType == DriveType.CDRom
                             || drive.DriveType == DriveType.Unknown)
                         {
@@ -355,7 +347,7 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
                         string? rootDir = Path.GetPathRoot(outputDir);
                         if (!string.IsNullOrWhiteSpace(rootDir))
                         {
-                            DriveInfo drive = new DriveInfo(rootDir);
+                            var drive = new DriveInfo(rootDir);
                             if (!drive.IsReady || drive.DriveType == DriveType.CDRom
                                 || drive.DriveType == DriveType.Unknown)
                             {
@@ -409,10 +401,7 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
 
     public void Cancel()
     {
-        if (_converterOutput != null)
-        {
-            _converterOutput.Cancel();
-        }
+        _converterOutput?.Cancel();
     }
 
     public void Subscribe(IObserver observer)
@@ -432,10 +421,7 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
 
         this.UpdateStatus();
 
-        if (_observer != null)
-        {
-            _observer.OnStarted(this);
-        }
+        _observer?.OnStarted(this);
     }
 
     public void OnCompleted(IObservable sender, bool isSuccessful)
@@ -446,12 +432,9 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
 
         this.UpdateStatus();
 
-        if (_observer != null)
-        {
-            _observer.OnCompleted(this, isSuccessful);
-        }
+        _observer?.OnCompleted(this, isSuccessful);
 
-        _isConversionError = isSuccessful ? false : true;
+        _isConversionError = !isSuccessful;
 
         if (isSuccessful)
         {
@@ -473,7 +456,7 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
     {
         #region Private Fields
 
-        private List<string> _listItems;
+        private readonly List<string> _listItems;
 
         #endregion
 
@@ -482,20 +465,14 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
         public FileList()
             : base()
         {
-            _listItems = new List<string>();
+            _listItems = [];
         }
 
         #endregion
 
         #region Public Properties
 
-        public IList<string> FileItems
-        {
-            get
-            {
-                return _listItems;
-            }
-        }
+        public IList<string> FileItems => _listItems;
 
         public string LastDirectory
         {
@@ -504,7 +481,7 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
                 if (_listItems.Count != 0)
                 {
                     return Path.GetDirectoryName(
-                        _listItems[_listItems.Count - 1]) ?? string.Empty;
+                        _listItems[^1]) ?? string.Empty;
                 }
 
                 return string.Empty;
@@ -523,7 +500,7 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
                         string? rootDir = Path.GetPathRoot(_listItems[i]);
                         if (!string.IsNullOrWhiteSpace(rootDir))
                         {
-                            DriveInfo drive = new DriveInfo(rootDir);
+                            var drive = new DriveInfo(rootDir);
                             if (!drive.IsReady || drive.DriveType == DriveType.CDRom
                                 || drive.DriveType == DriveType.Unknown)
                             {
@@ -559,8 +536,10 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
             if (string.Equals(fileExt, ".svg", StringComparison.OrdinalIgnoreCase)
                 || string.Equals(fileExt, ".svgz", StringComparison.OrdinalIgnoreCase))
             {
-                ListBoxItem listItem = new ListBoxItem();
-                listItem.Content = filePath;
+                var listItem = new ListBoxItem
+                {
+                    Content = filePath
+                };
                 this.Add(listItem);
 
                 _listItems.Add(filePath!);
@@ -582,10 +561,7 @@ public partial class FileListConverterPage : Page, IObservable, IObserver
         {
             base.ClearItems();
 
-            if (_listItems != null)
-            {
-                _listItems.Clear();
-            }
+            _listItems?.Clear();
         }
 
         #endregion

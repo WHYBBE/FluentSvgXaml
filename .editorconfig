@@ -1,0 +1,10 @@
+﻿[*.cs]
+
+# CA1859: 尽可能使用具体类型以提高性能
+dotnet_diagnostic.CA1859.severity = none
+
+# SYSLIB1045: 转换为“GeneratedRegexAttribute”。
+dotnet_diagnostic.SYSLIB1045.severity = none
+
+# IDE0060: 删除未使用的参数
+dotnet_diagnostic.IDE0060.severity = none

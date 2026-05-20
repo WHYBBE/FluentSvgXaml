@@ -35,10 +35,10 @@ public sealed class ConsoleDirectoryConverter : ConsoleConverter
     private DirectoryInfo? _sourceInfoDir;
     private DirectoryInfo? _outputInfoDir;
 
-    private FileSvgReader _fileReader;
-    private WpfDrawingSettings _wpfSettings;
+    private readonly FileSvgReader _fileReader;
+    private readonly WpfDrawingSettings _wpfSettings;
 
-    private ConsoleWorker _worker;
+    private readonly ConsoleWorker _worker;
 
     private ConsoleWriter? _writer;
 
@@ -53,9 +53,11 @@ public sealed class ConsoleDirectoryConverter : ConsoleConverter
         _wpfSettings = new WpfDrawingSettings();
         _wpfSettings.CultureInfo = _wpfSettings.NeutralCultureInfo;
 
-        _fileReader = new FileSvgReader(_wpfSettings);
-        _fileReader.SaveXaml = false;
-        _fileReader.SaveZaml = false;
+        _fileReader = new FileSvgReader(_wpfSettings)
+        {
+            SaveXaml = false,
+            SaveZaml = false
+        };
 
         _worker = new ConsoleWorker();
         //_worker.WorkerReportsProgress = true;
@@ -237,7 +239,7 @@ public sealed class ConsoleDirectoryConverter : ConsoleConverter
 
         _writer = writer;
 
-        _errorFiles = new List<string>();
+        _errorFiles = [];
 
         string outputDir = this.OutputDir;
 
@@ -257,16 +259,13 @@ public sealed class ConsoleDirectoryConverter : ConsoleConverter
 
             _worker.RunWorkerAsync();
 
-            if (_observer != null)
-            {
-                _observer.OnStarted(this);
-            }
+            _observer?.OnStarted(this);
 
             return true;
         }
         catch (Exception ex)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendFormat("Error: Exception ({0})", ex.GetType());
             builder.AppendLine();
             builder.AppendLine(ex.Message);
@@ -293,7 +292,7 @@ public sealed class ConsoleDirectoryConverter : ConsoleConverter
     {
         string outputDir = this.OutputDir;
 
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         if (e.Error != null)
         {
             Exception ex = e.Error;
@@ -310,19 +309,13 @@ public sealed class ConsoleDirectoryConverter : ConsoleConverter
                 builder.AppendFormat("Error: Unknown");
             }
 
-            if (_observer != null)
-            {
-                _observer.OnCompleted(this, false);
-            }
+            _observer?.OnCompleted(this, false);
         }
         else if (e.Cancelled)
         {
             builder.AppendLine("Result: Cancelled");
 
-            if (_observer != null)
-            {
-                _observer.OnCompleted(this, false);
-            }
+            _observer?.OnCompleted(this, false);
         }
         else if (e.Result != null)
         {
@@ -353,20 +346,15 @@ public sealed class ConsoleDirectoryConverter : ConsoleConverter
                 builder.AppendLine("Output Directory: " + _outputInfoDir.FullName);
             }
 
-            if (_observer != null)
-            {
-                _observer.OnCompleted(this, isSuccessful);
-            }
+            _observer?.OnCompleted(this, isSuccessful);
         }
 
-        this.AppendLine(builder.ToString());
+        AppendLine(builder.ToString());
     }
 
     private void OnWorkerDoWork(object? sender, DoWorkEventArgs e)
     {
-        ConsoleWorker worker = (ConsoleWorker)sender!;
-
-        ConverterOptions options = this.Options;
+        var options = Options;
 
         _wpfSettings.IncludeRuntime = options.IncludeRuntime;
         _wpfSettings.TextAsGeometry = options.TextAsGeometry;
@@ -384,7 +372,7 @@ public sealed class ConsoleDirectoryConverter : ConsoleConverter
             _fileReader.SaveZaml = false;
         }
 
-        this.ProcessConversion(e, _sourceInfoDir!, _outputInfoDir!);
+        ProcessConversion(e, _sourceInfoDir!, _outputInfoDir!);
 
         if (!e.Cancel)
         {
@@ -614,7 +602,7 @@ public sealed class ConsoleDirectoryConverter : ConsoleConverter
 
                     if (_continueOnError)
                     {
-                        StringBuilder builder = new StringBuilder();
+                        var builder = new StringBuilder();
                         builder.AppendLine("Error converting: " + svgFileName);
                         builder.AppendFormat("Error: Exception ({0})", ex.GetType());
                         builder.AppendLine();

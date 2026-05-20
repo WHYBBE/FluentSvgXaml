@@ -3,24 +3,24 @@ using System.IO;
 
 namespace FluentSvgXaml.Core;
 
-public sealed class ConverterCommandLines
+public sealed class ConverterCommandLines(string[] args)
 {
     #region Private Fields
 
-    private bool _beepEnd;
-    private bool _showHelp;
+    private bool _beepEnd = false;
+    private bool _showHelp = false;
     private bool _showGuiHelp;
 
-    private bool _isRecursive;
-    private bool _includeRuntime;
-    private bool _continueOnError;
-    private bool _textAsGeometry;
-    private bool _customXamlWriter;
+    private bool _isRecursive = false;
+    private bool _includeRuntime = false;
+    private bool _continueOnError = true;
+    private bool _textAsGeometry = true;
+    private bool _customXamlWriter = true;
 
-    private bool _saveXaml;
-    private bool _saveZaml;
+    private bool _saveXaml = true;
+    private bool _saveZaml = false;
 
-    private ConverterUIOption _ui;
+    private ConverterUIOption _ui = ConverterUIOption.Unknown;
     private string _image = string.Empty;
 
     private string? _usage;
@@ -28,29 +28,10 @@ public sealed class ConverterCommandLines
     private List<string>? _sources;
     private string? _sourceFile;
     private string? _sourceDir;
-    private IList<string>? _sourceFiles;
     private string? _outputDir;
 
-    private string[] _args;
-
     #endregion
-
     #region Constructors and Destructor
-
-    public ConverterCommandLines(string[] args)
-    {
-        _args = args;
-        _ui = ConverterUIOption.Unknown;
-        _beepEnd = false;
-        _showHelp = false;
-        _isRecursive = false;
-        _includeRuntime = false;
-        _continueOnError = true;
-        _textAsGeometry = true;
-        _customXamlWriter = true;
-        _saveXaml = true;
-        _saveZaml = false;
-    }
 
     #endregion
 
@@ -60,24 +41,18 @@ public sealed class ConverterCommandLines
     {
         get
         {
-            if (_args == null || _args.Length == 0)
+            if (Arguments == null || Arguments.Length == 0)
             {
                 return true;
             }
 
             return (string.IsNullOrWhiteSpace(_sourceFile) &&
-                (_sourceFiles == null || _sourceFiles.Count == 0) &&
+                (SourceFiles == null || SourceFiles.Count == 0) &&
                 string.IsNullOrWhiteSpace(_sourceDir));
         }
     }
 
-    public string[] Arguments
-    {
-        get
-        {
-            return _args;
-        }
-    }
+    public string[] Arguments { get; } = args;
 
     public string? OutputDir
     {
@@ -274,13 +249,7 @@ public sealed class ConverterCommandLines
         }
     }
 
-    public IList<string>? SourceFiles
-    {
-        get
-        {
-            return _sourceFiles;
-        }
-    }
+    public IList<string>? SourceFiles { get; private set; }
 
     public string? Usage
     {
@@ -296,25 +265,24 @@ public sealed class ConverterCommandLines
 
     public bool Parse(bool startedInConsole)
     {
-        OptionSet parser = new OptionSet();
+        var parser = new OptionSet();
         try
         {
-            Dictionary<string, bool> sourceSet = new
-                Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+            var sourceSet = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
 
             this.DefineOptions(parser, sourceSet);
 
-            using (StringWriter writer = new StringWriter())
+            using (var writer = new StringWriter())
             {
-                this.BeginOptionsUsage(writer);
+                BeginOptionsUsage(writer);
                 parser.WriteOptionDescriptions(writer);
-                this.EndOptionsUsage(writer);
+                EndOptionsUsage(writer);
 
                 _usage = writer.ToString();
             }
 
-            List<string> listExtra = parser.Parse(_args);
-            List<string> sourceArgs = new List<string>(sourceSet.Keys);
+            var listExtra = parser.Parse(Arguments);
+            var sourceArgs = new List<string>(sourceSet.Keys);
 
             if (listExtra != null && listExtra.Count != 0)
             {
@@ -325,8 +293,8 @@ public sealed class ConverterCommandLines
             {
                 _sources = new List<string>(sourceArgs.Count);
 
-                List<string> sourceFiles = new List<string>();
-                List<string> sourceDirs = new List<string>();
+                var sourceFiles = new List<string>();
+                var sourceDirs = new List<string>();
 
                 for (int i = 0; i < sourceArgs.Count; i++)
                 {
@@ -374,7 +342,7 @@ public sealed class ConverterCommandLines
                 {
                     if (sourceFiles.Count > 1)
                     {
-                        _sourceFiles = sourceFiles;
+                        SourceFiles = sourceFiles;
                     }
                     else
                     {
@@ -533,10 +501,10 @@ public sealed class ConverterCommandLines
     private void BeginOptionsUsage(TextWriter writer)
     {
         writer.WriteLine();
-        if (_args != null && _args.Length != 0)
+        if (Arguments != null && Arguments.Length != 0)
         {
-            writer.WriteLine("Argument Count=" + _args.Length);
-            foreach (string arg in _args)
+            writer.WriteLine("Argument Count=" + Arguments.Length);
+            foreach (string arg in Arguments)
             {
                 writer.WriteLine(arg);
             }
@@ -545,7 +513,7 @@ public sealed class ConverterCommandLines
         writer.WriteLine("Options:");
     }
 
-    private void EndOptionsUsage(TextWriter writer)
+    static void EndOptionsUsage(TextWriter writer)
     {
         writer.WriteLine();
     }

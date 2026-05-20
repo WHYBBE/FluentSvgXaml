@@ -14,27 +14,24 @@ namespace FluentSvgXaml.Core;
 /// <summary>
 /// Persists a Window's Size, Location and WindowState to UserScopeSettings 
 /// </summary>
-public sealed class MainWindowSettings
+public sealed partial class MainWindowSettings(Window window)
 {
-    [DllImport("user32.dll")]
-    private static extern bool SetWindowPlacement(IntPtr hWnd, [In] ref WINDOWPLACEMENT lpwndpl);
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool SetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
 
-    [DllImport("user32.dll")]
-    private static extern bool GetWindowPlacement(IntPtr hWnd, out WINDOWPLACEMENT lpwndpl);
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool GetWindowPlacement(IntPtr hWnd, out WINDOWPLACEMENT lpwndpl);
 
     // ReSharper disable InconsistentNaming
     private const int SW_SHOWNORMAL = 1;
     private const int SW_SHOWMINIMIZED = 2;
     // ReSharper restore InconsistentNaming
 
-    private Window? _window;
+    private Window? _window = window;
 
     private WindowApplicationSettings? _windowApplicationSettings;
-
-    public MainWindowSettings(Window window)
-    {
-        _window = window;
-    }
 
     /// <summary>
     /// Register the "Save" attached property and the "OnSaveInvalidated" callback 
@@ -42,7 +39,6 @@ public sealed class MainWindowSettings
     public static readonly DependencyProperty SaveProperty
         = DependencyProperty.RegisterAttached("Save", typeof(bool), typeof(MainWindowSettings),
                                               new FrameworkPropertyMetadata(new PropertyChangedCallback(OnSaveInvalidated)));
-
 
     public static void SetSave(DependencyObject dependencyObject, bool enabled)
     {
@@ -54,8 +50,7 @@ public sealed class MainWindowSettings
     /// </summary>
     private static void OnSaveInvalidated(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
     {
-        var window = dependencyObject as Window;
-        if (window == null || !((bool)e.NewValue))
+        if (dependencyObject is not Window window || !((bool)e.NewValue))
             return;
         var settings = new MainWindowSettings(window);
         settings.Attach();
@@ -77,7 +72,7 @@ public sealed class MainWindowSettings
             // SetWindowPlacement will place the window onto a visible monitor.
             var wp = Settings.Placement.Value;
 
-            wp.length = Marshal.SizeOf(typeof(WINDOWPLACEMENT));
+            wp.length = Marshal.SizeOf<WINDOWPLACEMENT>();
             wp.flags = 0;
             wp.showCmd = (wp.showCmd == SW_SHOWMINIMIZED ? SW_SHOWNORMAL : wp.showCmd);
             var hwnd = new WindowInteropHelper(_window).Handle;
@@ -94,9 +89,8 @@ public sealed class MainWindowSettings
     /// </summary>
     private void SaveWindowState()
     {
-        WINDOWPLACEMENT wp;
         var hwnd = new WindowInteropHelper(_window).Handle;
-        GetWindowPlacement(hwnd, out wp);
+        GetWindowPlacement(hwnd, out WINDOWPLACEMENT wp);
         Settings.Placement = wp;
         Settings.Save();
     }
@@ -132,35 +126,27 @@ public sealed class MainWindowSettings
     {
         get
         {
-            if (_windowApplicationSettings == null)
-            {
-                _windowApplicationSettings = CreateWindowApplicationSettingsInstance();
-            }
+            _windowApplicationSettings ??= CreateWindowApplicationSettingsInstance();
             return _windowApplicationSettings;
         }
     }
 
-    internal class WindowApplicationSettings : ApplicationSettingsBase
+    internal class WindowApplicationSettings(MainWindowSettings windowSettings) : ApplicationSettingsBase(windowSettings._window!.GetType().FullName)
     {
-        public WindowApplicationSettings(MainWindowSettings windowSettings)
-            : base(windowSettings._window!.GetType().FullName)
-        {
-        }
-
         [UserScopedSetting]
         public WINDOWPLACEMENT? Placement
         {
             get
             {
-                if (this["Placement"] != null)
+                if (this[nameof(Placement)] != null)
                 {
-                    return ((WINDOWPLACEMENT)this["Placement"]);
+                    return ((WINDOWPLACEMENT)this[nameof(Placement)]);
                 }
                 return null;
             }
             set
             {
-                this["Placement"] = value;
+                this[nameof(Placement)] = value;
             }
         }
     }
@@ -168,27 +154,17 @@ public sealed class MainWindowSettings
 
 [Serializable]
 [StructLayout(LayoutKind.Sequential)]
-public struct RECT
+public struct RECT(int left, int top, int right, int bottom)
 {
-    private int _left;
-    private int _top;
-    private int _right;
-    private int _bottom;
+    private int _left = left;
+    private int _top = top;
+    private int _right = right;
+    private int _bottom = bottom;
 
-    public RECT(int left, int top, int right, int bottom)
+    public override readonly bool Equals(object? obj)
     {
-        _left = left;
-        _top = top;
-        _right = right;
-        _bottom = bottom;
-    }
-
-    public override bool Equals(object? obj)
-    {
-        if (obj is RECT)
+        if (obj is RECT rect)
         {
-            var rect = (RECT)obj;
-
             return rect._bottom == _bottom &&
                    rect._left == _left &&
                    rect._right == _right &&
@@ -197,7 +173,7 @@ public struct RECT
         return base.Equals(obj);
     }
 
-    public override int GetHashCode()
+    public override readonly int GetHashCode()
     {
         return _bottom.GetHashCode() ^
                _left.GetHashCode() ^
@@ -220,65 +196,57 @@ public struct RECT
 
     public int Left
     {
-        get { return _left; }
-        set { _left = value; }
+        readonly get => _left;
+        set => _left = value;
     }
 
     public int Top
     {
-        get { return _top; }
-        set { _top = value; }
+        readonly get => _top;
+        set => _top = value;
     }
 
     public int Right
     {
-        get { return _right; }
-        set { _right = value; }
+        readonly get => _right;
+        set => _right = value;
     }
 
     public int Bottom
     {
-        get { return _bottom; }
-        set { _bottom = value; }
+        readonly get => _bottom;
+        set => _bottom = value;
     }
 }
 
 [Serializable]
 [StructLayout(LayoutKind.Sequential)]
-public struct POINT
+public struct POINT(int x, int y)
 {
-    private int _x;
-    private int _y;
-
-    public POINT(int x, int y)
-    {
-        _x = x;
-        _y = y;
-    }
+    private int _x = x;
+    private int _y = y;
 
     public int X
     {
-        get { return _x; }
-        set { _x = value; }
+        readonly get => _x;
+        set => _x = value;
     }
 
     public int Y
     {
-        get { return _y; }
-        set { _y = value; }
+        readonly get => _y;
+        set => _y = value;
     }
 
-    public override bool Equals(object? obj)
+    public override readonly bool Equals(object? obj)
     {
-        if (obj is POINT)
+        if (obj is POINT point)
         {
-            var point = (POINT)obj;
-
             return point._x == _x && point._y == _y;
         }
         return base.Equals(obj);
     }
-    public override int GetHashCode()
+    public override readonly int GetHashCode()
     {
         return _x.GetHashCode() ^ _y.GetHashCode();
     }

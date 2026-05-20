@@ -1,39 +1,17 @@
 namespace FluentSvgXaml.Cli;
 
-public sealed class ConsoleWriter
+public sealed class ConsoleWriter(bool isQuiet, ConsoleWriterVerbosity verbosity)
 {
-    private bool _isQuiet;
-    private object _synchObject;
-    private ConsoleWriterVerbosity _verbosity;
+    private readonly ConsoleWriterVerbosity _verbosity = verbosity;
 
     public ConsoleWriter()
         : this(false, ConsoleWriterVerbosity.Normal)
     {
     }
 
-    public ConsoleWriter(bool isQuiet, ConsoleWriterVerbosity verbosity)
-    {
-        _isQuiet = isQuiet;
-        _verbosity = verbosity;
+    public bool IsQuiet { get; } = isQuiet;
 
-        _synchObject = new object();
-    }
-
-    public bool IsQuiet
-    {
-        get
-        {
-            return _isQuiet;
-        }
-    }
-
-    public object SynchObject
-    {
-        get
-        {
-            return _synchObject;
-        }
-    }
+    public object SynchObject { get; } = new();
 
     public ConsoleWriterVerbosity Verbosity
     {
@@ -45,12 +23,12 @@ public sealed class ConsoleWriter
 
     public void WriteLine()
     {
-        if (_isQuiet)
+        if (IsQuiet)
         {
             return;
         }
 
-        lock (_synchObject)
+        lock (SynchObject)
         {
             Console.WriteLine();
         }
@@ -58,12 +36,12 @@ public sealed class ConsoleWriter
 
     public void Write(string text)
     {
-        if (_isQuiet || text == null)
+        if (IsQuiet || text == null)
         {
             return;
         }
 
-        lock (_synchObject)
+        lock (SynchObject)
         {
             Console.Write(text);
         }
@@ -71,12 +49,12 @@ public sealed class ConsoleWriter
 
     public void WriteProgress(string text)
     {
-        if (_isQuiet || text == null)
+        if (IsQuiet || text == null)
         {
             return;
         }
 
-        lock (_synchObject)
+        lock (SynchObject)
         {
             //Console.ForegroundColor = ConsoleColor.Cyan;
             Console.Write(text);
@@ -87,12 +65,12 @@ public sealed class ConsoleWriter
 
     public void WriteLine(string text)
     {
-        if (_isQuiet || text == null)
+        if (IsQuiet || text == null)
         {
             return;
         }
 
-        lock (_synchObject)
+        lock (SynchObject)
         {
             Console.WriteLine(text);
         }
@@ -100,12 +78,12 @@ public sealed class ConsoleWriter
 
     public void WriteInfoLine(string text)
     {
-        if (_isQuiet || string.IsNullOrWhiteSpace(text))
+        if (IsQuiet || string.IsNullOrWhiteSpace(text))
         {
             return;
         }
 
-        lock (_synchObject)
+        lock (SynchObject)
         {
             Console.WriteLine("Info: " + text);
         }
@@ -113,12 +91,12 @@ public sealed class ConsoleWriter
 
     public void WriteWarnLine(string text)
     {
-        if (_isQuiet || string.IsNullOrWhiteSpace(text))
+        if (IsQuiet || string.IsNullOrWhiteSpace(text))
         {
             return;
         }
 
-        lock (_synchObject)
+        lock (SynchObject)
         {
             Console.WriteLine("Warn: " + text);
         }
@@ -126,12 +104,12 @@ public sealed class ConsoleWriter
 
     public void WriteErrorLine(string text)
     {
-        if (_isQuiet || string.IsNullOrWhiteSpace(text))
+        if (IsQuiet || string.IsNullOrWhiteSpace(text))
         {
             return;
         }
 
-        lock (_synchObject)
+        lock (SynchObject)
         {
             Console.WriteLine("Error: " + text);
         }
