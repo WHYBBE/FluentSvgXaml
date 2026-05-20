@@ -9,7 +9,8 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
 
-using FluentSvgXaml;
+using FluentSvgXaml.Core;
+using FluentSvgXaml.Pages;
 
 namespace FluentSvgXaml
 {
